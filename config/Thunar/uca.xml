@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+  <action>
+    <icon>utilities-terminal</icon>
+    <name>Open in Kitty</name>
+    <unique-id>1760127079084254-1</unique-id>
+    <command>kitty --working-directory %f</command>
+    <description>Open selected folder in Kitty terminal</description>
+    <patterns>*</patterns>
+    <directories/>
+  </action>
+</actions>
+
