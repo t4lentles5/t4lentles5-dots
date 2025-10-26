@@ -1,0 +1,113 @@
+@theme "colorscheme"
+
+configuration {
+  font:                       "Maple Mono NF CN 11";
+	hover-select:				        true;
+	me-select-entry:			      "";
+	me-accept-entry:		      	"MousePrimary";
+}
+
+window {
+  transparency:                "real";
+  location:                    center;
+  anchor:                      center;
+  fullscreen:                  false;
+  x-offset:                    0px;
+  y-offset:                    0px;
+  margin:                      0px;
+  padding:                     0px;
+  border:                      3px solid;
+  border-radius:               40px;
+  border-color:                @color5;
+  cursor:                      "default";
+  background-color:            @background;
+}
+
+mainbox {
+  enabled:                     true;
+  spacing:                     0px;
+  margin:                      0px;
+  padding:                     0px;
+  orientation:                 vertical;
+  background-color:            transparent;
+}
+
+inputbar {
+  enabled:                     true;
+  spacing:                     0px;
+  padding:                     100px 10px;
+  margin: 20px 20px 0 20px;
+  border-radius : 20px;
+  background-color:            transparent;
+  background-image:            url("~/Pictures/Wallpapers/wall-09.webp", width);
+}
+
+dummy {
+  background-color:            transparent;
+}
+
+prompt {
+  enabled:                     true;
+  padding:                     10px;
+  border-radius:               10px;
+  margin:                      0px 15px;
+  background-color:            @color5;
+  text-color:                  @color8;
+  font:                        "Maple Mono NF CN 12";
+}
+
+textbox-prompt-colon {
+  enabled:                     true;
+  expand:                      false;
+  padding:                     10px;
+  border-radius:               10px;
+  margin:                      0px 15px;
+  background-color:            @color5;
+  text-color:                  @color8;
+  font:                        "Maple Mono NF CN 12";
+}
+
+listview {
+  enabled:                     true;
+  cycle:                       true;
+  dynamic:                     true;
+  scrollbar:                   false;
+  layout:                      vertical;
+  reverse:                     false;
+  fixed-height:                true;
+  fixed-columns:               true;
+  spacing:                     20;
+  margin:                      20px;
+  background-color:            transparent;
+  cursor:                      "default";
+}
+
+element {
+  enabled:                     true;
+  padding:                     20px 10px;
+  border-radius:               20px;
+  background-color:            @background-alt;
+  text-color:                  @foreground;
+  cursor:                      pointer;
+}
+
+element selected.normal {
+  background-color:            @color5;
+  text-color:                  @color8;
+}
+
+message {
+  enabled:                     true;
+  margin:                      0 20px 20px 20px;
+  padding:                     15px;
+  border-radius:               20px;
+  background-color:            @background-alt;
+  text-color:                  @color8;
+}
+
+textbox {
+  background-color:            inherit;
+  text-color:                  inherit;
+  vertical-align:              0.5;
+  horizontal-align:            0.5;
+}

@@ -1,124 +1,47 @@
+@import "shared"
+
 configuration {
-    modi:                        "drun";
-    show-icons:                  true;
-    font:                        "Maple Mono NF CN 11";
+  show-icons:                 true;
 }
 
-@import "colorscheme"
-
 window {
-    transparency:                "real";
-    location:                    center;
-    anchor:                      center;
-    fullscreen:                  false;
-    width:                       1000px;
-    x-offset:                    0px;
-    y-offset:                    0px;
-
-    padding:                     0px;
-    border:                      3px solid;
-    border-radius:               40px;
-    border-color:                @color5;
-    cursor:                      "default";
-    background-color:            @background;
+  width:                       1000px;
 }
 
 mainbox {
-    enabled:                     true;
-    children:                    ["inputbar", "listview" ];
-    background-color:            transparent;
+  children:                    ["inputbar", "listview" ];
 }
 
 inputbar {
-    enabled:                     true;
-    spacing:                     0px;
-    padding:                     100px 80px;
-     margin: 20px 20px 0 20px;
-border-radius : 20px;
-
-    background-color:            transparent;
-    background-image:            url("~/Pictures/Wallpapers/wall-09.webp", width);
-    children:                    ["dummy", "textbox-prompt-colon", "prompt", "dummy"];
-}
-
-dummy {
-    background-color:            transparent;
+  children:                    ["dummy", "textbox-prompt-colon", "prompt", "dummy"];
 }
 
 textbox-prompt-colon {
-   enabled:                     true;
-   expand:                      false;
-   str:                         " ";
-   padding:                     10px;
-   border-radius:               10px;
-   margin:                      0px 15px;
-   background-color:            @color5;
-   text-color:                  @color8;
-   font:                        "Maple Mono NF CN 12";
-
-}
-
-prompt {
-    enabled:                     true;
-    padding:                     10px;
-    border-radius:               10px;
-    margin:                      0px 15px;
-    background-color:            @color5;
-    text-color:                  @color8;
-    font:                        "Maple Mono NF CN 12";
+  str:                         " ";
 }
 
 listview {
-    enabled:                     true;
-    columns:                     4;
-    lines:                       1;
-    spacing:                     20px;
-    margin:20px;
-    cycle:                       true;
-    dynamic:                     false;
-    scrollbar:                   false;
-    layout:                      vertical;
-    reverse:                     false;
-    fixed-height:                true;
-    fixed-columns:               true;
-    cursor:                      "default";
-    background-color:            transparent;
-    text-color:                  @foreground;
+  columns:                     4;
+  lines:                       1;
 }
 
 element {
-    enabled: true;
-    orientation: horizontal;
-    spacing: 0px;
-    padding: 3px;
-    border-radius: 20px;
-    cursor: pointer;
-    background-color: transparent;
-    text-color: @foreground;
-    halign: 0.5;
-}
-
-@media(max-aspect-ratio: 1.8) {
-    element {
-        orientation:             vertical;
-    }
+  padding: 0px;
 }
 
 element selected.normal {
-    border:                      3px solid;
-    border-radius:               20px;
-    border-color:                @color5;
-
-    halign: 0.5;
+  border:                      3px solid;
+  border-radius:               20px;
+  border-color:                @color5;
+  halign: 0.5;
 }
 
 element-icon {
-    size: 25%;
-    border-radius: 20px;
-    halign: 0.5;
+  size: 25%;
+  border-radius: 20px;
+  halign: 0.5;
 }
 
 element-text {
   enabled: false;
 }
-

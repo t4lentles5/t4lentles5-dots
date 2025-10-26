@@ -1,147 +1,35 @@
-/**
- *
- * Author : Aditya Shakya (adi1090x)
- * Github : @adi1090x
- * 
- * Rofi Theme File
- * Rofi Version: 1.7.3
- **/
+@import "shared"
 
-/*****----- Configuration -----*****/
 configuration {
-    show-icons:                 false;
-    font:                      "Maple Mono NF CN 11";
+  show-icons:                 false;
 }
 
-@theme "colorscheme"
-
-/*
-USE_BUTTONS=YES
-*/
-
-/*****----- Main Window -----*****/
 window {
-    transparency:                "real";
-    location:                    center;
-    anchor:                      center;
-    fullscreen:                  false;
-    width:                       650px;
-    x-offset:                    0px;
-    y-offset:                    0px;
-
-    padding:                     0px;
-    border:                      3px solid;
-    border-radius:               40px;
-    border-color:                @color5;
-    cursor:                      "default";
-    background-color:            @background;
+  width:                       650px;
 }
 
-/*****----- Main Box -----*****/
 mainbox {
-    enabled:                     true;
-    spacing:                     0px;
-    margin:                      0px;
-    padding:                     0px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @color5;
-    background-color:            transparent;
-    children:                    [ "inputbar", "listview", "message" ];
+  children:                    [ "inputbar", "listview", "message" ];
 }
 
-/*****----- Inputbar -----*****/
 inputbar {
-    enabled:                     true;
-    spacing:                     0px;
-    padding:                     100px 10px;
-    margin: 20px 20px 0 20px;
-    border-radius : 20px;
-    background-color:            transparent;
-    background-image:            url("~/Pictures/Wallpapers/wall-09.webp", width);
-    children:                    ["dummy", "textbox-prompt-colon", "prompt", "dummy"];
-}
-
-dummy {
-    background-color:            transparent;
+  children:                    ["dummy", "textbox-prompt-colon", "prompt", "dummy"];
 }
 
 textbox-prompt-colon {
-   enabled:                     true;
-   expand:                      false;
-   str:                         " ";
-   padding:                     10px;
-   border-radius:               10px;
-   margin:                      0px 15px;
-   background-color:            @color5;
-   text-color:                  @color8;
-   font:                        "Maple Mono NF CN 12";
-
+  str:                         " ";
 }
 
-prompt {
-    enabled:                     true;
-    padding:                     10px;
-    border-radius:               10px;
-    margin:                      0px 15px;
-    background-color:            @color5;
-    text-color:                  @color8;
-    font:                        "Maple Mono NF CN 12";
-}
-
-/*****----- Listview -----*****/
 listview {
-    enabled:                     true;
-    columns:                     5;
-    lines:                       1;
-    cycle:                       true;
-    dynamic:                     true;
-    scrollbar:                   false;
-    layout:                      vertical;
-    reverse:                     false;
-    fixed-height:                true;
-    fixed-columns:               true;
-    
-    spacing:                     20;
-    margin:                      20px;
-    background-color:            transparent;
-    cursor:                      "default";
+  columns:                     5;
+  lines:                       1;
 }
 
-/*****----- Elements -----*****/
-element {
-    enabled:                     true;
-    padding:                     20px 10px;
-    border-radius:               15px;
-    background-color:            @background-alt;
-    text-color:                  @foreground;
-    cursor:                      pointer;
-}
 element-text {
-    font:                        "Maple Mono NF CN 32";
-    background-color:            transparent;
-    text-color:                  inherit;
-    cursor:                      inherit;
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
-}
-element selected.normal {
-    background-color:            @color5;
-    text-color:                  @color8;
-}
-
-/*****----- Message -----*****/
-message {
-    enabled:                     true;
-    margin:                      0 20px 20px 20px;
-    padding:                     15px;
-    border-radius:               20px;
-    background-color:            @background-alt;
-    text-color:                  @color8;
-}
-textbox {
-    background-color:            inherit;
-    text-color:                  inherit;
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
+  font:                        "Maple Mono NF CN 32";
+  background-color:            transparent;
+  text-color:                  inherit;
+  cursor:                      inherit;
+  vertical-align:              0.5;
+  horizontal-align:            0.5;
 }
