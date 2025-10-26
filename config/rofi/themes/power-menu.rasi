@@ -1,7 +1,7 @@
 @import "shared"
 
 configuration {
-  show-icons:                 false;
+  show-icons:                  false;
 }
 
 window {

@@ -1,7 +1,7 @@
 @import "shared"
 
 configuration {
-  show-icons:                 false;
+  show-icons:                  false;
 }
 
 window {
@@ -9,7 +9,7 @@ window {
 }
 
 mainbox {
-  children:                    [ "inputbar", "listview", "message" ];
+  children:                    ["inputbar", "listview", "message"];
 }
 
 inputbar {

@@ -1,7 +1,7 @@
 @import "shared"
 
 configuration {
-  show-icons:                 true;
+  show-icons:                  true;
 }
 
 window {
@@ -33,15 +33,15 @@ element selected.normal {
   border:                      3px solid;
   border-radius:               20px;
   border-color:                @color5;
-  halign: 0.5;
+  halign:                      0.5;
 }
 
 element-icon {
-  size: 25%;
-  border-radius: 20px;
-  halign: 0.5;
+  size:                       25%;
+  border-radius:              20px;
+  halign:                     0.5;
 }
 
 element-text {
-  enabled: false;
+  enabled:                    false;
 }

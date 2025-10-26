@@ -1,7 +1,7 @@
 @import "shared"
 
 configuration {
-  show-icons:                 true;
+  show-icons:                  true;
   modi:                        "drun";
   show-icons:                  true;
   display-drun:                "  ";
@@ -18,7 +18,7 @@ mainbox {
 }
 
 inputbar {
-  children : ["dummy","prompt", "entry", "dummy"];
+  children:                    ["dummy","prompt", "entry", "dummy"];
 }
 
 entry {
@@ -26,8 +26,8 @@ entry {
   padding:                     10px;
   cursor:                      text;
   text-color:                  @foreground;
-  border:						 2px solid;
-  border-radius: 				 10px;
+  border:						           2px solid;
+  border-radius: 			      	 10px;
   border-color:                @color5;
   background-color:            @background-alt;
 }
@@ -49,9 +49,9 @@ element-icon {
 }
 
 element-text {
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
-    cursor:                      inherit;
-    background-color:            transparent;
-    text-color:                  inherit;
+  vertical-align:              0.5;
+  horizontal-align:            0.5;
+  cursor:                      inherit;
+  background-color:            transparent;
+  text-color:                  inherit;
 }

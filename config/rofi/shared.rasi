@@ -36,8 +36,8 @@ inputbar {
   enabled:                     true;
   spacing:                     0px;
   padding:                     100px 10px;
-  margin: 20px 20px 0 20px;
-  border-radius : 20px;
+  margin:                      20px 20px 0 20px;
+  border-radius :              20px;
   background-color:            transparent;
   background-image:            url("~/Pictures/Wallpapers/wall-09.webp", width);
 }
