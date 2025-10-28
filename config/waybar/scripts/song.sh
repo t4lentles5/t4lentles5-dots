@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 truncate_text() {
   local text="$1"
