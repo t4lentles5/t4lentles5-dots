@@ -5,11 +5,11 @@ UPTIME="$(uptime -p | sed -e 's/up //g')"
 ROFI_THEME="$HOME/.config/rofi/themes/power-menu.rasi"
 PROMPT="Power Menu"
 
-shutdown=' '
-reboot='󰜉 '
-lock='󰍁 '
-suspend=' '
-logout='󰗽 '
+shutdown=''
+reboot='󰜉'
+lock='󰍁'
+suspend=''
+logout='󰗽'
 yes='Yes'
 no='No'
 
@@ -17,7 +17,7 @@ rofi_cmd() {
   rofi -dmenu \
     -p "$PROMPT" \
     -mesg "󰍹 Last Login: $LAST_LOGIN |  Uptime: $UPTIME" \
-    -theme $ROFI_THEME
+    -theme "$ROFI_THEME"
 }
 
 confirm_cmd() {
@@ -30,7 +30,7 @@ confirm_cmd() {
     -dmenu \
     -p 'Confirmation' \
     -mesg 'Are you sure?' \
-    -theme $ROFI_THEME
+    -theme "$ROFI_THEME"
 }
 
 confirm_exit() {
@@ -65,21 +65,26 @@ run_cmd() {
   fi
 }
 
-chosen="$(run_rofi)"
-case ${chosen} in
-$shutdown)
-  run_cmd --shutdown
-  ;;
-$reboot)
-  run_cmd --reboot
-  ;;
-$lock)
-  hyprlock
-  ;;
-$suspend)
-  run_cmd --suspend
-  ;;
-$logout)
-  run_cmd --logout
-  ;;
-esac
+main() {
+  chosen="$(run_rofi)"
+  case ${chosen} in
+  "$shutdown")
+    run_cmd --shutdown
+    ;;
+  "$reboot")
+    run_cmd --reboot
+    ;;
+  "$lock")
+    hyprlock
+    ;;
+  "$suspend")
+    run_cmd --suspend
+    ;;
+  "$logout")
+    run_cmd --logout
+    ;;
+  esac
+}
+
+main
+

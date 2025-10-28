@@ -3,23 +3,20 @@
 TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
 DIR="$HOME/Pictures/ScreenShots"
 FILENAME="$DIR/Shot-${TIMESTAMP}.png"
+ROFI_THEME="$HOME/.config/rofi/themes/screenshot.rasi"
+PROMPT="Screenshot"
 
-mkdir -p "$DIR"
-
-BORDER_SIZE=3
-BORDER_ADJUSTMENT=$((BORDER_SIZE * 2))
-
-s_full=" "
-s_select="󰆞 "
-s_window=" "
-s_in3="󰔝 "
-s_in3select="󰆞 󰔝 "
+s_full=""
+s_select="󰆞"
+s_window=""
+s_in3="󰔝"
+s_in3select="󰆞 󰔝"
 
 rofi_cmd() {
   rofi -dmenu \
-    -p Screenshot \
+    -p "$PROMPT" \
     -mesg "Directory :: $DIR" \
-    -theme "$HOME/.config/rofi/themes/screenshot.rasi"
+    -theme "$ROFI_THEME"
 }
 
 run_rofi() {
@@ -34,14 +31,17 @@ show_notification() {
   fi
 }
 
-copy_screenshot() {
-  wl-copy <"$FILENAME"
+countdown() {
+  for sec in $(seq "$1" -1 1); do
+    dunstify -r 345 -t 1100 "Taking shot in : $sec"
+    sleep 1
+  done
 }
 
 take_screenshot() {
-  mode="$1"
+  mkdir -p "$DIR"
 
-  case "$mode" in
+  case "$1" in
   "full")
     grim "$FILENAME"
     ;;
@@ -49,6 +49,8 @@ take_screenshot() {
     grim -g "$(slurp)" "$FILENAME"
     ;;
   "window")
+    BORDER_SIZE=3
+    BORDER_ADJUSTMENT=$((BORDER_SIZE * 2))
     WINDOW_GEOMETRY=$(
       hyprctl activewindow -j | jq -r --argjson offset "$BORDER_SIZE" --argjson size_adj "$BORDER_ADJUSTMENT" \
         '"\(.at[0] - $offset),\(.at[1] - $offset) \(.size[0] + $size_adj)x\(.size[1] + $size_adj)"' 2>/dev/null
@@ -65,50 +67,40 @@ take_screenshot() {
 
   if [ "$?" -eq 0 ]; then
     paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga >/dev/null 2>&1
-    copy_screenshot
+    wl-copy <"$FILENAME"
     show_notification
   else
     show_notification
   fi
 }
 
-countdown() {
-  for sec in $(seq "$1" -1 1); do
-    dunstify -r 345 -t 1100 "Taking shot in : $sec"
-    sleep 1
-  done
-}
+main() {
+  select_option="$(run_rofi)"
 
-run_cmd() {
-  case $1 in
-  --now)
+  if [ -z "$select_option" ]; then
+    exit 0
+  fi
+
+  sleep 0.5
+
+  case ${select_option} in
+  "$s_full")
     take_screenshot "full"
     ;;
-  --sel)
+  "$s_select")
     take_screenshot "select"
     ;;
-  --win)
+  "$s_window")
     take_screenshot "window"
     ;;
-  --in3)
+  "$s_in3")
     countdown 3 && take_screenshot "full"
     ;;
-  --in3select)
+  "$s_in3select")
     countdown 3 && take_screenshot "select"
     ;;
   esac
 }
 
-select_option="$(run_rofi)"
+main
 
-if [ -n "$select_option" ]; then
-  sleep 0.5
-fi
-
-case ${select_option} in
-"$s_full") run_cmd --now ;;
-"$s_select") run_cmd --sel ;;
-"$s_window") run_cmd --win ;;
-"$s_in3") run_cmd --in3 ;;
-"$s_in3select") run_cmd --in3select ;;
-esac
