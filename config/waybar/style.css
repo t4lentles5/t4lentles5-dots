@@ -1,15 +1,17 @@
 @define-color blue-arch #0A9CF5;
-@define-color background #1a1b26;
-@define-color background-alt #222330;
-@define-color foreground #c0caf5;
-@define-color color0 #15161e;
-@define-color color1 #f7768e;
-@define-color color2 #9ece6a;
-@define-color color3 #e0af68;
-@define-color color4 #7aa2f7;
-@define-color color5 #bb9af7;
-@define-color color6 #7dcfff;
-@define-color color7 #a9b1d6;
+@define-color base #121218;
+@define-color surface #1a1b26;
+@define-color overlay #24283b;
+@define-color text #cdd6f4;
+@define-color subtle #585b70;
+@define-color highlight #414868;
+@define-color red #eb4f6c;
+@define-color green #9ece6a;
+@define-color yellow #e0af68;
+@define-color blue #889bfa;
+@define-color magenta #bb9af7;
+@define-color cyan #7dcfff;
+@define-color pink #e98dd0;
 
 * {
   font-size: 14px;
@@ -18,7 +20,7 @@
 }
 
 window#waybar {
-  background: @background;
+  background: alpha(@base, 0.75);
   padding: 0px 8px;
   border-radius: 24px;
 }
@@ -32,7 +34,7 @@ window#waybar {
 .modules-right .module,
 .modules-left .module,
 .modules-center .module {
-  color: @foreground;
+  color: @text;
 }
 
 #workspaces,
@@ -43,7 +45,7 @@ window#waybar {
 #clock {
   padding: 4px 12px;
   margin: 0px 4px;
-  background: @background-alt;
+  background: @surface;
   border-radius: 16px;
 }
 
@@ -55,7 +57,7 @@ window#waybar {
 }
 
 #custom-player-song {
-  color: @color2;
+  color: @green;
 }
 
 #workspaces button {
@@ -64,48 +66,48 @@ window#waybar {
 }
 
 #workspaces button label {
-  color: alpha(@foreground, 0.5);
+  color: alpha(@text, 0.5);
 }
 
 #workspaces button:hover label {
-  color: alpha(@foreground, 0.85);
+  color: alpha(@text, 0.85);
 }
 
 #workspaces button:not(.empty) label {
-  color: alpha(@color4, 1);
+  color: alpha(@blue, 1);
 }
 
 #workspaces button.active label {
-  color: alpha(@color3, 1);
+  color: alpha(@yellow, 1);
 }
 
 #custom-updates {
-  color: @color7;
+  color: @pink;
 }
 
 #bluetooth {
-  color: @color4;
+  color: @blue;
 }
 
 #network {
-  color: @color4;
+  color: @blue;
 }
 
 #network.disconnected {
-  color: @color1;
+  color: @red;
 }
 
 #battery {
-  color: @color3;
+  color: @yellow;
 }
 
 #clock {
-  color: @color5;
+  color: @magenta;
 }
 
 #custom-power {
   padding: 4px 8px;
   margin: 0px 4px;
   font-size: 16px;
-  color: @color1;
+  color: @red;
 }
