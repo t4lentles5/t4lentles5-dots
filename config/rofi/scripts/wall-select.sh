@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Configuración
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 CACHE_DIR="$HOME/.cache/wallpaper_thumbs"
 CURRENT_WALLPAPER="$HOME/.config/wallpaper/current"

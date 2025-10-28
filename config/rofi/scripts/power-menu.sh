@@ -1,29 +1,25 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# CMDs
-lastlogin="$(last $USER | head -n1 | tr -s ' ' | cut -d' ' -f5,6,7)"
-uptime="$(uptime -p | sed -e 's/up //g')"
-theme="$HOME/.config/rofi/themes/power-menu.rasi"
+LAST_LOGIN="$(last $USER | head -n1 | tr -s ' ' | cut -d' ' -f5,6,7)"
+UPTIME="$(uptime -p | sed -e 's/up //g')"
+ROFI_THEME="$HOME/.config/rofi/themes/power-menu.rasi"
 PROMPT="Power Menu"
 
-# Options
-shutdown=''
-reboot='󰜉'
-lock='󰍁'
-suspend=''
-logout='󰗽'
+shutdown=' '
+reboot='󰜉 '
+lock='󰍁 '
+suspend=' '
+logout='󰗽 '
 yes='Yes'
 no='No'
 
-# Rofi CMD
 rofi_cmd() {
   rofi -dmenu \
     -p "$PROMPT" \
-    -mesg "󰍹 Last Login: $lastlogin |  Uptime: $uptime" \
-    -theme $theme
+    -mesg "󰍹 Last Login: $LAST_LOGIN |  Uptime: $UPTIME" \
+    -theme $ROFI_THEME
 }
 
-# Confirmation CMD
 confirm_cmd() {
   rofi -theme-str 'window {location: center; anchor: center; fullscreen: false; width: 350px;}' \
     -theme-str 'mainbox {children: [ "message", "listview" ];}' \
@@ -34,20 +30,17 @@ confirm_cmd() {
     -dmenu \
     -p 'Confirmation' \
     -mesg 'Are you sure?' \
-    -theme $theme
+    -theme $ROFI_THEME
 }
 
-# Ask for confirmation
 confirm_exit() {
   echo -e "$yes\n$no" | confirm_cmd
 }
 
-# Pass variables to rofi dmenu
 run_rofi() {
   echo -e "$lock\n$suspend\n$logout\n$reboot\n$shutdown" | rofi_cmd
 }
 
-# Execute Command
 run_cmd() {
   selected="$(confirm_exit)"
   if [[ "$selected" == "$yes" ]]; then
@@ -72,7 +65,6 @@ run_cmd() {
   fi
 }
 
-# Actions
 chosen="$(run_rofi)"
 case ${chosen} in
 $shutdown)

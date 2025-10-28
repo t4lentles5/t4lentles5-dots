@@ -18,9 +18,9 @@ window {
   padding:                     0px;
   border:                      3px solid;
   border-radius:               40px;
-  border-color:                @color5;
+  border-color:                @magenta;
   cursor:                      "default";
-  background-color:            @background;
+  background-color:           rgba(18, 18, 24, 0.75);
 }
 
 mainbox {
@@ -51,8 +51,8 @@ prompt {
   padding:                     10px;
   border-radius:               10px;
   margin:                      0px 15px;
-  background-color:            @color5;
-  text-color:                  @color8;
+  background-color:            @magenta;
+  text-color:                  @white;
   font:                        "Maple Mono NF CN 12";
 }
 
@@ -62,8 +62,8 @@ textbox-prompt-colon {
   padding:                     10px;
   border-radius:               10px;
   margin:                      0px 15px;
-  background-color:            @color5;
-  text-color:                  @color8;
+  background-color:            @magenta;
+  text-color:                  @white;
   font:                        "Maple Mono NF CN 12";
 }
 
@@ -86,14 +86,14 @@ element {
   enabled:                     true;
   padding:                     20px 10px;
   border-radius:               20px;
-  background-color:            @background-alt;
-  text-color:                  @foreground;
+  background-color:            @surface;
+  text-color:                  @text;
   cursor:                      pointer;
 }
 
 element selected.normal {
-  background-color:            @color5;
-  text-color:                  @color8;
+  background-color:            @magenta;
+  text-color:                  @white;
 }
 
 message {
@@ -101,8 +101,8 @@ message {
   margin:                      0 20px 20px 20px;
   padding:                     15px;
   border-radius:               20px;
-  background-color:            @background-alt;
-  text-color:                  @color8;
+  background-color:            @surface;
+  text-color:                  @white;
 }
 
 textbox {

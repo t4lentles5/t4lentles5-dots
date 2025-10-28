@@ -25,11 +25,11 @@ entry {
   enabled:                     true;
   padding:                     10px;
   cursor:                      text;
-  text-color:                  @foreground;
+  text-color:                  @text;
   border:						           2px solid;
   border-radius: 			      	 10px;
-  border-color:                @color5;
-  background-color:            @background-alt;
+  border-color:                @magenta;
+  background-color:            @surface;
 }
 
 listview {

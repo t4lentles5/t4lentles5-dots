@@ -1,10 +1,10 @@
 #!/bin/bash
 
-timestamp=$(date +%Y-%m-%d-%H%M%S)
-dir="$HOME/Pictures/ScreenShots"
-filename="$dir/Shot-${timestamp}.png"
+TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
+DIR="$HOME/Pictures/ScreenShots"
+FILENAME="$DIR/Shot-${TIMESTAMP}.png"
 
-mkdir -p "$dir"
+mkdir -p "$DIR"
 
 BORDER_SIZE=3
 BORDER_ADJUSTMENT=$((BORDER_SIZE * 2))
@@ -18,7 +18,7 @@ s_in3select="󰆞 󰔝 "
 rofi_cmd() {
   rofi -dmenu \
     -p Screenshot \
-    -mesg "Directory :: $dir" \
+    -mesg "Directory :: $DIR" \
     -theme "$HOME/.config/rofi/themes/screenshot.rasi"
 }
 
@@ -27,15 +27,15 @@ run_rofi() {
 }
 
 show_notification() {
-  if [ -e "$filename" ]; then
-    dunstify -r 699 -i "$filename" "Screenshot" "Screenshot saved and copied to clipboard"
+  if [ -e "$FILENAME" ]; then
+    dunstify -r 699 -i "$FILENAME" "Screenshot" "Screenshot saved and copied to clipboard"
   else
     dunstify -r 699 -i user-trash "Screenshot" "Screenshot Canceled"
   fi
 }
 
 copy_screenshot() {
-  wl-copy <"$filename"
+  wl-copy <"$FILENAME"
 }
 
 take_screenshot() {
@@ -43,10 +43,10 @@ take_screenshot() {
 
   case "$mode" in
   "full")
-    grim "$filename"
+    grim "$FILENAME"
     ;;
   "select")
-    grim -g "$(slurp)" "$filename"
+    grim -g "$(slurp)" "$FILENAME"
     ;;
   "window")
     WINDOW_GEOMETRY=$(
@@ -59,7 +59,7 @@ take_screenshot() {
       return
     fi
 
-    grim -g "$WINDOW_GEOMETRY" "$filename"
+    grim -g "$WINDOW_GEOMETRY" "$FILENAME"
     ;;
   esac
 
@@ -74,7 +74,7 @@ take_screenshot() {
 
 countdown() {
   for sec in $(seq "$1" -1 1); do
-    dunstify -r 345 -t 1100 -i ~/.config/rofi/assets/icon.png "Taking shot in : $sec"
+    dunstify -r 345 -t 1100 "Taking shot in : $sec"
     sleep 1
   done
 }
