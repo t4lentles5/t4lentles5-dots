@@ -1,0 +1,3 @@
+dependencies=(btop cava dunst gnome-calculator gnome-font-viewer gtk-engine-murrine gvfs gvfs-mtp hypridle hyprlock imagemagick inetutils iwd jq loupe nautilus network-manager-applet networkmanager noto-fonts-emoji nwg-look pacman-contrib pamixer pavucontrol pipewire pipewire-alsa pipewire-audio pipewire-pulse python-gobject rfkill swww thunar ttf-cascadia-code-nerd tumbler upower waybar wireplumber wl-clipboard wlsunset xdg-desktop-portal-gtk)
+
+aur_dependencies=(bibata-cursor-theme-bin catppuccin-gtk-theme-mocha eww layan-cursor-theme-git maple-mono-nf-cn rofi sddm-theme-tokyo-night-git tela-circle-icon-theme-dracula-git xxhash)
