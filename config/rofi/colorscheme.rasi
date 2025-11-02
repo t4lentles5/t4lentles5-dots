@@ -5,7 +5,7 @@
   cyan:           #7dcfff;
   green:          #9ece6a;
   highlight:      #414868;
-  magenta:        #bb9af7;
+  magenta:        #8b5cf6;
   overlay:        #24283b;
   pink:           #e98dd0;
   red:            #eb4f6c;
@@ -14,4 +14,7 @@
   text:           #cdd6f4;
   white:          #ffffff;
   yellow:         #e0af68;
+
+  base-75:        #121218D9;
+  base-50:        #12121866;
 }

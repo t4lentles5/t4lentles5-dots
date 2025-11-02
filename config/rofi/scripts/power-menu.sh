@@ -23,8 +23,8 @@ rofi_cmd() {
 confirm_cmd() {
   rofi -theme-str 'window {location: center; anchor: center; fullscreen: false; width: 350px;}' \
     -theme-str 'mainbox {children: [ "message", "listview" ];}' \
-    -theme-str 'listview {columns: 2; lines: 1; margin: 20px;}' \
-    -theme-str 'message {margin: 20px 20px 0 20px;}' \
+    -theme-str 'listview {columns: 2; lines: 1; margin: 15px;}' \
+    -theme-str 'message {margin: 15px 15px 0 15px;}' \
     -theme-str 'element-text {horizontal-align: 0.5;}' \
     -theme-str 'textbox {horizontal-align: 0.5;}' \
     -dmenu \
@@ -87,3 +87,4 @@ main() {
 }
 
 main
+

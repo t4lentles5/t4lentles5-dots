@@ -10,7 +10,7 @@ configuration {
 }
 
 window {
-  width:                       1000px;
+  width:                       600px;
 }
 
 mainbox {
@@ -18,31 +18,33 @@ mainbox {
 }
 
 inputbar {
-  children:                    ["dummy","prompt", "entry", "dummy"];
+  children:                    ["prompt", "entry"];
 }
 
 entry {
   enabled:                     true;
   padding:                     10px;
   cursor:                      text;
-  text-color:                  @text;
+  text-color:                  @white;
   border:						           2px solid;
   border-radius: 			      	 10px;
   border-color:                @magenta;
-  background-color:            @surface;
+  background-color:            @base-75;
 }
 
 listview {
-  columns:                     5;
-  lines:                       3;
+  columns:                     1;
+  lines:                       6;
 }
 
 element {
-  orientation:                 vertical;
+  orientation:                 horizontal;
+  padding:                     10px;
+  spacing:                     10px;
 }
 
 element-icon {
-  size:                        2.8em;
+  size:                        56px;
   cursor:                      inherit;
   background-color:            transparent;
   text-color:                  inherit;
@@ -50,7 +52,7 @@ element-icon {
 
 element-text {
   vertical-align:              0.5;
-  horizontal-align:            0.5;
+  horizontal-align:            0;
   cursor:                      inherit;
   background-color:            transparent;
   text-color:                  inherit;

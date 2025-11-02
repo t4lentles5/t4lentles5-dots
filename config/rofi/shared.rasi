@@ -17,10 +17,10 @@ window {
   margin:                      0px;
   padding:                     0px;
   border:                      3px solid;
-  border-radius:               40px;
+  border-radius:               30px;
   border-color:                @magenta;
   cursor:                      "default";
-  background-color:           rgba(18, 18, 24, 0.75);
+  background-color:            @base-75;
 }
 
 mainbox {
@@ -35,9 +35,9 @@ mainbox {
 inputbar {
   enabled:                     true;
   spacing:                     0px;
-  padding:                     100px 10px;
-  margin:                      20px 20px 0 20px;
-  border-radius :              20px;
+  padding:                     100px 100px;
+  margin:                      15px 15px 0 15px;
+  border-radius :              15px;
   background-color:            transparent;
   background-image:            url("~/Pictures/Wallpapers/wall-09.webp", width);
 }
@@ -69,24 +69,24 @@ textbox-prompt-colon {
 
 listview {
   enabled:                     true;
-  cycle:                       true;
+  cycle:                       false;
   dynamic:                     true;
   scrollbar:                   false;
   layout:                      vertical;
   reverse:                     false;
   fixed-height:                true;
   fixed-columns:               true;
-  spacing:                     20;
-  margin:                      20px;
+  spacing:                     15;
+  margin:                      15px;
   background-color:            transparent;
   cursor:                      "default";
 }
 
 element {
   enabled:                     true;
-  padding:                     20px 10px;
-  border-radius:               20px;
-  background-color:            @surface;
+  padding:                     15px 10px;
+  border-radius:               15px;
+  background-color:            @base-50;
   text-color:                  @text;
   cursor:                      pointer;
 }
@@ -98,15 +98,15 @@ element selected.normal {
 
 message {
   enabled:                     true;
-  margin:                      0 20px 20px 20px;
+  margin:                      0 15px 15px 15px;
   padding:                     15px;
-  border-radius:               20px;
-  background-color:            @surface;
+  border-radius:               15px;
+  background-color:            @base-50;
   text-color:                  @white;
 }
 
 textbox {
-  background-color:            inherit;
+  background-color:            transparent;
   text-color:                  inherit;
   vertical-align:              0.5;
   horizontal-align:            0.5;

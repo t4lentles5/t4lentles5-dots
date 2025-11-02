@@ -30,15 +30,15 @@ element {
 }
 
 element selected.normal {
-  border:                      3px solid;
-  border-radius:               20px;
+  border:                      2px solid;
+  border-radius:               15px;
   border-color:                @magenta;
   halign:                      0.5;
 }
 
 element-icon {
   size:                       25%;
-  border-radius:              20px;
+  border-radius:              15px;
   halign:                     0.5;
 }
 
