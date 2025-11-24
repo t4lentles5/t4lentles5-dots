@@ -2,7 +2,7 @@
 
 truncate_text() {
   local text="$1"
-  if [ $(printf "%s" "$text" | wc -m) -gt 15 ]; then
+  if [ $(printf "%s" "$text" | wc -m) -gt 20 ]; then
     printf "%.15s..." "$text"
   else
     printf "%s" "$text"

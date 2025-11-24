@@ -41,6 +41,7 @@ window#waybar {
 #controls,
 #custom-player-song,
 #custom-updates,
+#language,
 #battery,
 #clock {
   padding: 4px 12px;
@@ -83,6 +84,10 @@ window#waybar {
 
 #custom-updates {
   color: @cyan;
+}
+
+#language {
+  color: @magenta;
 }
 
 #bluetooth {

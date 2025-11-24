@@ -1,7 +1,3 @@
-#########################################
-#             General Options           #
-#########################################
-
 [general]
 bars = 0
 framerate = 60
@@ -14,16 +10,8 @@ waves = 0
 overshoot = 0
 noise_reduction = 0.8
 
-#########################################
-#             Input Method              #
-#########################################
-
 [input]
 method = pulse
-
-#########################################
-#              Color Theme              #
-#########################################
 
 [color]
 background = default
@@ -36,18 +24,10 @@ gradient_color_2 = '#bb9af7'
 gradient_color_3 = '#7aa2f7'
 gradient_color_4 = '#c0aaf5'
 
-#########################################
-#           Smoothing Behavior          #
-#########################################
-
 [smoothing]
 integral = 1
 gravity = 50
 ignore = 0
-
-#########################################
-#              Output Style             #
-#########################################
 
 [output]
 method = ncurses
@@ -55,10 +35,6 @@ channels = stereo
 raw_target = /dev/stdout
 data_format = ascii
 ascii_max_range = 100
-
-#########################################
-#             Equalizer (opcional)      #
-#########################################
 
 [eq]
 1 = 1

@@ -21,6 +21,8 @@
     "format": "{}",
     "exec": "$HOME/.config/waybar/scripts/song.sh",
     "interval": 1,
+    // "on-click": "hyprctl dispatch workspace 9",
+    "on-click-right": "hyprctl dispatch workspace 9",
     "tooltip": false
   },
   "modules-center": ["hyprland/workspaces"],
@@ -49,6 +51,7 @@
   },
   "modules-right": [
     "custom/updates",
+    "hyprland/language",
     "group/controls",
     "battery",
     "clock",
@@ -59,7 +62,17 @@
     "exec": "$HOME/.config/waybar/scripts/check_updates.sh",
     "format": "{}",
     "tooltip": false,
-    "on-click": "kitty --class kitty-floating -e sh -c 'sudo pacman -Syu && yay -Sua'"
+    "on-click": "kitty --class kitty-floating -e sh -c 'sudo pacman -Syu --noconfirm && yay -Sua --noconfirm'"
+  },
+  "hyprland/language": {
+    "format": "  {}",
+    "format-en": "en",
+    "format-es": "es",
+    "format-de": "de",
+    "format-fr": "fr",
+    "format-br": "br",
+    "format-ru": "ru",
+    "on-click": "$HOME/.config/rofi/scripts/keyboard-layout.sh"
   },
   "group/controls": {
     "orientation": "inherit",

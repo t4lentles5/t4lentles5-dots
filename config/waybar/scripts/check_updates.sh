@@ -26,4 +26,3 @@ if [[ "$total_updates" -eq 0 ]]; then
 else
   echo "$ICON_UPDATE $total_updates ($count_pacman/$count_aur)"
 fi
-

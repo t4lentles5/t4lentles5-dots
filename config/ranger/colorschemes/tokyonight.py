@@ -67,4 +67,3 @@ class TokyoNight(ColorScheme):
                 attr |= reverse
 
         return fg, bg, attr
-
