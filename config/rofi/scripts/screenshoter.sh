@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
-DIR="$HOME/Pictures/ScreenShots"
+DIR="$HOME/Pictures/Screenshots"
 FILENAME="$DIR/Shot-${TIMESTAMP}.png"
 ROFI_THEME="$HOME/.config/rofi/themes/screenshot.rasi"
 PROMPT="Screenshot"
