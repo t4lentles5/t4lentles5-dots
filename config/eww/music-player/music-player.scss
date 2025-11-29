@@ -1,0 +1,96 @@
+@keyframes slide_down {
+  0% {
+    opacity: 0;
+    margin-top: -120px;
+  }
+  50% {
+    opacity: 0.5;
+    margin-top: -60px;
+  }
+  100% {
+    opacity: 1;
+    margin-top: 0px;
+  }
+}
+
+.music-player {
+  background: rgba(18, 18, 24, 0.75);
+  border-radius: 24px;
+  padding: 12px;
+  color: $text;
+  font-family: 'CaskaydiaCove Nerd Font';
+  border: 2px solid $magenta;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  animation-name: slide_down;
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  animation-fill-mode: forwards;
+}
+
+.album-art {
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  background-color: $surface;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  .placeholder-icon {
+    font-size: 3rem;
+    color: $highlight;
+  }
+}
+
+.info {
+  .title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text;
+    margin-bottom: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .artist {
+    font-size: 1rem;
+    font-weight: 500;
+    color: $blue;
+  }
+}
+
+.controls {
+  background: $base;
+  button {
+    background: transparent;
+    border: none;
+    color: $subtle;
+    font-size: 1.4rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  button:hover {
+    color: $text;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-play {
+    font-size: 1.8rem;
+    background: $magenta;
+    color: $base;
+    border-radius: 50%;
+    min-width: 40px;
+    min-height: 40px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(187, 154, 247, 0.2);
+  }
+
+  .btn-play:hover {
+    background: $pink;
+    color: $base;
+    box-shadow: 0 6px 15px rgba(233, 141, 208, 0.4);
+  }
+
+  .btn-play:active {
+    background: $red;
+  }
+}
