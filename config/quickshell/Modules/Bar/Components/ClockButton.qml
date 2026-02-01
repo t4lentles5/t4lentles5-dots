@@ -1,26 +1,21 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.Core
 
 Rectangle {
-    id: container
-
-    color: theme.colBgSecondary
+    color: Theme.colBgSecondary
     radius: 20
     implicitWidth: clockText.implicitWidth + 30
     implicitHeight: 30
-
-    Theme {
-        id: theme
-    }
 
     Text {
         id: clockText
 
         anchors.centerIn: parent
-        text: Qt.formatDateTime(new Date(), "󱑍 HH:mm")
-        color: theme.colCyan
-        font.pixelSize: theme.fontSize
-        font.family: theme.fontFamily
+        text: Qt.formatDateTime(new Date(), "  HH:mm")
+        color: Theme.colCyan
+        font.pixelSize: Theme.fontSize
+        font.family: Theme.fontFamily
         font.bold: true
 
         Timer {
@@ -32,6 +27,11 @@ Rectangle {
             }
         }
 
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
     }
 
 }

@@ -2,19 +2,17 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import qs.Core
+
 
 Rectangle {
     id: container
     
-    color: root.colBgSecondary 
+    color: Theme.colBgSecondary 
     radius: 20
     
     implicitWidth: layout.implicitWidth + 30 
     implicitHeight: 30
-
-    Theme {
-        id: theme
-    }
 
     RowLayout {
         id: layout
@@ -34,18 +32,24 @@ Rectangle {
                 property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
                 property bool hasWindows: workspace !== null
 
-                Text {
-                    text: parent.isActive ? "󰮯" : "󰊠"
-                    color: parent.isActive ? theme.colYellow : (parent.hasWindows ? theme.colCyan : theme.colMuted)
-                    font.pixelSize: theme.fontSize
-                    font.family: theme.fontFamily
-                    font.bold: true
-                    anchors.centerIn: parent
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: Hyprland.dispatch("workspace " + (index + 1))
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: Hyprland.dispatch("workspace " + (index + 1))
+                Text {
+                    text: parent.isActive ? "󰮯" : "󰊠"
+                    color: parent.isActive ? Theme.colYellow : (parent.hasWindows ? Theme.colCyan : (mouseArea.containsMouse ? Theme.colFg : Theme.colMuted))
+                    font.pixelSize: Theme.fontSize
+                    font.family: Theme.fontFamily
+                    anchors.centerIn: parent
+
+                    Behavior on color {
+                        ColorAnimation { duration: 200 }
+                    }
                 }
             }
         }

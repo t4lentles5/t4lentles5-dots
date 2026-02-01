@@ -1,14 +1,16 @@
-import QtQml
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Services.Mpris
+import qs.Core
 
 Rectangle {
     id: root
 
     property var managedPlayers: []
     property bool hasMusic: false
+    property var activePlayer: null
 
     function truncate(str) {
         if (!str)
@@ -39,6 +41,7 @@ Rectangle {
             }
         }
         let finalPlayer = playing || selected;
+        root.activePlayer = finalPlayer;
         if (finalPlayer) {
             let artist = finalPlayer.trackArtist;
             if (Array.isArray(artist))
@@ -57,46 +60,34 @@ Rectangle {
     }
 
     function registerPlayer(p) {
-        let list = managedPlayers;
-        if (list.indexOf(p) === -1) {
-            list.push(p);
-            managedPlayers = list;
+        if (managedPlayers.indexOf(p) === -1) {
+            managedPlayers.push(p);
             updateText();
         }
     }
 
     function unregisterPlayer(p) {
-        let list = managedPlayers;
-        let index = list.indexOf(p);
+        let index = managedPlayers.indexOf(p);
         if (index !== -1) {
-            list.splice(index, 1);
-            managedPlayers = list;
+            managedPlayers.splice(index, 1);
             updateText();
         }
     }
 
-    color: theme.colBgSecondary
+    color: Theme.colBgSecondary
     radius: 20
-    implicitWidth: musicText.implicitWidth + 30
     implicitHeight: 30
+    implicitWidth: musicText.implicitWidth + 30
     Component.onCompleted: updateText()
-
-    Theme {
-        id: theme
-    }
 
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
         onClicked: (mouse) => {
-            if (mouse.button === Qt.RightButton) {
+            if (mouse.button === Qt.RightButton)
                 Hyprland.dispatch("workspace 9");
-            } else if (mouse.button === Qt.LeftButton) {
-                if (!root.hasMusic)
-                    Hyprland.dispatch("exec youtube-music");
 
-            }
         }
     }
 
@@ -104,12 +95,13 @@ Rectangle {
         id: musicText
 
         anchors.centerIn: parent
-        textFormat: Text.PlainText
         text: " [ No music ]"
-        color: theme.colGreen
-        font.pixelSize: theme.fontSize
-        font.family: theme.fontFamily
+        color: Theme.colGreen
+        font.pixelSize: Theme.fontSize
+        font.family: Theme.fontFamily
         font.bold: true
+        elide: Text.ElideRight
+        maximumLineCount: 1
     }
 
     Instantiator {

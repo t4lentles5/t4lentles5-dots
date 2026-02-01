@@ -2,11 +2,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
+import qs.Core
 
 Rectangle {
     id: container
 
-    property string layoutName: ".."
+    property string layoutName: ""
 
     function updateLayout(rawName) {
         if (rawName.includes("English"))
@@ -17,14 +18,10 @@ Rectangle {
             container.layoutName = rawName.substring(0, 2).toUpperCase();
     }
 
-    color: theme.colBgSecondary
+    color: Theme.colBgSecondary
     radius: 20
     implicitWidth: layoutText.implicitWidth + 30
     implicitHeight: 30
-
-    Theme {
-        id: theme
-    }
 
     Process {
         id: kbdProc
@@ -46,7 +43,6 @@ Rectangle {
                         updateLayout(keyboard.active_keymap);
 
                 } catch (e) {
-                    console.log("Error parsing keyboard info: " + e);
                 }
             }
         }
@@ -71,16 +67,15 @@ Rectangle {
 
         anchors.centerIn: parent
         text: "  " + container.layoutName
-        color: theme.colFg
-        font.pixelSize: theme.fontSize
-        font.family: theme.fontFamily
+        color: Theme.colFg
+        font.pixelSize: Theme.fontSize
+        font.family: Theme.fontFamily
         font.bold: true
     }
 
     MouseArea {
         anchors.fill: parent
-        onClicked: {
-        }
+        cursorShape: Qt.PointingHandCursor
     }
 
 }
