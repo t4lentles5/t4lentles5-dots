@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Core
 import qs.Modules.Bar.Components
+import qs.Modules.Bar.Widgets.MainPanel
 
 PanelWindow {
     id: mainBar
@@ -35,6 +36,7 @@ PanelWindow {
 
             ArchButton {
                 Layout.leftMargin: 10
+                panel: mainPanel
             }
 
             MusicStatusButton {
@@ -47,12 +49,6 @@ PanelWindow {
         }
 
         RowLayout {
-            //    selector: qsSelector
-            //}
-            //SystemTray {
-            //    selector: trayDrawer
-            //}
-
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -76,6 +72,10 @@ PanelWindow {
 
         }
 
+    }
+
+    MainPanel {
+        id: mainPanel
     }
 
 }

@@ -85,9 +85,15 @@ Rectangle {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
         onClicked: (mouse) => {
-            if (mouse.button === Qt.RightButton)
+            if (mouse.button === Qt.RightButton) {
                 Hyprland.dispatch("workspace 9");
-
+            } else if (mouse.button === Qt.LeftButton) {
+                if (root.activePlayer) {
+                    root.activePlayer.togglePlaying();
+                } else {
+                    Hyprland.dispatch("exec sh -c 'youtube-music || spotify'");
+                }
+            }
         }
     }
 

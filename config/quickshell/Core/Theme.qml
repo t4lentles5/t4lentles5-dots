@@ -3,7 +3,7 @@ pragma Singleton
 
 QtObject {
     property color colBg: "#121218"
-    property color colBgSecondary: "#1a1b26"
+    property color colBgSecondary: "#181822"
     property color colBgLighter: "#24283b"
     property color colFg: "#a9b1d6"
     property color colMuted: "#444b6a"
