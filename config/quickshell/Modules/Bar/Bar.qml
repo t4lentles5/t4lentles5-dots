@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Core
 import qs.Modules.Bar.Components
+import qs.Modules.Bar.Widgets.KeyboardLayout
 import qs.Modules.Bar.Widgets.MainPanel
 
 PanelWindow {
@@ -55,6 +56,9 @@ PanelWindow {
             spacing: 15
 
             KeyboardLayoutButton {
+                id: kbLayoutBtn
+
+                selector: keyboardLayout
             }
 
             QuickSettingsButton {
@@ -76,6 +80,14 @@ PanelWindow {
 
     MainPanel {
         id: mainPanel
+    }
+
+    KeyboardLayout {
+        id: keyboardLayout
+
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 200
+        anchor.rect.y: mainBar.height
     }
 
 }

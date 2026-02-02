@@ -7,6 +7,7 @@ import qs.Core
 Rectangle {
     id: container
 
+    property var selector
     property string layoutName: ""
 
     function updateLayout(rawName) {
@@ -76,6 +77,11 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            if (selector)
+                selector.isOpen = !selector.isOpen;
+
+        }
     }
 
 }
