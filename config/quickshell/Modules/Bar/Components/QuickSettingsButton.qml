@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import qs.Core
 
 Rectangle {
-    property var selector: null
+    property var selector
 
     implicitHeight: 30
     color: Theme.colBgSecondary
@@ -35,6 +35,11 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            if (selector)
+                selector.isOpen = !selector.isOpen;
+
+        }
     }
 
 }

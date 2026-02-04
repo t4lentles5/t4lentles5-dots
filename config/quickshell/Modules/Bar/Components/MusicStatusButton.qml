@@ -88,11 +88,10 @@ Rectangle {
             if (mouse.button === Qt.RightButton) {
                 Hyprland.dispatch("workspace 9");
             } else if (mouse.button === Qt.LeftButton) {
-                if (root.activePlayer) {
+                if (root.activePlayer)
                     root.activePlayer.togglePlaying();
-                } else {
+                else
                     Hyprland.dispatch("exec sh -c 'youtube-music || spotify'");
-                }
             }
         }
     }

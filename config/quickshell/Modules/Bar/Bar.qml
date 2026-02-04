@@ -5,6 +5,7 @@ import qs.Core
 import qs.Modules.Bar.Components
 import qs.Modules.Bar.Widgets.KeyboardLayout
 import qs.Modules.Bar.Widgets.MainPanel
+import qs.Modules.Bar.Widgets.QuickSettings
 
 PanelWindow {
     id: mainBar
@@ -56,12 +57,11 @@ PanelWindow {
             spacing: 15
 
             KeyboardLayoutButton {
-                id: kbLayoutBtn
-
                 selector: keyboardLayout
             }
 
             QuickSettingsButton {
+                selector: quickSettings
             }
 
             ClockButton {
@@ -87,6 +87,14 @@ PanelWindow {
 
         anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 200
+        anchor.rect.y: mainBar.height
+    }
+
+    QuickSettings {
+        id: quickSettings
+
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 30
         anchor.rect.y: mainBar.height
     }
 
