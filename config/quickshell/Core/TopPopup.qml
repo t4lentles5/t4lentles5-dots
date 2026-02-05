@@ -14,6 +14,7 @@ PopupWindow {
     default property alias content: innerLayout.data
     property int preferredHeight
     property int animationDuration: 250
+    property color backgroundColor: Theme.colBg
 
     color: "transparent"
     visible: container.y !== -root.implicitHeight
@@ -90,7 +91,7 @@ PopupWindow {
         ]
 
         Rectangle {
-            color: Theme.colBg
+            color: root.backgroundColor
             anchors.bottom: bg.top
             anchors.left: bg.left
             anchors.right: bg.right
@@ -100,7 +101,7 @@ PopupWindow {
         Shape {
             id: bg
 
-            property color color: Theme.colBg
+            property color color: root.backgroundColor
             readonly property real r: root.cornerRadius
             readonly property real w: width
             readonly property real h: height
