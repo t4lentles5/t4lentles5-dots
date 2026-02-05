@@ -347,20 +347,6 @@ TopPopup {
                 }
             }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 90
-                color: Theme.colBgSecondary
-                radius: 16
-
-                BatteryControl {
-                    id: batteryControl
-
-                    anchors.fill: parent
-                }
-
-            }
-
         }
 
     }

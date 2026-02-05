@@ -66,6 +66,9 @@ PanelWindow {
                 selector: quickSettings
             }
 
+            BatteryIndicator {
+            }
+
             ClockButton {
                 selector: calendar
             }
