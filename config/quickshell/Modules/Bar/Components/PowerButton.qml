@@ -2,6 +2,8 @@ import QtQuick
 import qs.Core
 
 Rectangle {
+    property var selector
+
     color: "transparent"
     implicitWidth: icon.implicitWidth + 20
     implicitHeight: icon.implicitHeight
@@ -19,6 +21,11 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            if (selector)
+                selector.isOpen = !selector.isOpen;
+
+        }
     }
 
 }

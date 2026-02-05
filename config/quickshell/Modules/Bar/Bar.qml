@@ -6,6 +6,7 @@ import qs.Modules.Bar.Components
 import qs.Modules.Bar.Widgets.Calendar
 import qs.Modules.Bar.Widgets.KeyboardLayout
 import qs.Modules.Bar.Widgets.MainPanel
+import qs.Modules.Bar.Widgets.PowerMenu
 import qs.Modules.Bar.Widgets.QuickSettings
 
 PanelWindow {
@@ -74,6 +75,7 @@ PanelWindow {
 
             PowerButton {
                 Layout.rightMargin: 10
+                selector: powerMenu
             }
 
         }
@@ -102,6 +104,14 @@ PanelWindow {
 
     Calendar {
         id: calendar
+
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 15
+        anchor.rect.y: mainBar.height
+    }
+
+    PowerMenu {
+        id: powerMenu
 
         anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 15
