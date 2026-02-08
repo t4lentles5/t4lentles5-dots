@@ -42,10 +42,10 @@ TopPopup {
 
     ColumnLayout {
         id: mainCol
+
         width: parent.width
         spacing: 15
 
-        // Tarjeta Superior: Mes y Navegación
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -59,6 +59,7 @@ TopPopup {
 
                 ColumnLayout {
                     spacing: 0
+
                     Text {
                         text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
                         color: Theme.colPurple
@@ -67,6 +68,7 @@ TopPopup {
                         font.bold: true
                         font.capitalization: Font.Capitalize
                     }
+
                     Text {
                         text: root.currentYear
                         color: Theme.colMuted
@@ -74,41 +76,95 @@ TopPopup {
                         font.pixelSize: 12
                         font.bold: true
                     }
+
                 }
 
-                // Espaciador para empujar los botones a la derecha
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
 
                 RowLayout {
                     spacing: 5
-                    
+
                     Rectangle {
-                        width: 30; height: 30; radius: 8
+                        width: 30
+                        height: 30
+                        radius: 8
                         color: btnPrev.containsMouse ? Theme.colBgLighter : "transparent"
-                        Text { anchors.centerIn: parent; text: "󰁍"; color: Theme.colFg; font.pixelSize: 16 }
-                        MouseArea { id: btnPrev; anchors.fill: parent; hoverEnabled: true; onClicked: root.prevMonth() }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "󰁍"
+                            color: Theme.colFg
+                            font.pixelSize: 16
+                        }
+
+                        MouseArea {
+                            id: btnPrev
+
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onClicked: root.prevMonth()
+                        }
+
                     }
 
                     Rectangle {
-                        width: 30; height: 30; radius: 8
+                        width: 30
+                        height: 30
+                        radius: 8
                         color: btnToday.containsMouse ? Theme.colBgLighter : "transparent"
-                        Text { anchors.centerIn: parent; text: "󰃭"; color: Theme.colPurple; font.pixelSize: 16 }
-                        MouseArea { id: btnToday; anchors.fill: parent; hoverEnabled: true; onClicked: {
-                            var now = new Date(); root.currentMonth = now.getMonth(); root.currentYear = now.getFullYear();
-                        }}
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "󰃭"
+                            color: Theme.colPurple
+                            font.pixelSize: 16
+                        }
+
+                        MouseArea {
+                            id: btnToday
+
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onClicked: {
+                                var now = new Date();
+                                root.currentMonth = now.getMonth();
+                                root.currentYear = now.getFullYear();
+                            }
+                        }
+
                     }
 
                     Rectangle {
-                        width: 30; height: 30; radius: 8
+                        width: 30
+                        height: 30
+                        radius: 8
                         color: btnNext.containsMouse ? Theme.colBgLighter : "transparent"
-                        Text { anchors.centerIn: parent; text: "󰁔"; color: Theme.colFg; font.pixelSize: 16 }
-                        MouseArea { id: btnNext; anchors.fill: parent; hoverEnabled: true; onClicked: root.nextMonth() }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "󰁔"
+                            color: Theme.colFg
+                            font.pixelSize: 16
+                        }
+
+                        MouseArea {
+                            id: btnNext
+
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onClicked: root.nextMonth()
+                        }
+
                     }
+
                 }
+
             }
+
         }
 
-        // Tarjeta Principal: Cuadrícula de días
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: gridContainer.implicitHeight + 30
@@ -117,15 +173,17 @@ TopPopup {
 
             ColumnLayout {
                 id: gridContainer
+
                 anchors.centerIn: parent
                 width: parent.width - 30
                 spacing: 15
 
-                // Días de la semana
                 RowLayout {
                     Layout.fillWidth: true
+
                     Repeater {
                         model: ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+
                         Text {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
@@ -136,10 +194,11 @@ TopPopup {
                             font.bold: true
                             opacity: 0.6
                         }
+
                     }
+
                 }
 
-                // Grid
                 GridLayout {
                     columns: 7
                     rowSpacing: 5
@@ -147,20 +206,23 @@ TopPopup {
                     Layout.fillWidth: true
 
                     Repeater {
-                        // Calculamos los slots necesarios (múltiplos de 7)
                         model: {
                             let offset = root.firstDayOffset(root.currentMonth, root.currentYear);
                             let days = root.daysInMonth(root.currentMonth, root.currentYear);
                             return Math.ceil((offset + days) / 7) * 7;
                         }
-                        
+
                         delegate: Rectangle {
                             property int dayOffset: root.firstDayOffset(root.currentMonth, root.currentYear)
                             property int daysInThisMonth: root.daysInMonth(root.currentMonth, root.currentYear)
                             property int prevMonthDays: root.daysInMonth(root.currentMonth - 1, root.currentYear)
                             property int dayNum: {
-                                if (index < dayOffset) return prevMonthDays - dayOffset + index + 1;
-                                if (index < dayOffset + daysInThisMonth) return index - dayOffset + 1;
+                                if (index < dayOffset)
+                                    return prevMonthDays - dayOffset + index + 1;
+
+                                if (index < dayOffset + daysInThisMonth)
+                                    return index - dayOffset + 1;
+
                                 return index - (dayOffset + daysInThisMonth) + 1;
                             }
                             property bool isCurrentMonth: index >= dayOffset && index < dayOffset + daysInThisMonth
@@ -173,7 +235,7 @@ TopPopup {
                             Layout.preferredHeight: 32
                             radius: 8
                             color: isToday ? Theme.colPurple : (isCurrentMonth && dayHover.containsMouse ? Theme.colBgLighter : "transparent")
-                            
+
                             Text {
                                 anchors.centerIn: parent
                                 text: isCurrentMonth ? dayNum : ""
@@ -183,24 +245,29 @@ TopPopup {
                                 font.bold: isToday
                             }
 
-                            MouseArea { 
-                                id: dayHover; 
-                                anchors.fill: parent; 
-                                hoverEnabled: isCurrentMonth; 
-                                enabled: isCurrentMonth 
+                            MouseArea {
+                                id: dayHover
+
+                                anchors.fill: parent
+                                hoverEnabled: isCurrentMonth
+                                enabled: isCurrentMonth
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         }
 
-        // Footer
         RowLayout {
             Layout.fillWidth: true
             Layout.leftMargin: 10
             Layout.rightMargin: 10
-            
+
             Text {
                 text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
                 color: Theme.colCyan
@@ -212,7 +279,10 @@ TopPopup {
             }
 
             Rectangle {
-                width: 6; height: 6; radius: 3; color: Theme.colGreen
+                width: 6
+                height: 6
+                radius: 3
+                color: Theme.colGreen
             }
 
             Text {
@@ -221,6 +291,9 @@ TopPopup {
                 font.family: Theme.fontFamily
                 font.pixelSize: 11
             }
+
         }
+
     }
+
 }

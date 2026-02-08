@@ -8,6 +8,7 @@ import qs.Core
 PopupWindow {
     id: root
 
+    property string popupId: ""
     property bool isOpen: false
     property int cornerRadius: 25
     property int contentPadding: 16
@@ -16,9 +17,33 @@ PopupWindow {
     property int animationDuration: 250
     property color backgroundColor: Theme.colBg
 
+    onIsOpenChanged: {
+        if (popupId === "")
+            return ;
+
+        if (isOpen) {
+            if (AppState.activePopup !== popupId)
+                AppState.activePopup = popupId;
+
+        } else {
+            if (AppState.activePopup === popupId)
+                AppState.activePopup = "";
+
+        }
+    }
     color: "transparent"
     visible: container.y !== -root.implicitHeight
     implicitHeight: (preferredHeight > 0 ? preferredHeight : (innerLayout.implicitHeight + root.contentPadding * 2)) + 40
+
+    Connections {
+        function onActivePopupChanged() {
+            if (popupId !== "" && AppState.activePopup !== popupId)
+                root.isOpen = false;
+
+        }
+
+        target: AppState
+    }
 
     Timer {
         id: autoCloseTimer

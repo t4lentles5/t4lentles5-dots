@@ -73,9 +73,6 @@ PanelWindow {
                 selector: calendar
             }
 
-            NotificationsButton {
-            }
-
             PowerButton {
                 Layout.rightMargin: 10
                 selector: powerMenu
@@ -87,27 +84,32 @@ PanelWindow {
 
     MainPanel {
         id: mainPanel
+
+        popupId: "mainPanel"
     }
 
     KeyboardLayout {
         id: keyboardLayout
 
+        popupId: "keyboardLayout"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 200
+        anchor.rect.x: mainBar.width - implicitWidth - 220
         anchor.rect.y: mainBar.height
     }
 
     QuickSettings {
         id: quickSettings
 
+        popupId: "quickSettings"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 30
+        anchor.rect.x: mainBar.width - implicitWidth - 50
         anchor.rect.y: mainBar.height
     }
 
     Calendar {
         id: calendar
 
+        popupId: "calendar"
         anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 15
         anchor.rect.y: mainBar.height
@@ -116,6 +118,7 @@ PanelWindow {
     PowerMenu {
         id: powerMenu
 
+        popupId: "powerMenu"
         anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 15
         anchor.rect.y: mainBar.height

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Entorno completo
 export WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-wayland-1}
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
 export XDG_CURRENT_DESKTOP=Hyprland
@@ -13,7 +12,6 @@ LOG="/tmp/screenshot_debug.log"
 
 mkdir -p "$DIR"
 
-# Limpieza previa
 pkill -x slurp 2>/dev/null
 
 show_notification() {
@@ -31,7 +29,6 @@ play_sound() {
 }
 
 take_screenshot() {
-  # Espera inicial para permitir cierre de UI
   sleep 0.5
 
   case "$1" in
@@ -40,9 +37,6 @@ take_screenshot() {
     ;;
   
   "area"|"select")
-    # Bucle de reintento para slurp (Crucial para menús popup)
-    # Intentamos ejecutar slurp durante 2 segundos.
-    # Si falla (porque el menú aún tiene el grab), esperamos 0.1s y reintentamos.
     TIMEOUT=20
     COUNT=0
     GEOM=""
@@ -51,12 +45,10 @@ take_screenshot() {
         GEOM=$(slurp -d 2>>"$LOG")
         RET=$?
         
-        # Si slurp tuvo éxito, salimos del bucle
         if [ $RET -eq 0 ] && [ -n "$GEOM" ]; then
             break
         fi
         
-        # Si falló, esperamos un poco y reintentamos
         sleep 0.1
         COUNT=$((COUNT+1))
     done
@@ -70,7 +62,6 @@ take_screenshot() {
     ;;
     
   "window")
-    # Modo ventana: Esperamos un poco más para asegurar que el foco vuelva a la ventana bajo el cursor
     sleep 0.5
     RAW_JSON=$(hyprctl activewindow -j 2>>"$LOG")
     WINDOW_GEOMETRY=$(echo "$RAW_JSON" | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')

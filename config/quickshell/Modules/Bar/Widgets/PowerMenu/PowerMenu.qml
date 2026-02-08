@@ -13,7 +13,7 @@ TopPopup {
         "id": "lock",
         "name": "Lock",
         "icon": "󰍁",
-        "command": ["hyprlock"],
+        "command": ["sh", "-c", "sleep 0.3; hyprlock"],
         "color": Theme.colGreen,
         "confirm": false
     }, {
@@ -48,11 +48,10 @@ TopPopup {
 
     implicitWidth: 280
     preferredHeight: mainCol.implicitHeight + 32
-
     onIsOpenChanged: {
-        if (!isOpen) {
+        if (!isOpen)
             selectedId = "";
-        }
+
     }
 
     Process {
@@ -61,20 +60,22 @@ TopPopup {
 
     ColumnLayout {
         id: mainCol
+
         Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 8
 
         Repeater {
             model: root.menuModel
+
             delegate: ColumnLayout {
                 id: itemCol
-                Layout.fillWidth: true
-                spacing: 4
 
                 readonly property bool isSelected: root.selectedId === modelData.id
 
-                // --- Botón de Opción Principal ---
+                Layout.fillWidth: true
+                spacing: 4
+
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 44
@@ -101,18 +102,31 @@ TopPopup {
                             font.bold: itemCol.isSelected
                             Layout.fillWidth: true
                         }
-                        
+
                         Text {
                             text: itemCol.isSelected ? "󰅂" : "󰅀"
                             color: Theme.colMuted
                             font.pixelSize: 14
                             visible: modelData.confirm
                             rotation: itemCol.isSelected ? 180 : 0
-                            Behavior on rotation { NumberAnimation { duration: 200 } }
+
+                            Behavior on rotation {
+                                NumberAnimation {
+                                    duration: 200
+                                }
+
+                            }
+
                         }
+
                     }
 
-                    HoverHandler { id: hnd }
+                    HoverHandler {
+                        id: hnd
+
+                        cursorShape: Qt.PointingHandCursor
+                    }
+
                     TapHandler {
                         onTapped: {
                             if (!modelData.confirm) {
@@ -124,11 +138,12 @@ TopPopup {
                             }
                         }
                     }
+
                 }
 
-                // --- Área de Confirmación (Revelado) ---
                 Rectangle {
                     id: confirmArea
+
                     Layout.fillWidth: true
                     Layout.preferredHeight: itemCol.isSelected ? 54 : 0
                     Layout.leftMargin: 4
@@ -137,29 +152,21 @@ TopPopup {
                     color: Theme.colBgSecondary
                     radius: 8
                     opacity: itemCol.isSelected ? 1 : 0
-                    
                     border.color: Theme.colBgLighter
                     border.width: itemCol.isSelected ? 1 : 0
-
-                    Behavior on Layout.preferredHeight {
-                        NumberAnimation { duration: 300; easing.type: Easing.OutQuart }
-                    }
-                    Behavior on opacity {
-                        NumberAnimation { duration: 250 }
-                    }
 
                     RowLayout {
                         anchors.fill: parent
                         anchors.margins: 8
                         spacing: 10
 
-                        // Botón No (Cancelar)
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             color: Theme.colBgLighter
                             radius: 6
-                            
+                            opacity: hndCancel.hovered ? 1 : 0.8
+
                             Text {
                                 anchors.centerIn: parent
                                 text: "No"
@@ -167,28 +174,35 @@ TopPopup {
                                 font.pixelSize: 14
                                 font.family: Theme.fontFamily
                             }
-                            
-                            TapHandler { onTapped: root.selectedId = "" }
-                            HoverHandler { id: hndCancel }
-                            opacity: hndCancel.hovered ? 1 : 0.8
+
+                            TapHandler {
+                                onTapped: root.selectedId = ""
+                            }
+
+                            HoverHandler {
+                                id: hndCancel
+
+                                cursorShape: Qt.PointingHandCursor
+                            }
+
                         }
 
-                        // Botón Sí (Confirmar)
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             color: modelData.color
                             radius: 6
-                            
+                            scale: hndConfirm.hovered ? 1.02 : 1
+
                             Text {
                                 anchors.centerIn: parent
-                                text: "Sí"
+                                text: "Yes"
                                 color: "white"
                                 font.pixelSize: 14
                                 font.family: Theme.fontFamily
                                 font.bold: true
                             }
-                            
+
                             TapHandler {
                                 onTapped: {
                                     execProc.command = modelData.command;
@@ -196,13 +210,45 @@ TopPopup {
                                     root.isOpen = false;
                                 }
                             }
-                            HoverHandler { id: hndConfirm }
-                            scale: hndConfirm.hovered ? 1.02 : 1.0
-                            Behavior on scale { NumberAnimation { duration: 100 } }
+
+                            HoverHandler {
+                                id: hndConfirm
+
+                                cursorShape: Qt.PointingHandCursor
+                            }
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: 100
+                                }
+
+                            }
+
                         }
+
                     }
+
+                    Behavior on Layout.preferredHeight {
+                        NumberAnimation {
+                            duration: 300
+                            easing.type: Easing.OutQuart
+                        }
+
+                    }
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 250
+                        }
+
+                    }
+
                 }
+
             }
+
         }
+
     }
+
 }

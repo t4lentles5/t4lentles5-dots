@@ -109,9 +109,7 @@ RowLayout {
                 if (!data)
                     return ;
 
-                // Strip ANSI codes and trim
                 let line = data.replace(/\u001b\[[0-9;]*m/g, "").trim();
-                // Match "Device <MAC> <Name>" with optional prefix like [NEW]
                 let match = line.match(/(?:^|\s)Device\s+([0-9A-F:]{17})\s+(.*)$/);
                 if (!match)
                     return ;
