@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Hyprland
 import qs.Core
 
-
 Rectangle {
     id: container
     
@@ -24,6 +23,7 @@ Rectangle {
             model: 10
 
             Rectangle {
+                id: wsItem
                 Layout.preferredWidth: 20
                 Layout.preferredHeight: 30
                 color: "transparent"
@@ -41,15 +41,18 @@ Rectangle {
                 }
 
                 Text {
-                    text: parent.isActive ? "󰮯" : "󰊠"
-                    color: parent.isActive ? Theme.colYellow : (parent.hasWindows ? Theme.colCyan : (mouseArea.containsMouse ? Theme.colFg : Theme.colMuted))
+                    id: wsIcon
+                    text: wsItem.isActive ? "󰮯" : "󰊠"
+                    color: wsItem.isActive ? Theme.colYellow : (wsItem.hasWindows ? Theme.colCyan : (mouseArea.containsMouse ? Theme.colFg : Theme.colMuted))
                     font.pixelSize: Theme.fontSize
                     font.family: Theme.fontFamily
                     anchors.centerIn: parent
+                    scale: wsItem.isActive ? 1.2 : (mouseArea.containsMouse ? 1.1 : 1.0)
+                    opacity: wsItem.isActive || wsItem.hasWindows || mouseArea.containsMouse ? 1.0 : 0.6
 
-                    Behavior on color {
-                        ColorAnimation { duration: 200 }
-                    }
+                    Behavior on color { ColorAnimation { duration: 300; easing.type: Easing.OutQuart } }
+                    Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
+                    Behavior on opacity { NumberAnimation { duration: 300 } }
                 }
             }
         }

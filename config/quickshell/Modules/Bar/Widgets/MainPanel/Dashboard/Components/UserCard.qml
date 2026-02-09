@@ -97,12 +97,12 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: parent.cardPadding
-        spacing: 20
+        anchors.margins: root.cardPadding
+        spacing: 16
 
         Item {
-            width: 85
-            height: 85
+            Layout.preferredWidth: 80
+            Layout.preferredHeight: 80
 
             Image {
                 id: userImage
@@ -146,34 +146,105 @@ Rectangle {
         }
 
         ColumnLayout {
-            Layout.alignment: Qt.AlignVCenter
-            spacing: 5
-
-            Text {
-                text: "󰣇 : " + root.osName
-                color: Theme.colFg
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-            }
-
-            Text {
-                text: " : " + root.wmName
-                color: Theme.colFg
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-            }
-
-            Text {
-                text: "󱑎 : " + root.uptime
-                color: Theme.colFg
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-            }
-
-        }
-
-        Item {
             Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter
+            spacing: 8
+
+            ColumnLayout {
+                spacing: 0
+                Layout.fillWidth: true
+
+                Text {
+                    text: "Welcome,"
+                    color: Theme.colMuted
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize - 2
+                }
+
+                Text {
+                    text: root.userName.charAt(0).toUpperCase() + root.userName.slice(1)
+                    color: Theme.colPurple
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize + 4
+                    font.bold: true
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
+
+            }
+
+            ColumnLayout {
+                spacing: 2
+                Layout.fillWidth: true
+
+                RowLayout {
+                    spacing: 6
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: "󰣇"
+                        color: Theme.colBlueArch
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
+                    }
+
+                    Text {
+                        text: root.osName
+                        color: Theme.colFg
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize - 1
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                    }
+
+                }
+
+                RowLayout {
+                    spacing: 6
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: ""
+                        color: Theme.colGreen
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
+                    }
+
+                    Text {
+                        text: root.wmName
+                        color: Theme.colFg
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize - 1
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                    }
+
+                }
+
+                RowLayout {
+                    spacing: 6
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: "󱑎"
+                        color: Theme.colYellow
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
+                    }
+
+                    Text {
+                        text: root.uptime
+                        color: Theme.colFg
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize - 1
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                    }
+
+                }
+
+            }
+
         }
 
     }

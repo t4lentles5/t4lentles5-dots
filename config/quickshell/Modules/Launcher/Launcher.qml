@@ -55,6 +55,7 @@ CenterWindow {
     }
     preferredHeight: 450
     preferredWidth: 700
+    Component.onCompleted: socketCleanup.running = true
 
     Timer {
         id: focusTimer
@@ -65,13 +66,10 @@ CenterWindow {
     }
 
     SocketServer {
+        id: server
+
         path: "/tmp/quickshell_launcher"
-        active: true
-        onActiveStatusChanged: {
-            if (!active) {
-                active = true;
-            }
-        }
+        active: false
 
         handler: Component {
             Socket {
@@ -85,6 +83,15 @@ CenterWindow {
 
         }
 
+    }
+
+    Process {
+        id: socketCleanup
+
+        command: ["rm", "-f", "/tmp/quickshell_launcher"]
+        onExited: (exitCode) => {
+            return server.active = true;
+        }
     }
 
     ListModel {
@@ -135,7 +142,7 @@ CenterWindow {
             spacing: 12
 
             Text {
-                text: "󰍉"
+                text: ""
                 color: Theme.colMuted
                 font.pixelSize: 18
                 font.family: Theme.fontFamily
@@ -217,6 +224,16 @@ CenterWindow {
             border.width: 1
             z: 1
 
+            Rectangle {
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                width: 4
+                height: 26
+                radius: 2
+                color: Theme.colPurple
+            }
+
             Behavior on y {
                 NumberAnimation {
                     duration: 200
@@ -275,7 +292,7 @@ CenterWindow {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 15
+                anchors.leftMargin: 22
                 anchors.rightMargin: 15
                 spacing: 15
 
