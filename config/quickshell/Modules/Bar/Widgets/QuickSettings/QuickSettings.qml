@@ -7,9 +7,6 @@ import qs.Core
 TopPopup {
     id: root
 
-    property bool micMuted: false
-    property bool nightLightActive: false
-
     implicitWidth: 450
     preferredHeight: Math.min(mainCol.implicitHeight + (root.contentPadding * 2), 650)
     onIsOpenChanged: {
@@ -17,58 +14,6 @@ TopPopup {
             wifiControl.expanded = false;
             btControl.expanded = false;
             screenshotControl.expanded = false;
-        }
-    }
-    Component.onCompleted: micCheckProc.running = true
-
-    Process {
-        id: colorPickerProc
-
-        command: ["sh", "-c", "hyprpicker -a"]
-    }
-
-    Process {
-        id: micCheckProc
-
-        command: ["sh", "-c", "pamixer --default-source --get-mute"]
-
-        stdout: SplitParser {
-            onRead: (data) => {
-                const val = data.trim();
-                if (val !== "")
-                    micMuted = (val === "true");
-
-            }
-        }
-
-    }
-
-    Process {
-        id: micToggleProc
-
-        command: ["sh", "-c", "pamixer --default-source -t"]
-        onExited: (code) => {
-            if (code === 0) {
-                micCheckProc.running = false;
-                micCheckProc.running = true;
-            }
-        }
-    }
-
-    Process {
-        id: nightLightProc
-
-        command: ["sh", "-c", "pkill hyprsunset; if [ \"$1\" = \"true\" ]; then hyprsunset -t 4500 & fi", "--", String(nightLightActive)]
-    }
-
-    Timer {
-        id: colorPickerTimer
-
-        interval: 400
-        repeat: false
-        onTriggered: {
-            colorPickerProc.running = false;
-            colorPickerProc.running = true;
         }
     }
 
@@ -89,12 +34,12 @@ TopPopup {
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 12
+                spacing: 16
 
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 80
-                    spacing: 12
+                    spacing: 16
 
                     Rectangle {
                         Layout.fillWidth: true
@@ -161,7 +106,7 @@ TopPopup {
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 10
+                        spacing: 16
 
                         VolumeControl {
                             id: volControl
@@ -203,133 +148,25 @@ TopPopup {
                         onCloseRequested: root.isOpen = false
                     }
 
-                    Rectangle {
-                        id: nlBtn
-
-                        Layout.preferredWidth: 40
-                        Layout.preferredHeight: 40
-                        radius: 20
-                        color: nightLightActive ? Theme.colYellow : (nlHover.hovered ? Theme.colBgLighter : Theme.colBg)
-
-                        HoverHandler {
-                            id: nlHover
-
-                            enabled: !nightLightActive
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: nightLightActive ? "󰖔" : "󰖙"
-                            color: nightLightActive ? Theme.colBg : Theme.colFg
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 20
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                nightLightActive = !nightLightActive;
-                                if (nightLightActive)
-                                    nightLightProc.command = ["sh", "-c", "hyprsunset -t 4500"];
-                                else
-                                    nightLightProc.command = ["pkill", "hyprsunset"];
-                                nightLightProc.running = false;
-                                nightLightProc.running = true;
-                            }
-                        }
-
+                    NightLightControl {
+                        id: nlControl
                     }
 
-                    Rectangle {
-                        id: micBtn
-
-                        Layout.preferredWidth: 40
-                        Layout.preferredHeight: 40
-                        radius: 20
-                        color: micMuted ? Theme.colRed : (micHover.hovered ? Theme.colBgLighter : Theme.colBg)
-
-                        HoverHandler {
-                            id: micHover
-
-                            enabled: !micMuted
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: micMuted ? "󰍭" : "󰍬"
-                            color: micMuted ? Theme.colBg : Theme.colCyan
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 20
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                micToggleProc.running = false;
-                                micToggleProc.running = true;
-                            }
-                        }
-
+                    MicControl {
+                        id: micControl
                     }
 
-                    Rectangle {
-                        id: cpBtn
+                    ColorPickerControl {
+                        id: cpControl
 
-                        Layout.preferredWidth: 40
-                        Layout.preferredHeight: 40
-                        radius: 20
-                        color: cpHover.hovered ? Theme.colBgLighter : Theme.colBg
-
-                        HoverHandler {
-                            id: cpHover
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰈋"
-                            color: Theme.colCyan
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 20
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                root.isOpen = false;
-                                colorPickerTimer.start();
-                            }
-                        }
-
+                        onRequestClose: root.isOpen = false
                     }
 
-                    Rectangle {
+                    QuickActionButton {
                         id: todoBtn
 
-                        Layout.preferredWidth: 40
-                        Layout.preferredHeight: 40
-                        radius: 20
-                        color: todoHover.hovered ? Theme.colBgLighter : Theme.colBg
-
-                        HoverHandler {
-                            id: todoHover
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰄲"
-                            color: Theme.colCyan
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 20
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                        }
-
+                        icon: "󰄲"
+                        iconColor: Theme.colGreen
                     }
 
                     WallpaperControl {
@@ -347,6 +184,14 @@ TopPopup {
                 }
             }
 
+        }
+
+    }
+
+    Behavior on preferredHeight {
+        NumberAnimation {
+            duration: 300
+            easing.type: Easing.OutQuad
         }
 
     }

@@ -116,7 +116,7 @@ RowLayout {
     }
 
     Rectangle {
-        Layout.preferredWidth: 84
+        Layout.preferredWidth: root.enabled ? 84 : 44
         Layout.preferredHeight: 40
         radius: 20
         color: root.enabled ? Theme.colPurple : (wifiHover.hovered ? Theme.colBgLighter : Theme.colBgSecondary)
@@ -153,6 +153,7 @@ RowLayout {
             }
 
             Rectangle {
+                visible: root.enabled
                 width: 1
                 Layout.fillHeight: true
                 Layout.topMargin: 8
@@ -161,6 +162,7 @@ RowLayout {
             }
 
             Item {
+                visible: root.enabled
                 Layout.preferredWidth: 24
                 Layout.fillHeight: true
 

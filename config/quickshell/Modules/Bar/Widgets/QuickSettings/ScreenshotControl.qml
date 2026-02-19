@@ -5,7 +5,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Core
 
-Item {
+QuickActionButton {
     id: root
 
     property bool expanded: false
@@ -27,40 +27,16 @@ Item {
         screenshotProc.running = true;
     }
 
-    implicitWidth: 40
-    implicitHeight: 40
+    icon: ""
+    active: expanded
+    activeColor: Theme.colPurple
+    iconColor: Theme.colPurple
+    onClicked: expanded = !expanded
 
     Process {
         id: screenshotProc
 
         command: ["true"]
-    }
-
-    Rectangle {
-        anchors.fill: parent
-        radius: 20
-        color: root.expanded ? Theme.colPurple : (shotHover.hovered ? Theme.colBgLighter : Theme.colBg)
-
-        HoverHandler {
-            id: shotHover
-
-            enabled: !root.expanded
-        }
-
-        Text {
-            anchors.centerIn: parent
-            text: ""
-            color: root.expanded ? Theme.colBg : Theme.colFg
-            font.family: Theme.fontFamily
-            font.pixelSize: 20
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.expanded = !root.expanded
-        }
-
     }
 
 }
