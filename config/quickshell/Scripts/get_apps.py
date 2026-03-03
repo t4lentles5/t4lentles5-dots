@@ -11,6 +11,7 @@ def get_apps():
         Path("/usr/share/applications"),
         Path(os.path.expanduser("~/.local/share/applications")),
     ]
+
     for d in paths:
         if not d.exists():
             continue
@@ -20,22 +21,28 @@ def get_apps():
                 config.read(f)
                 if "Desktop Entry" in config:
                     entry = config["Desktop Entry"]
-                    if entry.getboolean("NoDisplay", False) or entry.getboolean(
-                        "Hidden", False
+
+                    if (
+                        entry.get("NoDisplay", "false").lower() == "true"
+                        or entry.get("Hidden", "false").lower() == "true"
                     ):
                         continue
+
                     name = entry.get("Name", "")
-                    executable = entry.get("Exec", "").split(" %")[0].replace('"', "")
+                    raw_exec = entry.get("Exec", "")
+                    executable = raw_exec.split(" %")[0].replace('"', "")
+
                     if executable.startswith("/usr/bin/"):
                         executable = executable[9:]
 
                     icon = entry.get("Icon", "")
-                    terminal = entry.getboolean("Terminal", False)
+                    terminal = entry.get("Terminal", "false").lower() == "true"
+
                     if name and executable and executable not in seen_execs:
                         apps.append(
                             {
                                 "name": name,
-                                "exec": entry.get("Exec", "").split(" %")[0],
+                                "exec": raw_exec.split(" %")[0],
                                 "icon": icon,
                                 "terminal": terminal,
                             }
@@ -43,8 +50,10 @@ def get_apps():
                         seen_execs.add(executable)
             except Exception:
                 pass
+
     return sorted(apps, key=lambda x: x["name"].lower())
 
 
 if __name__ == "__main__":
     print(json.dumps(get_apps()))
+

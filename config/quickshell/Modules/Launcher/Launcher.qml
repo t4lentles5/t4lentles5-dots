@@ -30,10 +30,10 @@ CenterWindow {
         if (!exec)
             return ;
 
-        let command = exec.split(' ').filter((arg) => {
+        let command = exec.split(' ').filter(function(arg) {
             return !arg.startsWith('%');
         });
-        command = command.map((arg) => {
+        command = command.map(function(arg) {
             return arg.replace(/^"|"$/g, '');
         });
         if (terminal)
@@ -46,16 +46,13 @@ CenterWindow {
     }
 
     popupId: "launcher"
-    onIsOpenChanged: {
-        if (isOpen) {
-            focusTimer.start();
-            searchField.text = "";
-            loadAppsProc.running = true;
-        }
+    preferredHeight: 400
+    preferredWidth: 600
+    onPopupOpened: {
+        focusTimer.start();
+        searchField.text = "";
+        loadAppsProc.running = true;
     }
-    preferredHeight: 450
-    preferredWidth: 700
-    Component.onCompleted: socketCleanup.running = true
 
     Timer {
         id: focusTimer
@@ -63,35 +60,6 @@ CenterWindow {
         interval: 50
         repeat: false
         onTriggered: searchField.forceActiveFocus()
-    }
-
-    SocketServer {
-        id: server
-
-        path: "/tmp/quickshell_launcher"
-        active: false
-
-        handler: Component {
-            Socket {
-                onConnectedChanged: {
-                    if (connected) {
-                        root.isOpen = !root.isOpen;
-                        connected = false;
-                    }
-                }
-            }
-
-        }
-
-    }
-
-    Process {
-        id: socketCleanup
-
-        command: ["rm", "-f", "/tmp/quickshell_launcher"]
-        onExited: (exitCode) => {
-            return server.active = true;
-        }
     }
 
     ListModel {
@@ -106,13 +74,13 @@ CenterWindow {
         id: loadAppsProc
 
         command: ["python3", Quickshell.shellDir + "/Scripts/get_apps.py"]
-        onExited: (exitCode) => {
+        onExited: function(exitCode) {
             if (exitCode === 0) {
                 try {
                     let apps = JSON.parse(appFetcherOutput.text);
                     appModel.clear();
-                    apps.forEach((app) => {
-                        return appModel.append(app);
+                    apps.forEach(function(app) {
+                        appModel.append(app);
                     });
                     filterApps("");
                 } catch (e) {
@@ -129,23 +97,45 @@ CenterWindow {
 
     Rectangle {
         Layout.fillWidth: true
-        Layout.preferredHeight: 50
+        Layout.preferredHeight: 48
         color: Theme.colBgSecondary
-        radius: 12
-        border.color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
-        border.width: 1
+        radius: 8
+
+        Rectangle {
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 1
+            color: searchField.activeFocus ? Theme.colPurple : Theme.colBgLighter
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 250
+                }
+
+            }
+
+        }
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 15
-            anchors.rightMargin: 15
-            spacing: 12
+            anchors.leftMargin: 20
+            anchors.rightMargin: 20
+            spacing: 16
 
             Text {
                 text: ""
-                color: Theme.colMuted
-                font.pixelSize: 18
+                color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
+                font.pixelSize: 22
                 font.family: Theme.fontFamily
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 250
+                    }
+
+                }
+
             }
 
             TextField {
@@ -156,19 +146,24 @@ CenterWindow {
                 placeholderTextColor: Theme.colMuted
                 color: Theme.colFg
                 font.family: Theme.fontFamily
-                font.pixelSize: 16
+                font.pixelSize: 14
                 background: null
                 onTextChanged: root.filterApps(text)
-                Keys.onPressed: (event) => {
+                Keys.onPressed: function(event) {
                     if (event.key === Qt.Key_Down) {
                         if (appsView.count > 0) {
-                            appsView.currentIndex = 0;
-                            appsView.forceActiveFocus();
+                            appsView.currentIndex = Math.min(appsView.currentIndex + 1, appsView.count - 1);
+                            event.accepted = true;
+                        }
+                    } else if (event.key === Qt.Key_Up) {
+                        if (appsView.count > 0) {
+                            appsView.currentIndex = Math.max(appsView.currentIndex - 1, 0);
                             event.accepted = true;
                         }
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                        if (filteredModel.count > 0) {
-                            let app = filteredModel.get(appsView.currentIndex >= 0 ? appsView.currentIndex : 0);
+                        let idx = appsView.currentIndex >= 0 ? appsView.currentIndex : 0;
+                        if (filteredModel.count > idx) {
+                            let app = filteredModel.get(idx);
                             launchApp(app.exec, app.terminal);
                             event.accepted = true;
                         }
@@ -180,145 +175,189 @@ CenterWindow {
 
         Behavior on border.color {
             ColorAnimation {
-                duration: 200
+                duration: 250
             }
 
         }
 
     }
 
-    ListView {
-        id: appsView
-
+    Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        clip: true
-        model: filteredModel
-        spacing: 5
-        currentIndex: -1
-        highlightResizeDuration: 0
-        highlightMoveDuration: 200
-        highlightFollowsCurrentItem: true
-        Keys.onPressed: (event) => {
-            if (event.key === Qt.Key_Up) {
-                if (currentIndex <= 0) {
-                    searchField.forceActiveFocus();
-                    currentIndex = -1;
-                    event.accepted = true;
-                }
-            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                if (currentIndex >= 0) {
-                    let app = filteredModel.get(currentIndex);
-                    launchApp(app.exec, app.terminal);
-                    event.accepted = true;
-                }
-            }
-        }
 
-        highlight: Rectangle {
-            width: appsView.width
-            height: 50
-            radius: 10
-            color: Theme.colBgLighter
-            border.color: Theme.colPurple
-            border.width: 1
-            z: 1
+        ColumnLayout {
+            anchors.centerIn: parent
+            visible: filteredModel.count === 0 && searchField.text !== ""
+            spacing: 16
 
-            Rectangle {
-                anchors.left: parent.left
-                anchors.leftMargin: 8
-                anchors.verticalCenter: parent.verticalCenter
-                width: 4
-                height: 26
-                radius: 2
-                color: Theme.colPurple
-            }
-
-            Behavior on y {
-                NumberAnimation {
-                    duration: 200
-                    easing.type: Easing.OutCubic
-                }
-
-            }
-
-        }
-
-        add: Transition {
-            NumberAnimation {
-                properties: "scale"
-                from: 0.95
-                to: 1
-                duration: 200
-                easing.type: Easing.OutQuad
-            }
-
-        }
-
-        populate: Transition {
-            NumberAnimation {
-                properties: "scale"
-                from: 0.95
-                to: 1
-                duration: 200
-                easing.type: Easing.OutQuad
-            }
-
-        }
-
-        delegate: Item {
-            id: delegateRoot
-
-            readonly property bool isCurrent: appsView.currentIndex === index
-
-            width: appsView.width
-            height: 50
-            z: 2
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 10
+            Text {
+                text: "󰩉"
                 color: Theme.colBgLighter
-                opacity: hoverHandler.hovered && !isCurrent ? 0.5 : 0
+                font.pixelSize: 72
+                font.family: Theme.fontFamily
+                Layout.alignment: Qt.AlignHCenter
+            }
 
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 150
+            Text {
+                text: "No applications found"
+                color: Theme.colMuted
+                font.pixelSize: 16
+                font.family: Theme.fontFamily
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+        }
+
+        ListView {
+            id: appsView
+
+            anchors.fill: parent
+            clip: true
+            model: filteredModel
+            spacing: 8
+            currentIndex: -1
+            highlightResizeDuration: 0
+            highlightMoveDuration: 250
+            highlightFollowsCurrentItem: true
+            visible: filteredModel.count > 0
+            Keys.onPressed: function(event) {
+                if (event.key === Qt.Key_Up) {
+                    if (currentIndex <= 0) {
+                        searchField.forceActiveFocus();
+                        currentIndex = -1;
+                        event.accepted = true;
+                    }
+                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                    if (currentIndex >= 0) {
+                        let app = filteredModel.get(currentIndex);
+                        launchApp(app.exec, app.terminal);
+                        event.accepted = true;
+                    }
+                }
+            }
+
+            highlight: Item {
+                width: appsView.width
+                height: 44
+                z: 1
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 8
+                    color: Theme.colBgLighter
+                }
+
+            }
+
+            add: Transition {
+                NumberAnimation {
+                    properties: "opacity"
+                    from: 0
+                    to: 1
+                    duration: 250
+                    easing.type: Easing.OutQuint
+                }
+
+            }
+
+            populate: Transition {
+                NumberAnimation {
+                    properties: "opacity"
+                    from: 0
+                    to: 1
+                    duration: 250
+                    easing.type: Easing.OutQuint
+                }
+
+            }
+
+            delegate: Item {
+                id: delegateRoot
+
+                readonly property bool isCurrent: appsView.currentIndex === index
+
+                width: appsView.width
+                height: 44
+                z: 2
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 8
+                    color: Theme.colBgLighter
+                    opacity: hoverHandler.hovered && !isCurrent ? 0.4 : 0
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 200
+                        }
+
                     }
 
                 }
 
-            }
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 20
+                    anchors.rightMargin: 20
+                    spacing: 16
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 22
-                anchors.rightMargin: 15
-                spacing: 15
+                    Rectangle {
+                        Layout.preferredWidth: 36
+                        Layout.preferredHeight: 36
+                        radius: 8
+                        color: "transparent"
 
-                Item {
-                    Layout.preferredWidth: 32
-                    Layout.preferredHeight: 32
-
-                    Image {
-                        anchors.fill: parent
-                        source: model.icon ? "image://icon/" + model.icon : ""
-                        fillMode: Image.PreserveAspectFit
-                        scale: isCurrent ? 1.15 : 1
-
-                        Text {
+                        Image {
                             anchors.centerIn: parent
-                            visible: parent.status !== Image.Ready
-                            text: ""
-                            color: isCurrent ? Theme.colPurple : Theme.colMuted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 20
+                            width: 28
+                            height: 28
+                            source: model.icon ? "image://icon/" + model.icon : ""
+                            fillMode: Image.PreserveAspectFit
+                            scale: isCurrent ? 1.15 : 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                visible: parent.status !== Image.Ready
+                                text: ""
+                                color: isCurrent ? Theme.colPurple : Theme.colMuted
+                                font.family: Theme.fontFamily
+                                font.pixelSize: 20
+                            }
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: 250
+                                    easing.type: Easing.OutBack
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    Text {
+                        text: model.name
+                        color: isCurrent ? Theme.colPurple : Theme.colFg
+                        font.family: Theme.fontFamily
+                        font.bold: isCurrent
+                        font.pixelSize: 14
+                        Layout.fillWidth: true
+                        scale: isCurrent ? 1.02 : 1
+                        transformOrigin: Item.Left
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: 200
+                            }
+
                         }
 
                         Behavior on scale {
                             NumberAnimation {
-                                duration: 150
-                                easing.type: Easing.OutBack
+                                duration: 250
+                                easing.type: Easing.OutQuint
                             }
 
                         }
@@ -327,48 +366,21 @@ CenterWindow {
 
                 }
 
-                Text {
-                    text: model.name
-                    color: isCurrent ? Theme.colPurple : Theme.colFg
-                    font.family: Theme.fontFamily
-                    font.bold: isCurrent
-                    font.pixelSize: 14
-                    Layout.fillWidth: true
-                    scale: isCurrent ? 1.05 : 1
-                    transformOrigin: Item.Left
+                HoverHandler {
+                    id: hoverHandler
+                }
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: 150
-                        }
-
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 150
-                            easing.type: Easing.OutQuad
-                        }
-
-                    }
-
+                TapHandler {
+                    onTapped: launchApp(model.exec, model.terminal)
                 }
 
             }
 
-            HoverHandler {
-                id: hoverHandler
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+                active: true
             }
 
-            TapHandler {
-                onTapped: launchApp(model.exec, model.terminal)
-            }
-
-        }
-
-        ScrollBar.vertical: ScrollBar {
-            policy: ScrollBar.AsNeeded
-            active: true
         }
 
     }
