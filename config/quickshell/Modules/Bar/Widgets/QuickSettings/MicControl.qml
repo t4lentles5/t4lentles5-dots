@@ -9,7 +9,7 @@ QuickActionButton {
     property bool muted: false
 
     icon: muted ? "󰍭" : "󰍬"
-    active: muted
+    isActive: muted
     activeColor: Theme.colRed
     iconColor: Theme.colBlue
     Component.onCompleted: micCheckProc.running = true

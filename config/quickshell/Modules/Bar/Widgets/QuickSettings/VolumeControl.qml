@@ -25,7 +25,7 @@ Rectangle {
 
     width: 40
     height: 40
-    radius: 20
+    radius: 8
     color: muted ? Theme.colRed : (volHover.hovered ? Theme.colBgLighter : Theme.colBg)
 
     HoverHandler {

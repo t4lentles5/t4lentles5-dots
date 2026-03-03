@@ -45,13 +45,30 @@ RowLayout {
         handle: Rectangle {
             x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width)
             y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
-            width: 18
-            height: 18
-            radius: 9
+            width: volSlider.pressed ? 22 : 18
+            height: volSlider.pressed ? 22 : 18
+            radius: width / 2
             color: Theme.colFg
             border.color: Theme.colBlue
             border.width: 2
             visible: volSlider.pressed || volSlider.hovered
+
+            Behavior on width {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutBack
+                }
+
+            }
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutBack
+                }
+
+            }
+
         }
 
     }

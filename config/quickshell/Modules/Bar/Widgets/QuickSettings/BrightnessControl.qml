@@ -62,7 +62,7 @@ RowLayout {
     Rectangle {
         width: 40
         height: 40
-        radius: 20
+        radius: 8
         color: Theme.colBg
 
         Text {
@@ -106,13 +106,30 @@ RowLayout {
         handle: Rectangle {
             x: brightSlider.leftPadding + brightSlider.visualPosition * (brightSlider.availableWidth - width)
             y: brightSlider.topPadding + brightSlider.availableHeight / 2 - height / 2
-            width: 18
-            height: 18
-            radius: 9
+            width: brightSlider.pressed ? 22 : 18
+            height: brightSlider.pressed ? 22 : 18
+            radius: width / 2
             color: Theme.colFg
             border.color: Theme.colCyan
             border.width: 2
             visible: brightSlider.pressed || brightSlider.hovered
+
+            Behavior on width {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutBack
+                }
+
+            }
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutBack
+                }
+
+            }
+
         }
 
     }

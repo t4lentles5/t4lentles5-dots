@@ -19,8 +19,8 @@ Rectangle {
             container.layoutName = rawName.substring(0, 2).toUpperCase();
     }
 
-    color: Theme.colBgSecondary
-    radius: 20
+    color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
+    radius: 16
     implicitWidth: layoutText.implicitWidth + 30
     implicitHeight: 30
 
@@ -75,13 +75,38 @@ Rectangle {
     }
 
     MouseArea {
+        id: mouseArea
+
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             if (selector)
                 selector.isOpen = !selector.isOpen;
 
         }
+    }
+
+    Behavior on implicitWidth {
+        NumberAnimation {
+            duration: 250
+            easing.type: Easing.OutQuint
+        }
+
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 200
+        }
+
+    }
+
+    Behavior on border.color {
+        ColorAnimation {
+            duration: 200
+        }
+
     }
 
 }

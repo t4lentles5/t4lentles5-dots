@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import Quickshell.Widgets
 import qs.Core
 
@@ -9,13 +10,17 @@ PanelWindow {
 
     property string popupId: ""
     property bool isOpen: false
-    property int cornerRadius: 20
-    property int contentPadding: 20
+    property int cornerRadius: 8
+    property int contentPadding: 16
     default property alias content: innerLayout.data
-    property int animationDuration: 250
+    property int animationDuration: 300
     property color backgroundColor: Theme.colBg
     property int preferredWidth: 600
     property int preferredHeight: 500
+    property bool _windowVisible: false
+
+    signal popupOpened()
+    signal popupClosed()
 
     onIsOpenChanged: {
         if (popupId === "")
@@ -25,16 +30,26 @@ PanelWindow {
             if (AppState.activePopup !== popupId)
                 AppState.activePopup = popupId;
 
+            closeDelayTimer.stop();
+            _windowVisible = true;
+            root.popupOpened();
         } else {
             if (AppState.activePopup === popupId)
                 AppState.activePopup = "";
 
+            closeDelayTimer.start();
+            root.popupClosed();
         }
     }
     color: "transparent"
     focusable: true
     exclusionMode: ExclusionMode.Ignore
-    visible: isOpen || container.opacity > 0
+    visible: _windowVisible
+    Component.onCompleted: {
+        if (root.popupId !== "")
+            socketCleanup.running = true;
+
+    }
 
     Connections {
         function onActivePopupChanged() {
@@ -53,8 +68,17 @@ PanelWindow {
         right: true
     }
 
-    TapHandler {
-        onTapped: root.isOpen = false
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.isOpen = false
+    }
+
+    Timer {
+        id: closeDelayTimer
+
+        interval: root.animationDuration * 0.8
+        repeat: false
+        onTriggered: root._windowVisible = false
     }
 
     Item {
@@ -64,8 +88,6 @@ PanelWindow {
         height: root.preferredHeight
         anchors.centerIn: parent
         transformOrigin: Item.Center
-        scale: 0.9
-        opacity: 0
         focus: root.isOpen
         Keys.onEscapePressed: root.isOpen = false
         states: [
@@ -75,8 +97,13 @@ PanelWindow {
 
                 PropertyChanges {
                     target: container
-                    scale: 1
                     opacity: 1
+                    scale: 1
+                }
+
+                PropertyChanges {
+                    target: containerTranslate
+                    y: 0
                 }
 
             },
@@ -86,8 +113,13 @@ PanelWindow {
 
                 PropertyChanges {
                     target: container
-                    scale: 0.9
                     opacity: 0
+                    scale: 0.95
+                }
+
+                PropertyChanges {
+                    target: containerTranslate
+                    y: 20
                 }
 
             }
@@ -97,11 +129,28 @@ PanelWindow {
                 from: "closed"
                 to: "open"
 
-                NumberAnimation {
-                    properties: "scale, opacity"
-                    duration: 300
-                    easing.type: Easing.OutBack
-                    easing.overshoot: 1
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: container
+                        property: "opacity"
+                        duration: root.animationDuration
+                        easing.type: Easing.OutQuad
+                    }
+
+                    NumberAnimation {
+                        target: container
+                        property: "scale"
+                        duration: root.animationDuration
+                        easing.type: Easing.OutQuint
+                    }
+
+                    NumberAnimation {
+                        target: containerTranslate
+                        property: "y"
+                        duration: root.animationDuration
+                        easing.type: Easing.OutQuint
+                    }
+
                 }
 
             },
@@ -109,33 +158,42 @@ PanelWindow {
                 from: "open"
                 to: "closed"
 
-                NumberAnimation {
-                    properties: "scale, opacity"
-                    duration: 200
-                    easing.type: Easing.InQuad
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: container
+                        property: "opacity"
+                        duration: root.animationDuration * 0.8
+                        easing.type: Easing.InQuad
+                    }
+
+                    NumberAnimation {
+                        target: container
+                        property: "scale"
+                        duration: root.animationDuration * 0.8
+                        easing.type: Easing.InQuint
+                    }
+
+                    NumberAnimation {
+                        target: containerTranslate
+                        property: "y"
+                        duration: root.animationDuration * 0.8
+                        easing.type: Easing.InQuint
+                    }
+
                 }
 
             }
         ]
 
-        TapHandler {
-        }
-
-        Rectangle {
+        MouseArea {
             anchors.fill: parent
-            anchors.topMargin: 15
-            anchors.leftMargin: 15
-            color: "#000000"
-            opacity: 0.4
-            radius: root.cornerRadius
-            z: -1
         }
 
         Rectangle {
             anchors.fill: parent
             color: root.backgroundColor
             radius: root.cornerRadius
-            border.color: Qt.rgba(1, 1, 1, 0.1)
+            border.color: Qt.rgba(1, 1, 1, 0.05)
             border.width: 1
             clip: true
         }
@@ -148,6 +206,43 @@ PanelWindow {
             spacing: 15
         }
 
+        transform: Translate {
+            id: containerTranslate
+
+            y: 0
+        }
+
+    }
+
+    SocketServer {
+        id: server
+
+        path: "/tmp/quickshell_" + root.popupId
+        active: false
+
+        handler: Component {
+            Socket {
+                onConnectedChanged: {
+                    if (connected) {
+                        root.isOpen = !root.isOpen;
+                        connected = false;
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    Process {
+        id: socketCleanup
+
+        command: ["rm", "-f", "/tmp/quickshell_" + root.popupId]
+        onExited: function(exitCode) {
+            if (root.popupId !== "")
+                server.active = true;
+
+        }
     }
 
 }

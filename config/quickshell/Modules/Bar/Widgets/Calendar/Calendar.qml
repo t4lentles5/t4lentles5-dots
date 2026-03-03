@@ -9,6 +9,9 @@ TopPopup {
     property date currentDate: new Date()
     property int currentMonth: currentDate.getMonth()
     property int currentYear: currentDate.getFullYear()
+    property int animDirection: 1
+    property bool isAnimating: false
+    property bool isJumpingToToday: false
 
     function daysInMonth(month, year) {
         return new Date(year, month + 1, 0).getDate();
@@ -18,7 +21,7 @@ TopPopup {
         return new Date(year, month, 1).getDay();
     }
 
-    function prevMonth() {
+    function doPrevMonth() {
         if (currentMonth === 0) {
             currentMonth = 11;
             currentYear--;
@@ -27,7 +30,7 @@ TopPopup {
         }
     }
 
-    function nextMonth() {
+    function doNextMonth() {
         if (currentMonth === 11) {
             currentMonth = 0;
             currentYear++;
@@ -36,9 +39,142 @@ TopPopup {
         }
     }
 
+    function prevMonth() {
+        if (isAnimating)
+            return ;
+
+        animDirection = 1;
+        monthTransitionAnim.start();
+    }
+
+    function nextMonth() {
+        if (isAnimating)
+            return ;
+
+        animDirection = -1;
+        monthTransitionAnim.start();
+    }
+
+    function jumpToToday() {
+        if (isAnimating)
+            return ;
+
+        var now = new Date();
+        if (root.currentMonth === now.getMonth() && root.currentYear === now.getFullYear())
+            return ;
+
+        animDirection = now.getFullYear() < root.currentYear || (now.getFullYear() === root.currentYear && now.getMonth() < root.currentMonth) ? 1 : -1;
+        isJumpingToToday = true;
+        monthTransitionAnim.start();
+    }
+
     implicitWidth: 360
     preferredHeight: mainCol.implicitHeight + (root.contentPadding * 2)
-    backgroundColor: Theme.colBg
+    animateHeight: true
+
+    SequentialAnimation {
+        id: monthTransitionAnim
+
+        PropertyAction {
+            target: root
+            property: "isAnimating"
+            value: true
+        }
+
+        ParallelAnimation {
+            NumberAnimation {
+                target: daysContainer
+                property: "opacity"
+                to: 0
+                duration: 120
+                easing.type: Easing.OutQuint
+            }
+
+            NumberAnimation {
+                target: daysTranslate
+                property: "x"
+                to: 15 * root.animDirection
+                duration: 120
+                easing.type: Easing.OutQuint
+            }
+
+            NumberAnimation {
+                target: monthLabelContainer
+                property: "opacity"
+                to: 0
+                duration: 120
+                easing.type: Easing.OutQuint
+            }
+
+            NumberAnimation {
+                target: monthTranslate
+                property: "x"
+                to: 15 * root.animDirection
+                duration: 120
+                easing.type: Easing.OutQuint
+            }
+
+        }
+
+        ScriptAction {
+            script: {
+                if (root.isJumpingToToday) {
+                    var now = new Date();
+                    root.currentMonth = now.getMonth();
+                    root.currentYear = now.getFullYear();
+                    root.isJumpingToToday = false;
+                } else if (root.animDirection === 1) {
+                    root.doPrevMonth();
+                } else {
+                    root.doNextMonth();
+                }
+                daysTranslate.x = -15 * root.animDirection;
+                monthTranslate.x = -15 * root.animDirection;
+            }
+        }
+
+        ParallelAnimation {
+            NumberAnimation {
+                target: daysContainer
+                property: "opacity"
+                to: 1
+                duration: 300
+                easing.type: Easing.OutQuad
+            }
+
+            NumberAnimation {
+                target: daysTranslate
+                property: "x"
+                to: 0
+                duration: 300
+                easing.type: Easing.OutQuad
+            }
+
+            NumberAnimation {
+                target: monthLabelContainer
+                property: "opacity"
+                to: 1
+                duration: 300
+                easing.type: Easing.OutQuad
+            }
+
+            NumberAnimation {
+                target: monthTranslate
+                property: "x"
+                to: 0
+                duration: 300
+                easing.type: Easing.OutQuad
+            }
+
+        }
+
+        PropertyAction {
+            target: root
+            property: "isAnimating"
+            value: false
+        }
+
+    }
 
     ColumnLayout {
         id: mainCol
@@ -50,31 +186,47 @@ TopPopup {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
             color: Theme.colBgSecondary
-            radius: 15
+            radius: 8
 
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 15
                 anchors.rightMargin: 15
 
-                ColumnLayout {
-                    spacing: 0
+                Item {
+                    id: monthLabelContainer
 
-                    Text {
-                        text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
-                        color: Theme.colPurple
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 18
-                        font.bold: true
-                        font.capitalization: Font.Capitalize
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: monthCol.implicitHeight
+
+                    ColumnLayout {
+                        id: monthCol
+
+                        spacing: 0
+
+                        Text {
+                            text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
+                            color: Theme.colPurple
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 18
+                            font.bold: true
+                            font.capitalization: Font.Capitalize
+                        }
+
+                        Text {
+                            text: root.currentYear
+                            color: Theme.colMuted
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 12
+                            font.bold: true
+                        }
+
                     }
 
-                    Text {
-                        text: root.currentYear
-                        color: Theme.colMuted
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 12
-                        font.bold: true
+                    transform: Translate {
+                        id: monthTranslate
+
+                        x: 0
                     }
 
                 }
@@ -86,77 +238,20 @@ TopPopup {
                 RowLayout {
                     spacing: 5
 
-                    Rectangle {
-                        width: 30
-                        height: 30
-                        radius: 8
-                        color: btnPrev.containsMouse ? Theme.colBgLighter : "transparent"
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰁍"
-                            color: Theme.colFg
-                            font.pixelSize: 16
-                        }
-
-                        MouseArea {
-                            id: btnPrev
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: root.prevMonth()
-                        }
-
+                    IconButton {
+                        icon: "󰁍"
+                        onClicked: root.prevMonth()
                     }
 
-                    Rectangle {
-                        width: 30
-                        height: 30
-                        radius: 8
-                        color: btnToday.containsMouse ? Theme.colBgLighter : "transparent"
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰃭"
-                            color: Theme.colPurple
-                            font.pixelSize: 16
-                        }
-
-                        MouseArea {
-                            id: btnToday
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                var now = new Date();
-                                root.currentMonth = now.getMonth();
-                                root.currentYear = now.getFullYear();
-                            }
-                        }
-
+                    IconButton {
+                        icon: "󰃭"
+                        iconColor: Theme.colPurple
+                        onClicked: root.jumpToToday()
                     }
 
-                    Rectangle {
-                        width: 30
-                        height: 30
-                        radius: 8
-                        color: btnNext.containsMouse ? Theme.colBgLighter : "transparent"
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰁔"
-                            color: Theme.colFg
-                            font.pixelSize: 16
-                        }
-
-                        MouseArea {
-                            id: btnNext
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: root.nextMonth()
-                        }
-
+                    IconButton {
+                        icon: "󰁔"
+                        onClicked: root.nextMonth()
                     }
 
                 }
@@ -166,15 +261,19 @@ TopPopup {
         }
 
         Rectangle {
+            id: calendarBg
+
             Layout.fillWidth: true
             Layout.preferredHeight: gridContainer.implicitHeight + 30
             color: Theme.colBgSecondary
-            radius: 20
+            radius: 8
 
             ColumnLayout {
                 id: gridContainer
 
-                anchors.centerIn: parent
+                anchors.top: parent.top
+                anchors.topMargin: 15
+                anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width - 30
                 spacing: 15
 
@@ -199,64 +298,88 @@ TopPopup {
 
                 }
 
-                GridLayout {
-                    columns: 7
-                    rowSpacing: 5
-                    columnSpacing: 5
+                Item {
+                    id: daysContainer
+
                     Layout.fillWidth: true
+                    Layout.preferredHeight: daysGrid.implicitHeight
 
-                    Repeater {
-                        model: {
-                            let offset = root.firstDayOffset(root.currentMonth, root.currentYear);
-                            let days = root.daysInMonth(root.currentMonth, root.currentYear);
-                            return Math.ceil((offset + days) / 7) * 7;
-                        }
+                    GridLayout {
+                        id: daysGrid
 
-                        delegate: Rectangle {
-                            property int dayOffset: root.firstDayOffset(root.currentMonth, root.currentYear)
-                            property int daysInThisMonth: root.daysInMonth(root.currentMonth, root.currentYear)
-                            property int prevMonthDays: root.daysInMonth(root.currentMonth - 1, root.currentYear)
-                            property int dayNum: {
-                                if (index < dayOffset)
-                                    return prevMonthDays - dayOffset + index + 1;
+                        anchors.fill: parent
+                        columns: 7
+                        rowSpacing: 5
+                        columnSpacing: 5
 
-                                if (index < dayOffset + daysInThisMonth)
-                                    return index - dayOffset + 1;
-
-                                return index - (dayOffset + daysInThisMonth) + 1;
-                            }
-                            property bool isCurrentMonth: index >= dayOffset && index < dayOffset + daysInThisMonth
-                            property bool isToday: {
-                                let today = new Date();
-                                return isCurrentMonth && dayNum === today.getDate() && root.currentMonth === today.getMonth() && root.currentYear === today.getFullYear();
+                        Repeater {
+                            model: {
+                                let offset = root.firstDayOffset(root.currentMonth, root.currentYear);
+                                let days = root.daysInMonth(root.currentMonth, root.currentYear);
+                                return Math.ceil((offset + days) / 7) * 7;
                             }
 
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 32
-                            radius: 8
-                            color: isToday ? Theme.colPurple : (isCurrentMonth && dayHover.containsMouse ? Theme.colBgLighter : "transparent")
+                            delegate: Rectangle {
+                                property int dayOffset: root.firstDayOffset(root.currentMonth, root.currentYear)
+                                property int daysInThisMonth: root.daysInMonth(root.currentMonth, root.currentYear)
+                                property int prevMonthDays: root.daysInMonth(root.currentMonth - 1, root.currentYear)
+                                property int dayNum: {
+                                    if (index < dayOffset)
+                                        return prevMonthDays - dayOffset + index + 1;
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: isCurrentMonth ? dayNum : ""
-                                color: isToday ? Theme.colBg : (isCurrentMonth ? Theme.colFg : "transparent")
-                                font.family: Theme.fontFamily
-                                font.pixelSize: 13
-                                font.bold: isToday
-                            }
+                                    if (index < dayOffset + daysInThisMonth)
+                                        return index - dayOffset + 1;
 
-                            MouseArea {
-                                id: dayHover
+                                    return index - (dayOffset + daysInThisMonth) + 1;
+                                }
+                                property bool isCurrentMonth: index >= dayOffset && index < dayOffset + daysInThisMonth
+                                property bool isToday: {
+                                    let today = new Date();
+                                    return isCurrentMonth && dayNum === today.getDate() && root.currentMonth === today.getMonth() && root.currentYear === today.getFullYear();
+                                }
 
-                                anchors.fill: parent
-                                hoverEnabled: isCurrentMonth
-                                enabled: isCurrentMonth
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
+                                radius: 8
+                                color: isToday ? Theme.colPurple : (isCurrentMonth && dayHover.containsMouse ? Theme.colBgLighter : "transparent")
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: isCurrentMonth ? dayNum : ""
+                                    color: isToday ? Theme.colBg : (isCurrentMonth ? Theme.colFg : "transparent")
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: 13
+                                    font.bold: isToday
+                                }
+
+                                MouseArea {
+                                    id: dayHover
+
+                                    anchors.fill: parent
+                                    hoverEnabled: isCurrentMonth
+                                    enabled: isCurrentMonth
+                                }
+
                             }
 
                         }
 
                     }
 
+                    transform: Translate {
+                        id: daysTranslate
+
+                        x: 0
+                    }
+
+                }
+
+            }
+
+            Behavior on Layout.preferredHeight {
+                NumberAnimation {
+                    duration: 300
+                    easing.type: Easing.OutQuint
                 }
 
             }

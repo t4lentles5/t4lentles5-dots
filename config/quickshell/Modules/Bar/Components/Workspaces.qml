@@ -5,56 +5,72 @@ import Quickshell.Hyprland
 import qs.Core
 
 Rectangle {
-    id: container
-    
-    color: Theme.colBgSecondary 
-    radius: 20
-    
-    implicitWidth: layout.implicitWidth + 30 
-    implicitHeight: 30
+    color: Theme.colBgSecondary
+    radius: 16
+    implicitWidth: layout.implicitWidth + 30
+    implicitHeight: 34
 
     RowLayout {
         id: layout
+
         anchors.centerIn: parent
-        spacing: 10
-        
+        spacing: 12
 
         Repeater {
             model: 10
 
             Rectangle {
                 id: wsItem
-                Layout.preferredWidth: 20
-                Layout.preferredHeight: 30
-                color: "transparent"
 
-                property var workspace: Hyprland.workspaces.values.find(ws => ws.id === index + 1) ?? null
-                property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
-                property bool hasWindows: workspace !== null
+                readonly property int wsId: index + 1
+                readonly property var workspace: Hyprland.workspaces.values.find((ws) => {
+                    return ws.id === wsId;
+                })
+                readonly property bool isActive: Hyprland.focusedWorkspace ? Hyprland.focusedWorkspace.id === wsId : false
+                readonly property bool hasWindows: workspace !== undefined && (workspace.windows > 0 || workspace.id === wsId)
+
+                Layout.preferredWidth: isActive ? 28 : (hasWindows ? 10 : 8)
+                Layout.preferredHeight: isActive ? 10 : (hasWindows ? 10 : 8)
+                radius: isActive ? 5 : (hasWindows ? 5 : 4)
+                color: isActive ? Theme.colYellow : (hasWindows ? Theme.colCyan : (mouseArea.containsMouse ? Theme.colFg : Theme.colMuted))
 
                 MouseArea {
                     id: mouseArea
+
                     anchors.fill: parent
+                    anchors.margins: -12
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: Hyprland.dispatch("workspace " + (index + 1))
+                    onClicked: Hyprland.dispatch("workspace " + wsId)
                 }
 
-                Text {
-                    id: wsIcon
-                    text: wsItem.isActive ? "󰮯" : "󰊠"
-                    color: wsItem.isActive ? Theme.colYellow : (wsItem.hasWindows ? Theme.colCyan : (mouseArea.containsMouse ? Theme.colFg : Theme.colMuted))
-                    font.pixelSize: Theme.fontSize
-                    font.family: Theme.fontFamily
-                    anchors.centerIn: parent
-                    scale: wsItem.isActive ? 1.2 : (mouseArea.containsMouse ? 1.1 : 1.0)
-                    opacity: wsItem.isActive || wsItem.hasWindows || mouseArea.containsMouse ? 1.0 : 0.6
+                Behavior on Layout.preferredWidth {
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.OutBack
+                    }
 
-                    Behavior on color { ColorAnimation { duration: 300; easing.type: Easing.OutQuart } }
-                    Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
-                    Behavior on opacity { NumberAnimation { duration: 300 } }
                 }
+
+                Behavior on Layout.preferredHeight {
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.OutBack
+                    }
+
+                }
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 300
+                    }
+
+                }
+
             }
+
         }
+
     }
+
 }

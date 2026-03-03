@@ -1,3 +1,4 @@
+import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -48,6 +49,9 @@ RowLayout {
         } else {
             btDiscoveryProc.running = false;
         }
+        if (!enabled)
+            expanded = false;
+
     }
 
     Timer {
@@ -140,69 +144,99 @@ RowLayout {
         id: btConnectProc
     }
 
-    Rectangle {
-        Layout.preferredWidth: root.enabled ? 84 : 44
+    Item {
+        Layout.preferredWidth: 84
         Layout.preferredHeight: 40
-        radius: 20
-        color: root.enabled ? Theme.colBlue : (btHover.hovered ? Theme.colBgLighter : Theme.colBgSecondary)
-        clip: true
 
-        HoverHandler {
-            id: btHover
+        Rectangle {
+            id: bgRect
 
-            enabled: !root.enabled
+            anchors.fill: parent
+            radius: 8
+            color: root.enabled ? Theme.colBlue : Theme.colBg
         }
 
         RowLayout {
             anchors.fill: parent
             spacing: 0
+            layer.enabled: true
 
-            Item {
+            IconButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                icon: "󰂯"
+                iconSize: 20
+                radius: 0
+                iconColor: Theme.colFg
+                useText: false
+                isActive: false
+                baseColor: root.enabled ? Theme.colBlue : "transparent"
+                hoverColor: root.enabled ? Qt.lighter(Theme.colBlue, 1.2) : Theme.colBgLighter
+                onClicked: root.toggle()
 
                 Text {
                     anchors.centerIn: parent
-                    text: "󰂯"
+                    text: parent.icon
                     color: root.enabled ? Theme.colBg : Theme.colFg
                     font.family: Theme.fontFamily
-                    font.pixelSize: 20
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.toggle()
+                    font.pixelSize: parent.iconSize
                 }
 
             }
 
             Rectangle {
-                visible: root.enabled
                 width: 1
                 Layout.fillHeight: true
                 Layout.topMargin: 8
                 Layout.bottomMargin: 8
                 color: root.enabled ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(1, 1, 1, 0.1)
+                opacity: root.enabled ? 1 : 0.2
             }
 
-            Item {
-                visible: root.enabled
+            IconButton {
                 Layout.preferredWidth: 24
                 Layout.fillHeight: true
+                icon: root.expanded ? "▲" : "▼"
+                iconSize: 10
+                radius: 0
+                iconColor: Theme.colMuted
+                useText: false
+                isActive: false
+                baseColor: root.enabled ? Theme.colBlue : "transparent"
+                hoverColor: root.enabled ? Qt.lighter(Theme.colBlue, 1.2) : Theme.colBgLighter
+                onClicked: {
+                    if (root.enabled)
+                        root.expanded = !root.expanded;
+
+                }
 
                 Text {
                     anchors.centerIn: parent
-                    text: root.expanded ? "▲" : "▼"
-                    color: root.enabled ? Theme.colBg : Theme.colMuted
-                    font.pixelSize: 10
-                    opacity: root.enabled ? 0.8 : 1
+                    text: parent.icon
+                    color: root.enabled ? (parent.hovered ? Theme.colFg : Theme.colBg) : Theme.colMuted
+                    font.pixelSize: parent.iconSize
+                    opacity: root.enabled ? (parent.hovered ? 1 : 0.8) : 0.3
+
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: 300
+                        }
+
+                    }
+
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.expanded = !root.expanded
+            }
+
+            layer.effect: Component {
+                OpacityMask {
+
+                    maskSource: Rectangle {
+                        width: bgRect.width
+                        height: bgRect.height
+                        radius: 8
+                    }
+
                 }
 
             }

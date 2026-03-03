@@ -10,12 +10,18 @@ PopupWindow {
 
     property string popupId: ""
     property bool isOpen: false
-    property int cornerRadius: 25
+    property int cornerRadius: 16
     property int contentPadding: 16
     default property alias content: innerLayout.data
     property int preferredHeight
-    property int animationDuration: 250
+    property int animationDuration: 300
     property color backgroundColor: Theme.colBg
+    property bool animateHeight: false
+    property bool _windowVisible: false
+    readonly property int verticalOffset: 40
+    readonly property int overscrollOffset: 100
+
+    signal popupClosed()
 
     onIsOpenChanged: {
         if (popupId === "")
@@ -25,15 +31,19 @@ PopupWindow {
             if (AppState.activePopup !== popupId)
                 AppState.activePopup = popupId;
 
+            closeDelayTimer.stop();
+            _windowVisible = true;
         } else {
             if (AppState.activePopup === popupId)
                 AppState.activePopup = "";
 
+            closeDelayTimer.start();
+            root.popupClosed();
         }
     }
     color: "transparent"
-    visible: container.y !== -root.implicitHeight
-    implicitHeight: (preferredHeight > 0 ? preferredHeight : (innerLayout.implicitHeight + root.contentPadding * 2)) + 40
+    visible: _windowVisible
+    implicitHeight: (preferredHeight > 0 ? preferredHeight : (innerLayout.implicitHeight + root.contentPadding * 2)) + verticalOffset
 
     Connections {
         function onActivePopupChanged() {
@@ -43,6 +53,14 @@ PopupWindow {
         }
 
         target: AppState
+    }
+
+    Timer {
+        id: closeDelayTimer
+
+        interval: root.animationDuration
+        repeat: false
+        onTriggered: root._windowVisible = false
     }
 
     Timer {
@@ -66,67 +84,22 @@ PopupWindow {
         id: container
 
         width: root.implicitWidth
-        height: root.implicitHeight - 40
-        y: -root.implicitHeight
-        states: [
-            State {
-                name: "open"
-                when: root.isOpen
-
-                PropertyChanges {
-                    target: container
-                    y: 0
-                }
-
-            },
-            State {
-                name: "closed"
-                when: !root.isOpen
-
-                PropertyChanges {
-                    target: container
-                    y: -root.implicitHeight
-                }
-
-            }
-        ]
-        transitions: [
-            Transition {
-                from: "closed"
-                to: "open"
-
-                NumberAnimation {
-                    properties: "y"
-                    duration: root.animationDuration
-                    easing.type: Easing.OutQuad
-                }
-
-            },
-            Transition {
-                from: "open"
-                to: "closed"
-
-                NumberAnimation {
-                    properties: "y"
-                    duration: root.animationDuration
-                    easing.type: Easing.InQuad
-                }
-
-            }
-        ]
+        height: root.implicitHeight - verticalOffset
+        y: root.isOpen ? 0 : -root.implicitHeight
+        clip: true
 
         Rectangle {
             color: root.backgroundColor
             anchors.bottom: bg.top
             anchors.left: bg.left
             anchors.right: bg.right
-            height: 100
+            height: overscrollOffset
         }
 
         Shape {
             id: bg
 
-            property color color: root.backgroundColor
+            property color shapeColor: root.backgroundColor
             readonly property real r: root.cornerRadius
             readonly property real w: width
             readonly property real h: height
@@ -136,7 +109,7 @@ PopupWindow {
             ShapePath {
                 strokeWidth: 0
                 strokeColor: "transparent"
-                fillColor: bg.color
+                fillColor: bg.shapeColor
                 startX: 0
                 startY: 0
 
@@ -190,16 +163,6 @@ PopupWindow {
 
             }
 
-            Rectangle {
-                visible: false
-                color: parent.color
-                height: root.cornerRadius
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                z: 1
-            }
-
             ColumnLayout {
                 id: innerLayout
 
@@ -210,64 +173,42 @@ PopupWindow {
                 anchors.top: parent.top
                 anchors.topMargin: root.contentPadding
                 height: root.preferredHeight > 0 ? (root.preferredHeight - root.contentPadding * 2) : implicitHeight
-                states: [
-                    State {
-                        name: "open"
-                        when: root.isOpen
-
-                        PropertyChanges {
-                            target: contentTranslate
-                            y: 0
-                        }
-
-                    },
-                    State {
-                        name: "closed"
-                        when: !root.isOpen
-
-                        PropertyChanges {
-                            target: contentTranslate
-                            y: -root.implicitHeight
-                        }
-
-                    }
-                ]
-                transitions: [
-                    Transition {
-                        from: "closed"
-                        to: "open"
-
-                        NumberAnimation {
-                            target: contentTranslate
-                            property: "y"
-                            duration: 350
-                            easing.type: Easing.BezierSpline
-                            easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1]
-                        }
-
-                    },
-                    Transition {
-                        from: "open"
-                        to: "closed"
-
-                        NumberAnimation {
-                            target: contentTranslate
-                            property: "y"
-                            duration: root.animationDuration
-                            easing.type: Easing.InQuad
-                        }
-
-                    }
-                ]
 
                 transform: Translate {
                     id: contentTranslate
 
-                    y: 0
+                    y: root.isOpen ? 0 : -root.verticalOffset
+
+                    Behavior on y {
+                        NumberAnimation {
+                            duration: root.animationDuration
+                            easing.type: Easing.OutExpo
+                        }
+
+                    }
+
                 }
 
             }
 
+        }
+
+        Behavior on y {
+            NumberAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutExpo
+            }
+
+        }
+
+    }
+
+    Behavior on preferredHeight {
+        enabled: root.animateHeight
+
+        NumberAnimation {
+            duration: root.animationDuration
+            easing.type: Easing.OutQuint
         }
 
     }

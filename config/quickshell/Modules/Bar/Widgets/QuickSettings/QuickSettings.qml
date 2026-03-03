@@ -9,12 +9,10 @@ TopPopup {
 
     implicitWidth: 450
     preferredHeight: Math.min(mainCol.implicitHeight + (root.contentPadding * 2), 650)
-    onIsOpenChanged: {
-        if (!isOpen) {
-            wifiControl.expanded = false;
-            btControl.expanded = false;
-            screenshotControl.expanded = false;
-        }
+    animateHeight: true
+    onPopupClosed: {
+        wifiControl.expanded = false;
+        btControl.expanded = false;
     }
 
     ScrollView {
@@ -36,35 +34,53 @@ TopPopup {
                 Layout.fillWidth: true
                 spacing: 16
 
-                RowLayout {
+                Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 80
-                    spacing: 16
+                    Layout.preferredHeight: 64
+                    color: Theme.colBgSecondary
+                    radius: 8
 
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: Theme.colBgSecondary
-                        radius: 16
+                    Item {
+                        anchors.fill: parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
 
-                        WifiControl {
-                            id: wifiControl
+                        RowLayout {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            spacing: 16
 
-                            anchors.centerIn: parent
+                            WifiControl {
+                                id: wifiControl
+                            }
+
+                            BluetoothControl {
+                                id: btControl
+                            }
+
                         }
 
-                    }
+                        RowLayout {
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            spacing: 16
 
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: Theme.colBgSecondary
-                        radius: 16
+                            NightLightControl {
+                                id: nlControl
+                            }
 
-                        BluetoothControl {
-                            id: btControl
+                            MicControl {
+                                id: micControl
+                            }
 
-                            anchors.centerIn: parent
+                            ColorPickerControl {
+                                id: cpControl
+
+                                onRequestClose: root.isOpen = false
+                            }
+
                         }
 
                     }
@@ -93,20 +109,20 @@ TopPopup {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: slidersCol.implicitHeight + 32
+                Layout.preferredHeight: slidersCol.implicitHeight + 36
                 color: Theme.colBgSecondary
-                radius: 16
+                radius: 8
 
                 ColumnLayout {
                     id: slidersCol
 
                     anchors.centerIn: parent
                     width: parent.width - 32
-                    spacing: 16
+                    spacing: 20
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 16
+                        spacing: 10
 
                         VolumeControl {
                             id: volControl
@@ -132,66 +148,6 @@ TopPopup {
 
             }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 70
-                color: Theme.colBgSecondary
-                radius: 16
-
-                RowLayout {
-                    anchors.centerIn: parent
-                    spacing: 20
-
-                    ScreenshotControl {
-                        id: screenshotControl
-
-                        onCloseRequested: root.isOpen = false
-                    }
-
-                    NightLightControl {
-                        id: nlControl
-                    }
-
-                    MicControl {
-                        id: micControl
-                    }
-
-                    ColorPickerControl {
-                        id: cpControl
-
-                        onRequestClose: root.isOpen = false
-                    }
-
-                    QuickActionButton {
-                        id: todoBtn
-
-                        icon: "󰄲"
-                        iconColor: Theme.colGreen
-                    }
-
-                    WallpaperControl {
-                        id: wallControl
-                    }
-
-                }
-
-            }
-
-            ScreenshotOptions {
-                expanded: screenshotControl.expanded
-                onCapture: (mode) => {
-                    return screenshotControl.capture(mode);
-                }
-            }
-
-        }
-
-    }
-
-    Behavior on preferredHeight {
-        NumberAnimation {
-            duration: 300
-            easing.type: Easing.OutQuad
         }
 
     }

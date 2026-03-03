@@ -9,7 +9,7 @@ QuickActionButton {
     property bool activeState: false
 
     icon: activeState ? "󰖔" : "󰖙"
-    active: activeState
+    isActive: activeState
     activeColor: Theme.colYellow
     iconColor: activeState ? Theme.colBg : Theme.colYellow
     onClicked: {

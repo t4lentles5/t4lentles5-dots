@@ -4,9 +4,10 @@ import qs.Core
 Rectangle {
     property var selector
 
-    color: "transparent"
-    implicitWidth: icon.implicitWidth + 20
-    implicitHeight: icon.implicitHeight
+    color: mouseArea.containsMouse ? Theme.colBgSecondary : "transparent"
+    radius: 16
+    implicitWidth: icon.implicitWidth + 24
+    implicitHeight: 30
 
     Text {
         id: icon
@@ -16,16 +17,6 @@ Rectangle {
         font.pixelSize: 18
         font.family: Theme.fontFamily
         anchors.centerIn: parent
-        scale: mouseArea.containsMouse ? 1.2 : 1
-
-        Behavior on scale {
-            NumberAnimation {
-                duration: 200
-                easing.type: Easing.OutBack
-            }
-
-        }
-
     }
 
     MouseArea {
@@ -39,6 +30,13 @@ Rectangle {
                 selector.isOpen = !selector.isOpen;
 
         }
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 200
+        }
+
     }
 
 }

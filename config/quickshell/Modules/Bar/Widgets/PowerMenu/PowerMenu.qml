@@ -48,10 +48,8 @@ TopPopup {
 
     implicitWidth: 280
     preferredHeight: mainCol.implicitHeight + 32
-    onIsOpenChanged: {
-        if (!isOpen)
-            selectedId = "";
-
+    onPopupClosed: {
+        selectedId = "";
     }
 
     Process {
@@ -78,9 +76,11 @@ TopPopup {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 44
+                    Layout.preferredHeight: 48
                     color: itemCol.isSelected ? Theme.colBgLighter : (hnd.hovered ? Theme.colBgSecondary : "transparent")
-                    radius: 10
+                    border.color: itemCol.isSelected ? modelData.color : (hnd.hovered ? Theme.colMuted : "transparent")
+                    border.width: itemCol.isSelected ? 2 : 1
+                    radius: 8
 
                     RowLayout {
                         anchors.fill: parent
@@ -96,11 +96,19 @@ TopPopup {
 
                         Text {
                             text: modelData.name
-                            color: Theme.colFg
+                            color: (hnd.hovered || itemCol.isSelected) ? modelData.color : Theme.colFg
                             font.family: Theme.fontFamily
                             font.pixelSize: 15
                             font.bold: itemCol.isSelected
                             Layout.fillWidth: true
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: 300
+                                }
+
+                            }
+
                         }
 
                         Text {
@@ -112,7 +120,8 @@ TopPopup {
 
                             Behavior on rotation {
                                 NumberAnimation {
-                                    duration: 200
+                                    duration: 300
+                                    easing.type: Easing.OutQuint
                                 }
 
                             }
@@ -137,6 +146,20 @@ TopPopup {
                                 root.selectedId = itemCol.isSelected ? "" : modelData.id;
                             }
                         }
+                    }
+
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: 300
+                        }
+
+                    }
+
+                    Behavior on border.color {
+                        ColorAnimation {
+                            duration: 300
+                        }
+
                     }
 
                 }
@@ -190,9 +213,8 @@ TopPopup {
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            color: modelData.color
+                            color: hndConfirm.hovered ? Qt.lighter(modelData.color, 1.2) : modelData.color
                             radius: 6
-                            scale: hndConfirm.hovered ? 1.02 : 1
 
                             Text {
                                 anchors.centerIn: parent
@@ -217,9 +239,9 @@ TopPopup {
                                 cursorShape: Qt.PointingHandCursor
                             }
 
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: 100
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: 300
                                 }
 
                             }
@@ -231,14 +253,15 @@ TopPopup {
                     Behavior on Layout.preferredHeight {
                         NumberAnimation {
                             duration: 300
-                            easing.type: Easing.OutQuart
+                            easing.type: Easing.OutQuint
                         }
 
                     }
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 250
+                            duration: 300
+                            easing.type: Easing.OutQuint
                         }
 
                     }

@@ -3,64 +3,33 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import qs.Core
 
-Rectangle {
+IconButton {
     id: root
 
-    property string icon: ""
-    property color iconColor: Theme.colCyan
-    property bool active: false
     property color activeColor: Theme.colYellow
-    property alias hovered: hover.hovered
+    property bool active: false
 
-    signal clicked()
-
+    iconColor: Theme.colCyan
+    hoverColor: Theme.colBgLighter
     Layout.preferredWidth: 40
     Layout.preferredHeight: 40
-    radius: 20
-    color: active ? activeColor : (hovered ? Theme.colBgLighter : Theme.colBg)
-    scale: mouseArea.pressed ? 0.9 : (hovered ? 1.05 : 1)
-
-    HoverHandler {
-        id: hover
-
-        enabled: !root.active
-    }
+    iconSize: 20
+    useText: false
+    isActive: root.active
+    baseColor: isActive ? activeColor : Theme.colBg
 
     Text {
         anchors.centerIn: parent
         text: root.icon
-        color: root.active ? Theme.colBg : root.iconColor
+        color: root.isActive ? Theme.colBg : (root.hovered ? Theme.colFg : root.iconColor)
         font.family: Theme.fontFamily
-        font.pixelSize: 20
+        font.pixelSize: root.iconSize
 
         Behavior on color {
             ColorAnimation {
-                duration: 200
+                duration: 300
             }
 
-        }
-
-    }
-
-    MouseArea {
-        id: mouseArea
-
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
-    }
-
-    Behavior on scale {
-        NumberAnimation {
-            duration: 100
-            easing.type: Easing.OutQuad
-        }
-
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: 200
         }
 
     }

@@ -6,6 +6,7 @@ import qs.Modules.Bar.Components
 import qs.Modules.Bar.Widgets.Calendar
 import qs.Modules.Bar.Widgets.KeyboardLayout
 import qs.Modules.Bar.Widgets.MainPanel
+import qs.Modules.Bar.Widgets.MusicPlayer
 import qs.Modules.Bar.Widgets.PowerMenu
 import qs.Modules.Bar.Widgets.QuickSettings
 
@@ -22,10 +23,10 @@ PanelWindow {
     }
 
     margins {
-        top: 10
-        bottom: 10
-        left: 10
-        right: 10
+        top: 8
+        bottom: 0
+        left: 8
+        right: 8
     }
 
     Rectangle {
@@ -44,6 +45,7 @@ PanelWindow {
             }
 
             MusicStatusButton {
+                selector: musicPlayer
             }
 
         }
@@ -86,6 +88,15 @@ PanelWindow {
         id: mainPanel
 
         popupId: "mainPanel"
+    }
+
+    MusicPlayer {
+        id: musicPlayer
+
+        popupId: "MusicPlayer"
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 1560
+        anchor.rect.y: mainBar.height
     }
 
     KeyboardLayout {

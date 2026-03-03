@@ -5,8 +5,8 @@ import qs.Core
 Rectangle {
     property var selector
 
-    color: Theme.colBgSecondary
-    radius: 20
+    color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
+    radius: 16
     implicitWidth: clockText.implicitWidth + 30
     implicitHeight: 30
 
@@ -32,13 +32,23 @@ Rectangle {
     }
 
     MouseArea {
+        id: mouseArea
+
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             if (selector)
                 selector.isOpen = !selector.isOpen;
 
         }
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 200
+        }
+
     }
 
 }

@@ -8,6 +8,7 @@ import qs.Core
 Rectangle {
     id: root
 
+    property var selector
     property var managedPlayers: []
     property bool hasMusic: false
     property var activePlayer: null
@@ -74,13 +75,15 @@ Rectangle {
         }
     }
 
-    color: Theme.colBgSecondary
-    radius: 20
+    color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
+    radius: 16
     implicitHeight: 30
     implicitWidth: musicText.implicitWidth + 30
     Component.onCompleted: updateText()
 
     MouseArea {
+        id: mouseArea
+
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
@@ -89,7 +92,7 @@ Rectangle {
                 Hyprland.dispatch("workspace 9");
             } else if (mouse.button === Qt.LeftButton) {
                 if (root.activePlayer)
-                    root.activePlayer.togglePlaying();
+                    selector.isOpen = !selector.isOpen;
                 else
                     Hyprland.dispatch("exec sh -c 'youtube-music || spotify'");
             }
@@ -125,6 +128,13 @@ Rectangle {
             onIdentityChanged: root.updateText()
             Component.onCompleted: root.registerPlayer(p)
             Component.onDestruction: root.unregisterPlayer(p)
+        }
+
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 200
         }
 
     }

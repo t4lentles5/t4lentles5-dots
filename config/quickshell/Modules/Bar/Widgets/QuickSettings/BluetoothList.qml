@@ -19,7 +19,7 @@ Rectangle {
     opacity: expanded ? 1 : 0
     visible: expanded || Layout.preferredHeight > 0
     color: Theme.colBgSecondary
-    radius: 12
+    radius: 8
     clip: true
 
     Item {
@@ -118,6 +118,13 @@ Rectangle {
                     onTapped: root.connect(modelData.mac)
                 }
 
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 300
+                    }
+
+                }
+
             }
 
         }
@@ -127,7 +134,7 @@ Rectangle {
     Behavior on Layout.preferredHeight {
         NumberAnimation {
             duration: 300
-            easing.type: Easing.InOutQuad
+            easing.type: Easing.OutQuint
         }
 
     }
@@ -135,7 +142,7 @@ Rectangle {
     Behavior on opacity {
         NumberAnimation {
             duration: 250
-            easing.type: Easing.InOutQuad
+            easing.type: Easing.OutQuint
         }
 
     }

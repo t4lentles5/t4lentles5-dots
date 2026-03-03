@@ -13,7 +13,7 @@ TopPopup {
         "code": "us"
     }, {
         "name": "Español",
-        "code": "es"
+        "code": "latam"
     }]
 
     implicitWidth: 280
@@ -35,7 +35,7 @@ TopPopup {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
                 color: hoverHandler.hovered ? Theme.colBgSecondary : "transparent"
-                radius: 6
+                radius: 8
 
                 Text {
                     anchors.centerIn: parent

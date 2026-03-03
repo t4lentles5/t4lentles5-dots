@@ -11,7 +11,7 @@ Rectangle {
     property string batteryStatus: "Discharging"
     property bool hasBattery: false
     property string batPath: ""
-    readonly property color activeColor: {
+    property color activeColor: {
         if (root.batteryStatus === "Charging")
             return Theme.colGreen;
 
@@ -23,9 +23,9 @@ Rectangle {
 
     visible: hasBattery && batPath !== ""
     color: Theme.colBgSecondary
-    radius: 20
-    implicitHeight: 30
-    implicitWidth: mainRow.implicitWidth + 20
+    radius: 16
+    implicitHeight: 34
+    implicitWidth: mainRow.implicitWidth + 24
     Component.onCompleted: findBattery.running = true
 
     Process {
@@ -97,6 +97,8 @@ Rectangle {
         spacing: 8
 
         Text {
+            id: batIcon
+
             text: {
                 if (root.batteryStatus === "Charging")
                     return "󰂄";
@@ -120,7 +122,33 @@ Rectangle {
             }
             color: root.activeColor
             font.family: Theme.fontFamily
-            font.pixelSize: 16
+            font.pixelSize: 18
+
+            SequentialAnimation on opacity {
+                id: breathAnim
+
+                loops: Animation.Infinite
+                running: root.batteryStatus === "Charging"
+                onRunningChanged: {
+                    if (!running)
+                        batIcon.opacity = 1;
+
+                }
+
+                NumberAnimation {
+                    to: 0.4
+                    duration: 1000
+                    easing.type: Easing.InOutSine
+                }
+
+                NumberAnimation {
+                    to: 1
+                    duration: 1000
+                    easing.type: Easing.InOutSine
+                }
+
+            }
+
         }
 
         Text {
@@ -130,6 +158,14 @@ Rectangle {
             font.pixelSize: 13
             font.bold: true
             visible: root.batteryLevel > 0
+        }
+
+    }
+
+    Behavior on activeColor {
+        ColorAnimation {
+            duration: 300
+            easing.type: Easing.OutQuint
         }
 
     }
