@@ -152,7 +152,7 @@ RowLayout {
             id: bgRect
 
             anchors.fill: parent
-            radius: 8
+            radius: Theme.radiusSm
             color: root.enabled ? Theme.colBlue : Theme.colBg
         }
 
@@ -174,11 +174,10 @@ RowLayout {
                 hoverColor: root.enabled ? Qt.lighter(Theme.colBlue, 1.2) : Theme.colBgLighter
                 onClicked: root.toggle()
 
-                Text {
+                ThemedText {
                     anchors.centerIn: parent
                     text: parent.icon
                     color: root.enabled ? Theme.colBg : Theme.colFg
-                    font.family: Theme.fontFamily
                     font.pixelSize: parent.iconSize
                 }
 
@@ -187,8 +186,8 @@ RowLayout {
             Rectangle {
                 width: 1
                 Layout.fillHeight: true
-                Layout.topMargin: 8
-                Layout.bottomMargin: 8
+                Layout.topMargin: Theme.spacingSm
+                Layout.bottomMargin: Theme.spacingSm
                 color: root.enabled ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(1, 1, 1, 0.1)
                 opacity: root.enabled ? 1 : 0.2
             }
@@ -210,7 +209,7 @@ RowLayout {
 
                 }
 
-                Text {
+                ThemedText {
                     anchors.centerIn: parent
                     text: parent.icon
                     color: root.enabled ? (parent.hovered ? Theme.colFg : Theme.colBg) : Theme.colMuted
@@ -219,7 +218,7 @@ RowLayout {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 300
+                            duration: Theme.animSlow
                         }
 
                     }
@@ -234,7 +233,7 @@ RowLayout {
                     maskSource: Rectangle {
                         width: bgRect.width
                         height: bgRect.height
-                        radius: 8
+                        radius: Theme.radiusSm
                     }
 
                 }

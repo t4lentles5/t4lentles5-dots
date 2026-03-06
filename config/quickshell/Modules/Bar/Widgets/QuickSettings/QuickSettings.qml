@@ -28,28 +28,28 @@ TopPopup {
             id: mainCol
 
             width: scrollView.availableWidth
-            spacing: 16
+            spacing: Theme.spacingLg
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 16
+                spacing: Theme.spacingLg
 
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 64
                     color: Theme.colBgSecondary
-                    radius: 8
+                    radius: Theme.radiusSm
 
                     Item {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
+                        anchors.leftMargin: Theme.spacingLg
+                        anchors.rightMargin: Theme.spacingLg
 
                         RowLayout {
                             anchors.left: parent.left
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            spacing: 16
+                            spacing: Theme.spacingLg
 
                             WifiControl {
                                 id: wifiControl
@@ -65,7 +65,7 @@ TopPopup {
                             anchors.right: parent.right
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            spacing: 16
+                            spacing: Theme.spacingLg
 
                             NightLightControl {
                                 id: nlControl
@@ -111,7 +111,7 @@ TopPopup {
                 Layout.fillWidth: true
                 Layout.preferredHeight: slidersCol.implicitHeight + 36
                 color: Theme.colBgSecondary
-                radius: 8
+                radius: Theme.radiusSm
 
                 ColumnLayout {
                     id: slidersCol

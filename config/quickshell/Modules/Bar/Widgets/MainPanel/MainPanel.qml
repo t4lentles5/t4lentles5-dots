@@ -16,7 +16,8 @@ TopPopup {
     implicitWidth: 750
 
     ScrollView {
-        anchors.fill: parent
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         contentWidth: availableWidth
         contentHeight: mainCol.implicitHeight
         clip: true
@@ -25,17 +26,17 @@ TopPopup {
             id: mainCol
 
             width: parent.width
-            spacing: 16
+            spacing: Theme.spacingLg
 
             RowLayout {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 140
-                spacing: 16
+                spacing: Theme.spacingLg
 
                 UserCard {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 3
+                    Layout.preferredWidth: 2
                 }
 
                 SystemUpdatesCard {

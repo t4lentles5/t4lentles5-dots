@@ -9,7 +9,7 @@ import qs.Core
 TopPopup {
     id: root
 
-    property int cardPadding: 24
+    property int cardPadding: 16
     property var managedPlayers: []
     property var activePlayer: null
     readonly property int statePlaying: 1
@@ -59,8 +59,7 @@ TopPopup {
         }
     }
 
-    implicitWidth: 320
-    preferredHeight: root.activePlayer ? 420 : 220
+    implicitWidth: 260
 
     Instantiator {
         model: Mpris.players
@@ -78,26 +77,24 @@ TopPopup {
 
     Item {
         Layout.fillWidth: true
-        Layout.preferredHeight: 160
+        Layout.preferredHeight: 140
         visible: root.activePlayer === null
 
         ColumnLayout {
             anchors.centerIn: parent
-            spacing: 12
+            spacing: 8
 
-            Text {
+            ThemedText {
                 text: "󰎆"
                 color: Theme.colMuted
                 font.pixelSize: 48
-                font.family: Theme.fontFamily
                 Layout.alignment: Qt.AlignHCenter
             }
 
-            Text {
+            ThemedText {
                 text: "No Media Playing"
                 color: Theme.colMuted
-                font.pixelSize: 14
-                font.family: Theme.fontFamily
+                font.pixelSize: Theme.fontSizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -105,7 +102,7 @@ TopPopup {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 200
+                duration: Theme.animNormal
             }
 
         }
@@ -114,29 +111,30 @@ TopPopup {
 
     ColumnLayout {
         Layout.fillWidth: true
-        spacing: 0
+        spacing: 8
         visible: root.activePlayer !== null
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 380
+            Layout.preferredHeight: 300
             color: Theme.colBgSecondary
-            radius: 8
+            radius: Theme.radiusSm
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 20
-                spacing: 18
+                anchors.margins: 16
+                spacing: 16
 
                 Item {
-                    Layout.preferredWidth: parent.width
-                    Layout.preferredHeight: width
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 160
+                    Layout.alignment: Qt.AlignHCenter
 
                     Rectangle {
                         id: artMask
 
                         anchors.fill: parent
-                        radius: 8
+                        radius: Theme.radiusSm
                         visible: false
                     }
 
@@ -152,21 +150,20 @@ TopPopup {
 
                     Rectangle {
                         anchors.fill: parent
-                        radius: 8
+                        radius: Theme.radiusSm
                         color: Theme.colBgLighter
                         opacity: albumArt.status === Image.Ready ? 0 : 1
 
-                        Text {
+                        ThemedText {
                             anchors.centerIn: parent
                             text: ""
                             color: Theme.colPurple
                             font.pixelSize: 60
-                            font.family: Theme.fontFamily
                         }
 
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: 300
+                                duration: Theme.animSlow
                                 easing.type: Easing.OutQuint
                             }
 
@@ -182,7 +179,7 @@ TopPopup {
 
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: 300
+                                duration: Theme.animSlow
                                 easing.type: Easing.OutQuint
                             }
 
@@ -196,21 +193,19 @@ TopPopup {
                     Layout.fillWidth: true
                     spacing: 2
 
-                    Text {
+                    ThemedText {
                         text: root.activePlayer ? (root.activePlayer.trackTitle || "Unknown Title") : ""
                         color: Theme.colFg
-                        font.pixelSize: 18
+                        font.pixelSize: Theme.fontSizeMd
                         font.bold: true
-                        font.family: Theme.fontFamily
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
 
-                    Text {
+                    ThemedText {
                         text: root.activePlayer ? (root.activePlayer.trackArtist || "Unknown Artist") : ""
                         color: Theme.colCyan
-                        font.pixelSize: 14
-                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSizeSm
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -220,7 +215,7 @@ TopPopup {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
-                    spacing: 30
+                    spacing: 20
 
                     IconButton {
                         icon: "󰒮"
@@ -240,7 +235,7 @@ TopPopup {
                         iconSize: 28
                         width: 48
                         height: 48
-                        radius: 16
+                        radius: Theme.radiusLg
                         iconColor: Theme.colBg
                         hoverColor: Theme.colCyan
                         baseColor: Theme.colPurple
@@ -272,7 +267,7 @@ TopPopup {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 200
+                duration: Theme.animNormal
             }
 
         }

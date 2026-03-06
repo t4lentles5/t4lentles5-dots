@@ -19,7 +19,7 @@ Rectangle {
     opacity: expanded ? 1 : 0
     visible: expanded || Layout.preferredHeight > 0
     color: Theme.colBgSecondary
-    radius: 8
+    radius: Theme.radiusSm
     clip: true
 
     Item {
@@ -30,19 +30,18 @@ Rectangle {
 
         ColumnLayout {
             anchors.centerIn: parent
-            spacing: 8
+            spacing: Theme.spacingSm
 
             Item {
                 Layout.alignment: Qt.AlignHCenter
                 width: 32
                 height: 32
 
-                Text {
+                ThemedText {
                     anchors.centerIn: parent
                     text: "󰑐"
                     color: Theme.colBlue
                     font.pixelSize: 24
-                    font.family: Theme.fontFamily
                 }
 
                 RotationAnimation on rotation {
@@ -55,12 +54,11 @@ Rectangle {
 
             }
 
-            Text {
+            ThemedText {
                 Layout.alignment: Qt.AlignHCenter
                 text: "Scanning..."
                 color: Theme.colMuted
-                font.pixelSize: 12
-                font.family: Theme.fontFamily
+                font.pixelSize: Theme.fontSizeSm
             }
 
         }
@@ -77,11 +75,10 @@ Rectangle {
         spacing: 5
         visible: root.btList.length > 0
 
-        Text {
+        ThemedText {
             text: "Available Devices"
             color: Theme.colMuted
-            font.pixelSize: 12
-            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSizeSm
             Layout.bottomMargin: 5
         }
 
@@ -92,17 +89,16 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 34
                 color: hoverHandlerB.hovered ? Theme.colBgLighter : "transparent"
-                radius: 8
+                radius: Theme.radiusSm
 
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 10
                     anchors.rightMargin: 10
 
-                    Text {
+                    ThemedText {
                         text: modelData.name
                         color: Theme.colFg
-                        font.family: Theme.fontFamily
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter
@@ -120,7 +116,7 @@ Rectangle {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 300
+                        duration: Theme.animSlow
                     }
 
                 }
@@ -133,7 +129,7 @@ Rectangle {
 
     Behavior on Layout.preferredHeight {
         NumberAnimation {
-            duration: 300
+            duration: Theme.animSlow
             easing.type: Easing.OutQuint
         }
 
@@ -141,7 +137,7 @@ Rectangle {
 
     Behavior on opacity {
         NumberAnimation {
-            duration: 250
+            duration: Theme.animNormal
             easing.type: Easing.OutQuint
         }
 

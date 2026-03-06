@@ -68,8 +68,8 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 16
+            anchors.margins: Theme.spacingLg
+            spacing: Theme.spacingLg
             clip: true
 
             Item {
@@ -136,19 +136,17 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
                 spacing: 2
 
-                Text {
+                ThemedText {
                     text: root.greeting
                     color: Theme.colMuted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.fontSizeSm
                     font.bold: true
                 }
 
-                Text {
+                ThemedText {
                     text: root.userName.charAt(0).toUpperCase() + root.userName.slice(1)
                     color: Theme.colFg
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 18
+                    font.pixelSize: Theme.fontSizeLg
                     font.bold: true
                     elide: Text.ElideRight
                 }
@@ -157,18 +155,16 @@ Item {
                     spacing: 6
                     Layout.topMargin: 4
 
-                    Text {
+                    ThemedText {
                         text: "󰅐"
                         color: Theme.colPurple
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Theme.fontSizeSm
                     }
 
-                    Text {
+                    ThemedText {
                         text: root.uptime
                         color: Theme.colMuted
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Theme.fontSizeSm
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -178,18 +174,16 @@ Item {
                 RowLayout {
                     spacing: 6
 
-                    Text {
+                    ThemedText {
                         text: "󰣇"
                         color: Theme.colBlueArch
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Theme.fontSizeSm
                     }
 
-                    Text {
+                    ThemedText {
                         text: root.osName
                         color: Theme.colMuted
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Theme.fontSizeSm
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }

@@ -21,8 +21,8 @@ CenterWindow {
     }
 
     popupId: "screenshot"
-    preferredHeight: 380
-    preferredWidth: 440
+    preferredHeight: mainCol.implicitHeight + 32
+    preferredWidth: 300
     onPopupOpened: {
         focusTimer.start();
         shotView.currentIndex = 0;
@@ -57,68 +57,78 @@ CenterWindow {
 
         ListElement {
             label: "Current Window"
-            iconSource: ""
+            iconSource: "󰖯"
             shotMode: "window"
         }
 
         ListElement {
-            label: "Full (3s)"
+            label: "Full (3s delay)"
             iconSource: "󰔝"
             shotMode: "full_delay"
+        }
+
+        ListElement {
+            label: "Area to Clipboard"
+            iconSource: "󰆏"
+            shotMode: "clipboard"
         }
 
     }
 
     ColumnLayout {
-        spacing: 20
-        anchors.fill: parent
-        anchors.margins: 16
+        id: mainCol
 
-        Text {
-            text: "󰄄  Take Screenshot"
-            color: Theme.colFg
-            font.pixelSize: 22
-            font.family: Theme.fontFamily
-            font.bold: true
-            Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: 10
-            Layout.bottomMargin: 10
+        width: parent.width
+        spacing: Theme.spacingSm
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.leftMargin: 14
+            Layout.rightMargin: 14
+            spacing: Theme.spacingSm
+
+            ThemedText {
+                text: "󰄄"
+                color: Theme.colPurple
+                font.pixelSize: Theme.fontSizeLg
+            }
+
+            ThemedText {
+                text: "Screenshot"
+                color: Theme.colFg
+                font.pixelSize: Theme.fontSizeLg
+                font.bold: true
+                Layout.fillWidth: true
+            }
+
         }
 
-        GridView {
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: Theme.colBgLighter
+        }
+
+        ColumnLayout {
             id: shotView
 
+            property int currentIndex: 0
+
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: shotModel
-            cellWidth: width / 2
-            cellHeight: height / 2
-            clip: true
-            currentIndex: 0
-            interactive: false
+            spacing: 2
             Keys.onPressed: function(event) {
-                if (event.key === Qt.Key_Right) {
-                    if (currentIndex % 2 === 0 && currentIndex + 1 < count) {
+                if (event.key === Qt.Key_Down) {
+                    if (currentIndex + 1 < shotModel.count) {
                         currentIndex++;
                         event.accepted = true;
                     }
-                } else if (event.key === Qt.Key_Left) {
-                    if (currentIndex % 2 !== 0 && currentIndex - 1 >= 0) {
+                } else if (event.key === Qt.Key_Up) {
+                    if (currentIndex - 1 >= 0) {
                         currentIndex--;
                         event.accepted = true;
                     }
-                } else if (event.key === Qt.Key_Down) {
-                    if (currentIndex + 2 < count) {
-                        currentIndex += 2;
-                        event.accepted = true;
-                    }
-                } else if (event.key === Qt.Key_Up) {
-                    if (currentIndex - 2 >= 0) {
-                        currentIndex -= 2;
-                        event.accepted = true;
-                    }
                 } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    if (currentIndex >= 0 && currentIndex < count) {
+                    if (currentIndex >= 0 && currentIndex < shotModel.count) {
                         let shotMode = shotModel.get(currentIndex).shotMode;
                         root.runShot(shotMode);
                         event.accepted = true;
@@ -126,54 +136,46 @@ CenterWindow {
                 }
             }
 
-            delegate: Item {
-                id: delegateRoot
-
-                readonly property bool isCurrent: shotView.currentIndex === index
-
-                width: shotView.cellWidth
-                height: shotView.cellHeight
+            Repeater {
+                model: shotModel
 
                 Rectangle {
-                    anchors.fill: parent
-                    anchors.margins: 8
-                    radius: 12
-                    color: isCurrent ? Theme.colBgLighter : Theme.colBgSecondary
-                    border.color: isCurrent ? Theme.colPurple : "transparent"
-                    border.width: 1
-                    scale: hoverHandler.hovered || isCurrent ? 1.02 : 1
+                    readonly property bool isCurrent: shotView.currentIndex === index
 
-                    ColumnLayout {
-                        anchors.centerIn: parent
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 42
+                    radius: Theme.radiusSm
+                    color: isCurrent ? Theme.colBgLighter : (hoverHandler.hovered ? Theme.colBgSecondary : "transparent")
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 14
+                        anchors.rightMargin: 14
                         spacing: 12
 
-                        Text {
+                        ThemedText {
                             text: model.iconSource
                             color: isCurrent ? Theme.colPurple : Theme.colFg
-                            font.pixelSize: 42
-                            font.family: Theme.fontFamily
-                            Layout.alignment: Qt.AlignHCenter
+                            font.pixelSize: Theme.fontSizeLg
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 200
+                                    duration: Theme.animNormal
                                 }
 
                             }
 
                         }
 
-                        Text {
+                        ThemedText {
                             text: model.label
                             color: isCurrent ? Theme.colPurple : Theme.colFg
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 15
-                            font.bold: true
-                            Layout.alignment: Qt.AlignHCenter
+                            font.bold: isCurrent
+                            Layout.fillWidth: true
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 200
+                                    duration: Theme.animNormal
                                 }
 
                             }
@@ -184,6 +186,8 @@ CenterWindow {
 
                     HoverHandler {
                         id: hoverHandler
+
+                        cursorShape: Qt.PointingHandCursor
                     }
 
                     TapHandler {
@@ -193,24 +197,9 @@ CenterWindow {
                         }
                     }
 
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 250
-                            easing.type: Easing.OutBack
-                        }
-
-                    }
-
                     Behavior on color {
                         ColorAnimation {
-                            duration: 200
-                        }
-
-                    }
-
-                    Behavior on border.color {
-                        ColorAnimation {
-                            duration: 200
+                            duration: Theme.animNormal
                         }
 
                     }

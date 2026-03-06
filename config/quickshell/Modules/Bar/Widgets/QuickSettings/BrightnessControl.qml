@@ -62,15 +62,14 @@ RowLayout {
     Rectangle {
         width: 40
         height: 40
-        radius: 8
+        radius: Theme.radiusSm
         color: Theme.colBg
 
-        Text {
+        ThemedText {
             anchors.centerIn: parent
             text: "󰃠"
             color: Theme.colCyan
-            font.family: Theme.fontFamily
-            font.pixelSize: 20
+            font.pixelSize: Theme.fontSizeLg
         }
 
     }
@@ -116,7 +115,7 @@ RowLayout {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 200
+                    duration: Theme.animNormal
                     easing.type: Easing.OutBack
                 }
 
@@ -124,7 +123,7 @@ RowLayout {
 
             Behavior on height {
                 NumberAnimation {
-                    duration: 200
+                    duration: Theme.animNormal
                     easing.type: Easing.OutBack
                 }
 
@@ -134,11 +133,10 @@ RowLayout {
 
     }
 
-    Text {
+    ThemedText {
         text: root.brightness + "%"
         color: Theme.colFg
-        font.family: Theme.fontFamily
-        font.pixelSize: 14
+        font.pixelSize: Theme.fontSizeMd
         Layout.preferredWidth: 35
         horizontalAlignment: Text.AlignRight
     }

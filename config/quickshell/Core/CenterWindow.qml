@@ -203,7 +203,7 @@ PanelWindow {
 
             anchors.fill: parent
             anchors.margins: root.contentPadding
-            spacing: 15
+            spacing: Theme.spacingLg
         }
 
         transform: Translate {

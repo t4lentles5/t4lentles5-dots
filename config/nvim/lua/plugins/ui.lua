@@ -92,16 +92,13 @@ return {
   },
 
   {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
     config = function()
-      require("nvim-tree").setup({
-        view = { width = 30, side = "left" },
-        renderer = {
-          icons = {
-            show = { file = true, folder = true, folder_arrow = true, git = true },
-          },
-        },
+      require("neo-tree").setup({
+        close_if_last_window = true,
+        window = { width = 30 },
       })
     end,
   },
@@ -136,6 +133,42 @@ return {
   { "sphamba/smear-cursor.nvim", opts = {} },
 
   {
+    "echasnovski/mini.indentscope",
+    version = false,
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      symbol = "│",
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "help", "alpha", "dashboard", "neo-tree", "Trouble", "trouble", "lazy", "mason", "notify", "toggleterm", "lazyterm",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.animate",
+    event = "VeryLazy",
+    opts = function()
+      local animate = require("mini.animate")
+      return {
+        resize = {
+          timing = animate.gen_timing.linear({ duration = 50, unit = "step" }),
+        },
+        scroll = {
+          timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+      }
+    end,
+  },
+
+  {
     "akinsho/bufferline.nvim",
     version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
@@ -147,7 +180,7 @@ return {
         show_close_icon = true,
         offsets = {
           {
-            filetype = "NvimTree",
+            filetype = "neo-tree",
             text = "File Explorer",
             highlight = "Directory",
             text_align = "left",

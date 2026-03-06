@@ -68,20 +68,18 @@ Item {
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Theme.spacingSm
 
-                Text {
+                ThemedText {
                     text: "󰏔"
                     color: Theme.colPurple
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 16
+                    font.pixelSize: Theme.fontSizeMd
                 }
 
-                Text {
+                ThemedText {
                     text: "System Updates"
                     color: Theme.colFg
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 14
+                    font.pixelSize: Theme.fontSizeMd
                     font.bold: true
                     Layout.fillWidth: true
                 }
@@ -93,11 +91,10 @@ Item {
                     color: root.hasUpdates ? Theme.colYellow : Theme.colGreen
                 }
 
-                Text {
+                ThemedText {
                     text: root.hasUpdates ? (parseInt(root.pacmanUpdates) + parseInt(root.aurUpdates)) + " Pending" : "Up to date"
                     color: Theme.colMuted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 11
+                    font.pixelSize: Theme.fontSizeSm
                 }
 
             }
@@ -116,7 +113,7 @@ Item {
                 ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: 8
+                    spacing: Theme.spacingSm
 
                     UpdateRowItem {
                         icon: "󰣇"
@@ -142,7 +139,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: 80
                     color: updateArea.containsPress ? Qt.darker(Theme.colPurple, 1.2) : (updateArea.containsMouse ? Theme.colPurple : Qt.rgba(Theme.colPurple.r, Theme.colPurple.g, Theme.colPurple.b, 0.1))
-                    radius: 8
+                    radius: Theme.radiusSm
                     border.color: Theme.colPurple
                     border.width: 1
                     scale: updateArea.containsPress ? 0.95 : 1
@@ -151,20 +148,18 @@ Item {
                         anchors.centerIn: parent
                         spacing: 6
 
-                        Text {
+                        ThemedText {
                             text: "󰚰"
                             Layout.alignment: Qt.AlignHCenter
                             color: updateArea.containsMouse ? Theme.colBg : Theme.colPurple
-                            font.family: Theme.fontFamily
                             font.pixelSize: 24
                         }
 
-                        Text {
+                        ThemedText {
                             text: "Update"
                             Layout.alignment: Qt.AlignHCenter
                             color: updateArea.containsMouse ? Theme.colBg : Theme.colPurple
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Theme.fontSizeSm
                             font.bold: true
                         }
 
@@ -181,7 +176,7 @@ Item {
 
                     Behavior on scale {
                         NumberAnimation {
-                            duration: 200
+                            duration: Theme.animNormal
                             easing.type: Easing.OutBack
                         }
 
@@ -189,7 +184,7 @@ Item {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 200
+                            duration: Theme.animNormal
                         }
 
                     }
@@ -210,7 +205,7 @@ Item {
 
         Layout.fillWidth: true
         Layout.fillHeight: true
-        radius: 8
+        radius: Theme.radiusSm
         color: itemHover.containsMouse ? Theme.colBgLighter : "transparent"
 
         MouseArea {
@@ -223,22 +218,20 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 8
+            anchors.leftMargin: Theme.spacingSm
+            anchors.rightMargin: Theme.spacingSm
             spacing: 12
 
-            Text {
+            ThemedText {
                 text: icon
                 color: iconColor
-                font.family: Theme.fontFamily
-                font.pixelSize: 18
+                font.pixelSize: Theme.fontSizeLg
             }
 
-            Text {
+            ThemedText {
                 text: label
                 color: Theme.colFg
-                font.family: Theme.fontFamily
-                font.pixelSize: 13
+                font.pixelSize: Theme.fontSizeMd
                 font.bold: true
                 Layout.fillWidth: true
             }
@@ -251,12 +244,11 @@ Item {
                 border.color: parseInt(count) > 0 ? iconColor : "transparent"
                 border.width: 1
 
-                Text {
+                ThemedText {
                     anchors.centerIn: parent
                     text: count
                     color: parseInt(count) > 0 ? iconColor : Theme.colMuted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.fontSizeSm
                     font.bold: true
                 }
 
@@ -266,7 +258,7 @@ Item {
 
         Behavior on color {
             ColorAnimation {
-                duration: 200
+                duration: Theme.animNormal
             }
 
         }

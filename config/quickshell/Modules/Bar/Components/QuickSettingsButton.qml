@@ -3,11 +3,11 @@ import QtQuick.Layouts
 import qs.Core
 
 Rectangle {
-    property var selector
+    property var widget
 
     implicitHeight: 30
     color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
-    radius: 16
+    radius: Theme.radiusLg
     implicitWidth: layout.implicitWidth + 30
 
     RowLayout {
@@ -16,18 +16,16 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 12
 
-        Text {
+        ThemedText {
             text: " "
             color: Theme.colBlue
-            font.pixelSize: Theme.fontSize
-            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSizeMd
         }
 
-        Text {
+        ThemedText {
             text: ""
             color: Theme.colBlue
-            font.pixelSize: Theme.fontSize + 2
-            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSizeMd + 2
         }
 
     }
@@ -39,15 +37,15 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: true
         onClicked: {
-            if (selector)
-                selector.isOpen = !selector.isOpen;
+            if (widget)
+                widget.isOpen = !widget.isOpen;
 
         }
     }
 
     Behavior on color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.animNormal
         }
 
     }

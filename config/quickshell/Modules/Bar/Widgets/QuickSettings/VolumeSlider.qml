@@ -55,7 +55,7 @@ RowLayout {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 200
+                    duration: Theme.animNormal
                     easing.type: Easing.OutBack
                 }
 
@@ -63,7 +63,7 @@ RowLayout {
 
             Behavior on height {
                 NumberAnimation {
-                    duration: 200
+                    duration: Theme.animNormal
                     easing.type: Easing.OutBack
                 }
 
@@ -73,11 +73,10 @@ RowLayout {
 
     }
 
-    Text {
+    ThemedText {
         text: root.volume + "%"
         color: Theme.colFg
-        font.family: Theme.fontFamily
-        font.pixelSize: 14
+        font.pixelSize: Theme.fontSizeMd
         Layout.preferredWidth: 35
         horizontalAlignment: Text.AlignRight
     }

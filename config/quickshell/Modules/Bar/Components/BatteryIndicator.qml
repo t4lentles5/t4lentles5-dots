@@ -23,7 +23,7 @@ Rectangle {
 
     visible: hasBattery && batPath !== ""
     color: Theme.colBgSecondary
-    radius: 16
+    radius: Theme.radiusLg
     implicitHeight: 34
     implicitWidth: mainRow.implicitWidth + 24
     Component.onCompleted: findBattery.running = true
@@ -94,9 +94,9 @@ Rectangle {
         id: mainRow
 
         anchors.centerIn: parent
-        spacing: 8
+        spacing: Theme.spacingSm
 
-        Text {
+        ThemedText {
             id: batIcon
 
             text: {
@@ -121,8 +121,7 @@ Rectangle {
                 return "󰂃";
             }
             color: root.activeColor
-            font.family: Theme.fontFamily
-            font.pixelSize: 18
+            font.pixelSize: Theme.fontSizeMd
 
             SequentialAnimation on opacity {
                 id: breathAnim
@@ -151,11 +150,10 @@ Rectangle {
 
         }
 
-        Text {
+        ThemedText {
             text: root.batteryLevel + "%"
             color: root.activeColor
-            font.family: Theme.fontFamily
-            font.pixelSize: 13
+            font.pixelSize: Theme.fontSizeMd
             font.bold: true
             visible: root.batteryLevel > 0
         }
@@ -164,7 +162,7 @@ Rectangle {
 
     Behavior on activeColor {
         ColorAnimation {
-            duration: 300
+            duration: Theme.animSlow
             easing.type: Easing.OutQuint
         }
 

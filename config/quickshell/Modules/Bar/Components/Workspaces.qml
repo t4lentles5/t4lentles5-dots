@@ -6,7 +6,7 @@ import qs.Core
 
 Rectangle {
     color: Theme.colBgSecondary
-    radius: 16
+    radius: Theme.radiusLg
     implicitWidth: layout.implicitWidth + 30
     implicitHeight: 34
 
@@ -46,7 +46,7 @@ Rectangle {
 
                 Behavior on Layout.preferredWidth {
                     NumberAnimation {
-                        duration: 300
+                        duration: Theme.animSlow
                         easing.type: Easing.OutBack
                     }
 
@@ -54,7 +54,7 @@ Rectangle {
 
                 Behavior on Layout.preferredHeight {
                     NumberAnimation {
-                        duration: 300
+                        duration: Theme.animSlow
                         easing.type: Easing.OutBack
                     }
 
@@ -62,7 +62,7 @@ Rectangle {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 300
+                        duration: Theme.animSlow
                     }
 
                 }

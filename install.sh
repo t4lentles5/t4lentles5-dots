@@ -2,5 +2,7 @@ dependencies=(bat bc btop cava dunst eza fd fzf gnome-calculator gnome-font-view
 
 aur_dependencies=(bibata-cursor-theme-bin catppuccin-gtk-theme-mocha fzf-tab-git layan-cursor-theme-git maple-mono-nf-cn quickshell sddm-theme-tokyo-night-git tela-circle-icon-theme-dracula-git xxhash pokemon-colorscripts-git)
 
-systemctl status NetworkManager
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager   
 sudo systemctl enable --now bluetooth
+sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si

@@ -18,16 +18,15 @@ IconButton {
     isActive: root.active
     baseColor: isActive ? activeColor : Theme.colBg
 
-    Text {
+    ThemedText {
         anchors.centerIn: parent
         text: root.icon
         color: root.isActive ? Theme.colBg : (root.hovered ? Theme.colFg : root.iconColor)
-        font.family: Theme.fontFamily
         font.pixelSize: root.iconSize
 
         Behavior on color {
             ColorAnimation {
-                duration: 300
+                duration: Theme.animSlow
             }
 
         }

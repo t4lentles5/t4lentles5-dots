@@ -6,7 +6,9 @@ return {
 			vim.o.timeout = true
 			vim.o.timeoutlen = 300
 		end,
-		opts = {},
+		opts = {
+			preset = "modern",
+		},
 	},
 
 	{
@@ -14,8 +16,8 @@ return {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		cmd = "Telescope",
 		keys = {
-			{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Buscar archivos" },
-			{ "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Buscar texto" },
+			{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+			{ "<leader>fg", "<cmd>Telescope live_grep<cr>",  desc = "Live grep (Find text)" },
 		},
 	},
 
@@ -48,6 +50,7 @@ return {
 				changedelete = { text = "▎" },
 				untracked = { text = "▎" },
 			},
+			current_line_blame = true,
 		},
 	},
 
@@ -68,5 +71,11 @@ return {
 	{
 		"famiu/bufdelete.nvim",
 		event = "VeryLazy",
+	},
+
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {},
 	},
 }

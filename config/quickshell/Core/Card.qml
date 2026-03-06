@@ -7,7 +7,7 @@ Rectangle {
     property bool outlined: false
 
     color: Theme.colBgSecondary
-    radius: 8
+    radius: Theme.radiusSm
     border.color: outlined ? Theme.colBgSecondary : "transparent"
     border.width: outlined ? 2 : 0
     Component.onCompleted: {

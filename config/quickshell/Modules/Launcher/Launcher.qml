@@ -99,7 +99,7 @@ CenterWindow {
         Layout.fillWidth: true
         Layout.preferredHeight: 48
         color: Theme.colBgSecondary
-        radius: 8
+        radius: Theme.radiusSm
 
         Rectangle {
             anchors.bottom: parent.bottom
@@ -110,7 +110,7 @@ CenterWindow {
 
             Behavior on color {
                 ColorAnimation {
-                    duration: 250
+                    duration: Theme.animNormal
                 }
 
             }
@@ -121,17 +121,16 @@ CenterWindow {
             anchors.fill: parent
             anchors.leftMargin: 20
             anchors.rightMargin: 20
-            spacing: 16
+            spacing: Theme.spacingLg
 
-            Text {
+            ThemedText {
                 text: ""
                 color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
                 font.pixelSize: 22
-                font.family: Theme.fontFamily
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 250
+                        duration: Theme.animNormal
                     }
 
                 }
@@ -145,8 +144,8 @@ CenterWindow {
                 placeholderText: "Search applications..."
                 placeholderTextColor: Theme.colMuted
                 color: Theme.colFg
-                font.family: Theme.fontFamily
                 font.pixelSize: 14
+                font.family: Theme.fontFamily
                 background: null
                 onTextChanged: root.filterApps(text)
                 Keys.onPressed: function(event) {
@@ -175,7 +174,7 @@ CenterWindow {
 
         Behavior on border.color {
             ColorAnimation {
-                duration: 250
+                duration: Theme.animNormal
             }
 
         }
@@ -189,21 +188,19 @@ CenterWindow {
         ColumnLayout {
             anchors.centerIn: parent
             visible: filteredModel.count === 0 && searchField.text !== ""
-            spacing: 16
+            spacing: Theme.spacingLg
 
-            Text {
+            ThemedText {
                 text: "󰩉"
                 color: Theme.colBgLighter
                 font.pixelSize: 72
-                font.family: Theme.fontFamily
                 Layout.alignment: Qt.AlignHCenter
             }
 
-            Text {
+            ThemedText {
                 text: "No applications found"
                 color: Theme.colMuted
                 font.pixelSize: 16
-                font.family: Theme.fontFamily
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -215,7 +212,7 @@ CenterWindow {
             anchors.fill: parent
             clip: true
             model: filteredModel
-            spacing: 8
+            spacing: Theme.spacingSm
             currentIndex: -1
             highlightResizeDuration: 0
             highlightMoveDuration: 250
@@ -244,7 +241,7 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 8
+                    radius: Theme.radiusSm
                     color: Theme.colBgLighter
                 }
 
@@ -255,7 +252,7 @@ CenterWindow {
                     properties: "opacity"
                     from: 0
                     to: 1
-                    duration: 250
+                    duration: Theme.animNormal
                     easing.type: Easing.OutQuint
                 }
 
@@ -266,7 +263,7 @@ CenterWindow {
                     properties: "opacity"
                     from: 0
                     to: 1
-                    duration: 250
+                    duration: Theme.animNormal
                     easing.type: Easing.OutQuint
                 }
 
@@ -283,13 +280,13 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 8
+                    radius: Theme.radiusSm
                     color: Theme.colBgLighter
                     opacity: hoverHandler.hovered && !isCurrent ? 0.4 : 0
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 200
+                            duration: Theme.animNormal
                         }
 
                     }
@@ -300,12 +297,12 @@ CenterWindow {
                     anchors.fill: parent
                     anchors.leftMargin: 20
                     anchors.rightMargin: 20
-                    spacing: 16
+                    spacing: Theme.spacingLg
 
                     Rectangle {
                         Layout.preferredWidth: 36
                         Layout.preferredHeight: 36
-                        radius: 8
+                        radius: Theme.radiusSm
                         color: "transparent"
 
                         Image {
@@ -316,18 +313,17 @@ CenterWindow {
                             fillMode: Image.PreserveAspectFit
                             scale: isCurrent ? 1.15 : 1
 
-                            Text {
+                            ThemedText {
                                 anchors.centerIn: parent
                                 visible: parent.status !== Image.Ready
                                 text: ""
                                 color: isCurrent ? Theme.colPurple : Theme.colMuted
-                                font.family: Theme.fontFamily
                                 font.pixelSize: 20
                             }
 
                             Behavior on scale {
                                 NumberAnimation {
-                                    duration: 250
+                                    duration: Theme.animNormal
                                     easing.type: Easing.OutBack
                                 }
 
@@ -337,10 +333,9 @@ CenterWindow {
 
                     }
 
-                    Text {
+                    ThemedText {
                         text: model.name
                         color: isCurrent ? Theme.colPurple : Theme.colFg
-                        font.family: Theme.fontFamily
                         font.bold: isCurrent
                         font.pixelSize: 14
                         Layout.fillWidth: true
@@ -349,14 +344,14 @@ CenterWindow {
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: 200
+                                duration: Theme.animNormal
                             }
 
                         }
 
                         Behavior on scale {
                             NumberAnimation {
-                                duration: 250
+                                duration: Theme.animNormal
                                 easing.type: Easing.OutQuint
                             }
 

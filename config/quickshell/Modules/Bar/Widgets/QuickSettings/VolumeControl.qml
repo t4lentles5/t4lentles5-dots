@@ -25,7 +25,7 @@ Rectangle {
 
     width: 40
     height: 40
-    radius: 8
+    radius: Theme.radiusSm
     color: muted ? Theme.colRed : (volHover.hovered ? Theme.colBgLighter : Theme.colBg)
 
     HoverHandler {
@@ -79,12 +79,11 @@ Rectangle {
         id: volSetProc
     }
 
-    Text {
+    ThemedText {
         anchors.centerIn: parent
         text: root.muted ? "󰝟" : "󰕾"
         color: root.muted ? Theme.colBg : Theme.colBlue
-        font.family: Theme.fontFamily
-        font.pixelSize: 20
+        font.pixelSize: Theme.fontSizeLg
     }
 
     MouseArea {

@@ -38,14 +38,15 @@ PanelWindow {
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+            spacing: Theme.spacingSm
 
             ArchButton {
                 Layout.leftMargin: 10
-                panel: mainPanel
+                widget: mainPanel
             }
 
             MusicStatusButton {
-                selector: musicPlayer
+                widget: musicPlayer
             }
 
         }
@@ -58,26 +59,26 @@ PanelWindow {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            spacing: 15
+            spacing: Theme.spacingSm
 
             KeyboardLayoutButton {
-                selector: keyboardLayout
+                widget: keyboardLayout
             }
 
             QuickSettingsButton {
-                selector: quickSettings
+                widget: quickSettings
             }
 
             BatteryIndicator {
             }
 
             ClockButton {
-                selector: calendar
+                widget: calendar
             }
 
             PowerButton {
                 Layout.rightMargin: 10
-                selector: powerMenu
+                widget: powerMenu
             }
 
         }
@@ -95,7 +96,7 @@ PanelWindow {
 
         popupId: "MusicPlayer"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 1560
+        anchor.rect.x: mainBar.width - implicitWidth - 1625
         anchor.rect.y: mainBar.height
     }
 

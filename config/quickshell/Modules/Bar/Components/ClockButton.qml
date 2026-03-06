@@ -3,21 +3,20 @@ import QtQuick.Layouts
 import qs.Core
 
 Rectangle {
-    property var selector
+    property var widget
 
     color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
-    radius: 16
+    radius: Theme.radiusLg
     implicitWidth: clockText.implicitWidth + 30
     implicitHeight: 30
 
-    Text {
+    ThemedText {
         id: clockText
 
         anchors.centerIn: parent
         text: Qt.formatDateTime(new Date(), "  HH:mm")
         color: Theme.colCyan
-        font.pixelSize: Theme.fontSize
-        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeMd
         font.bold: true
 
         Timer {
@@ -38,15 +37,15 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            if (selector)
-                selector.isOpen = !selector.isOpen;
+            if (widget)
+                widget.isOpen = !widget.isOpen;
 
         }
     }
 
     Behavior on color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.animNormal
         }
 
     }

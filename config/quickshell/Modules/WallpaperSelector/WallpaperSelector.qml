@@ -111,7 +111,7 @@ CenterWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: 48
             color: Theme.colBgSecondary
-            radius: 8
+            radius: Theme.radiusSm
 
             Rectangle {
                 anchors.bottom: parent.bottom
@@ -122,7 +122,7 @@ CenterWindow {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 250
+                        duration: Theme.animNormal
                     }
 
                 }
@@ -133,17 +133,16 @@ CenterWindow {
                 anchors.fill: parent
                 anchors.leftMargin: 20
                 anchors.rightMargin: 20
-                spacing: 16
+                spacing: Theme.spacingLg
 
-                Text {
+                ThemedText {
                     text: "󰸉"
                     color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
                     font.pixelSize: 24
-                    font.family: Theme.fontFamily
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 250
+                            duration: Theme.animNormal
                         }
 
                     }
@@ -157,8 +156,8 @@ CenterWindow {
                     placeholderText: "Search wallpapers..."
                     placeholderTextColor: Theme.colMuted
                     color: Theme.colFg
+                    font.pixelSize: Theme.fontSizeMd
                     font.family: Theme.fontFamily
-                    font.pixelSize: 14
                     background: null
                     onTextChanged: root.filterWallpapers(text)
                     Keys.onPressed: function(event) {
@@ -174,13 +173,13 @@ CenterWindow {
                             }
                         } else if (event.key === Qt.Key_Down) {
                             if (wallView.count > 0) {
-                                let nextIdx = wallView.currentIndex + Math.floor(wallView.width / 260);
+                                let nextIdx = wallView.currentIndex + 3;
                                 wallView.currentIndex = Math.min(nextIdx, wallView.count - 1);
                                 event.accepted = true;
                             }
                         } else if (event.key === Qt.Key_Up) {
                             if (wallView.count > 0) {
-                                let prevIdx = wallView.currentIndex - Math.floor(wallView.width / 260);
+                                let prevIdx = wallView.currentIndex - 3;
                                 wallView.currentIndex = Math.max(prevIdx, 0);
                                 event.accepted = true;
                             }
@@ -199,7 +198,7 @@ CenterWindow {
 
             Behavior on border.color {
                 ColorAnimation {
-                    duration: 250
+                    duration: Theme.animNormal
                 }
 
             }
@@ -213,21 +212,19 @@ CenterWindow {
             ColumnLayout {
                 anchors.centerIn: parent
                 visible: filteredModel.count === 0 && searchField.text === ""
-                spacing: 16
+                spacing: Theme.spacingLg
 
-                Text {
+                ThemedText {
                     text: "󰸉"
                     color: Theme.colBgLighter
                     font.pixelSize: 72
-                    font.family: Theme.fontFamily
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                Text {
+                ThemedText {
                     text: "No wallpapers found in ~/Pictures/Wallpapers"
                     color: Theme.colMuted
-                    font.pixelSize: 16
-                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -236,21 +233,19 @@ CenterWindow {
             ColumnLayout {
                 anchors.centerIn: parent
                 visible: filteredModel.count === 0 && searchField.text !== ""
-                spacing: 16
+                spacing: Theme.spacingLg
 
-                Text {
+                ThemedText {
                     text: "󰩉"
                     color: Theme.colBgLighter
                     font.pixelSize: 72
-                    font.family: Theme.fontFamily
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                Text {
+                ThemedText {
                     text: "No matches found"
                     color: Theme.colMuted
-                    font.pixelSize: 16
-                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -274,7 +269,7 @@ CenterWindow {
                         properties: "opacity, scale"
                         from: 0
                         to: 1
-                        duration: 300
+                        duration: Theme.animSlow
                         easing.type: Easing.OutQuint
                     }
 
@@ -285,7 +280,7 @@ CenterWindow {
                         properties: "opacity, scale"
                         from: 0
                         to: 1
-                        duration: 300
+                        duration: Theme.animSlow
                         easing.type: Easing.OutQuint
                     }
 
@@ -302,8 +297,8 @@ CenterWindow {
 
                     Rectangle {
                         anchors.fill: parent
-                        anchors.margins: 8
-                        radius: 8
+                        anchors.margins: Theme.spacingSm
+                        radius: Theme.radiusSm
                         color: Theme.colBgSecondary
                         border.color: isCurrent ? Theme.colPurple : "transparent"
                         border.width: 1
@@ -314,7 +309,7 @@ CenterWindow {
 
                             anchors.fill: parent
                             anchors.margins: isCurrent ? 2 : 1
-                            radius: 8
+                            radius: Theme.radiusSm
                             visible: false
                         }
 
@@ -354,24 +349,23 @@ CenterWindow {
 
                             }
 
-                            Text {
+                            ThemedText {
                                 anchors.left: parent.left
                                 anchors.right: parent.right
                                 anchors.bottom: parent.bottom
-                                anchors.leftMargin: 16
-                                anchors.rightMargin: 16
+                                anchors.leftMargin: Theme.spacingLg
+                                anchors.rightMargin: Theme.spacingLg
                                 anchors.bottomMargin: 14
                                 text: model.name
                                 color: isCurrent ? Theme.colPurple : "#ffffff"
-                                font.family: Theme.fontFamily
-                                font.pixelSize: 14
+                                font.pixelSize: Theme.fontSizeMd
                                 font.bold: isCurrent
                                 verticalAlignment: Text.AlignBottom
                                 elide: Text.ElideMiddle
 
                                 Behavior on color {
                                     ColorAnimation {
-                                        duration: 200
+                                        duration: Theme.animNormal
                                     }
 
                                 }
@@ -386,7 +380,7 @@ CenterWindow {
 
                         Behavior on scale {
                             NumberAnimation {
-                                duration: 300
+                                duration: Theme.animSlow
                                 easing.type: Easing.OutQuint
                             }
 
@@ -394,7 +388,7 @@ CenterWindow {
 
                         Behavior on border.color {
                             ColorAnimation {
-                                duration: 200
+                                duration: Theme.animNormal
                             }
 
                         }

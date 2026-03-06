@@ -82,6 +82,18 @@ case "$MODE" in
   ACTUAL_MODE=${MODE%_delay}
   take_screenshot "$ACTUAL_MODE"
   ;;
+"clipboard")
+  sleep 0.5
+  GEOM=$(slurp -d 2>>"$LOG")
+  if [ -n "$GEOM" ]; then
+    grim -g "$GEOM" - | wl-copy --type image/png
+    play_sound
+    notify-send -r 699 "Screenshot" "Area copied to clipboard"
+  else
+    notify-send -r 699 -i user-trash "Screenshot" "Canceled"
+  fi
+  exit 0
+  ;;
 *)
   take_screenshot "$MODE"
   ;;

@@ -2,20 +2,19 @@ import QtQuick
 import qs.Core
 
 Rectangle {
-    property var panel
+    property var widget
 
     color: mouseArea.containsMouse ? Theme.colBgSecondary : "transparent"
-    radius: 16
+    radius: Theme.radiusLg
     implicitWidth: icon.implicitWidth + 24
     implicitHeight: 30
 
-    Text {
+    ThemedText {
         id: icon
 
         text: "󰣇"
         color: Theme.colBlueArch
-        font.pixelSize: 20
-        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeLg
         anchors.centerIn: parent
     }
 
@@ -26,15 +25,15 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            if (parent.panel)
-                parent.panel.isOpen = !parent.panel.isOpen;
+            if (widget)
+                widget.isOpen = !widget.isOpen;
 
         }
     }
 
     Behavior on color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.animNormal
         }
 
     }

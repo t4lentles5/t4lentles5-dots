@@ -61,7 +61,7 @@ TopPopup {
 
         Layout.fillWidth: true
         Layout.fillHeight: true
-        spacing: 8
+        spacing: Theme.spacingSm
 
         Repeater {
             model: root.menuModel
@@ -80,7 +80,7 @@ TopPopup {
                     color: itemCol.isSelected ? Theme.colBgLighter : (hnd.hovered ? Theme.colBgSecondary : "transparent")
                     border.color: itemCol.isSelected ? modelData.color : (hnd.hovered ? Theme.colMuted : "transparent")
                     border.width: itemCol.isSelected ? 2 : 1
-                    radius: 8
+                    radius: Theme.radiusSm
 
                     RowLayout {
                         anchors.fill: parent
@@ -88,39 +88,38 @@ TopPopup {
                         anchors.rightMargin: 14
                         spacing: 14
 
-                        Text {
+                        ThemedText {
                             text: modelData.icon
                             color: (hnd.hovered || itemCol.isSelected) ? modelData.color : Theme.colFg
-                            font.pixelSize: 20
+                            font.pixelSize: Theme.fontSizeLg
                         }
 
-                        Text {
+                        ThemedText {
                             text: modelData.name
                             color: (hnd.hovered || itemCol.isSelected) ? modelData.color : Theme.colFg
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 15
+                            font.pixelSize: Theme.fontSizeMd
                             font.bold: itemCol.isSelected
                             Layout.fillWidth: true
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 300
+                                    duration: Theme.animSlow
                                 }
 
                             }
 
                         }
 
-                        Text {
+                        ThemedText {
                             text: itemCol.isSelected ? "󰅂" : "󰅀"
                             color: Theme.colMuted
-                            font.pixelSize: 14
+                            font.pixelSize: Theme.fontSizeMd
                             visible: modelData.confirm
                             rotation: itemCol.isSelected ? 180 : 0
 
                             Behavior on rotation {
                                 NumberAnimation {
-                                    duration: 300
+                                    duration: Theme.animSlow
                                     easing.type: Easing.OutQuint
                                 }
 
@@ -150,14 +149,14 @@ TopPopup {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 300
+                            duration: Theme.animSlow
                         }
 
                     }
 
                     Behavior on border.color {
                         ColorAnimation {
-                            duration: 300
+                            duration: Theme.animSlow
                         }
 
                     }
@@ -173,14 +172,14 @@ TopPopup {
                     Layout.rightMargin: 4
                     clip: true
                     color: Theme.colBgSecondary
-                    radius: 8
+                    radius: Theme.radiusSm
                     opacity: itemCol.isSelected ? 1 : 0
                     border.color: Theme.colBgLighter
                     border.width: itemCol.isSelected ? 1 : 0
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 8
+                        anchors.margins: Theme.spacingSm
                         spacing: 10
 
                         Rectangle {
@@ -190,12 +189,11 @@ TopPopup {
                             radius: 6
                             opacity: hndCancel.hovered ? 1 : 0.8
 
-                            Text {
+                            ThemedText {
                                 anchors.centerIn: parent
                                 text: "No"
                                 color: Theme.colFg
-                                font.pixelSize: 14
-                                font.family: Theme.fontFamily
+                                font.pixelSize: Theme.fontSizeMd
                             }
 
                             TapHandler {
@@ -216,12 +214,11 @@ TopPopup {
                             color: hndConfirm.hovered ? Qt.lighter(modelData.color, 1.2) : modelData.color
                             radius: 6
 
-                            Text {
+                            ThemedText {
                                 anchors.centerIn: parent
                                 text: "Yes"
                                 color: "white"
-                                font.pixelSize: 14
-                                font.family: Theme.fontFamily
+                                font.pixelSize: Theme.fontSizeMd
                                 font.bold: true
                             }
 
@@ -241,7 +238,7 @@ TopPopup {
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 300
+                                    duration: Theme.animSlow
                                 }
 
                             }
@@ -252,7 +249,7 @@ TopPopup {
 
                     Behavior on Layout.preferredHeight {
                         NumberAnimation {
-                            duration: 300
+                            duration: Theme.animSlow
                             easing.type: Easing.OutQuint
                         }
 
@@ -260,7 +257,7 @@ TopPopup {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 300
+                            duration: Theme.animSlow
                             easing.type: Easing.OutQuint
                         }
 

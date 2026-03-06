@@ -86,7 +86,7 @@ TopPopup {
                 target: daysContainer
                 property: "opacity"
                 to: 0
-                duration: 120
+                duration: Theme.animFast
                 easing.type: Easing.OutQuint
             }
 
@@ -94,7 +94,7 @@ TopPopup {
                 target: daysTranslate
                 property: "x"
                 to: 15 * root.animDirection
-                duration: 120
+                duration: Theme.animFast
                 easing.type: Easing.OutQuint
             }
 
@@ -102,7 +102,7 @@ TopPopup {
                 target: monthLabelContainer
                 property: "opacity"
                 to: 0
-                duration: 120
+                duration: Theme.animFast
                 easing.type: Easing.OutQuint
             }
 
@@ -110,7 +110,7 @@ TopPopup {
                 target: monthTranslate
                 property: "x"
                 to: 15 * root.animDirection
-                duration: 120
+                duration: Theme.animFast
                 easing.type: Easing.OutQuint
             }
 
@@ -138,7 +138,7 @@ TopPopup {
                 target: daysContainer
                 property: "opacity"
                 to: 1
-                duration: 300
+                duration: Theme.animSlow
                 easing.type: Easing.OutQuad
             }
 
@@ -146,7 +146,7 @@ TopPopup {
                 target: daysTranslate
                 property: "x"
                 to: 0
-                duration: 300
+                duration: Theme.animSlow
                 easing.type: Easing.OutQuad
             }
 
@@ -154,7 +154,7 @@ TopPopup {
                 target: monthLabelContainer
                 property: "opacity"
                 to: 1
-                duration: 300
+                duration: Theme.animSlow
                 easing.type: Easing.OutQuad
             }
 
@@ -162,7 +162,7 @@ TopPopup {
                 target: monthTranslate
                 property: "x"
                 to: 0
-                duration: 300
+                duration: Theme.animSlow
                 easing.type: Easing.OutQuad
             }
 
@@ -180,13 +180,13 @@ TopPopup {
         id: mainCol
 
         width: parent.width
-        spacing: 15
+        spacing: Theme.spacingLg
 
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
             color: Theme.colBgSecondary
-            radius: 8
+            radius: Theme.radiusSm
 
             RowLayout {
                 anchors.fill: parent
@@ -204,20 +204,18 @@ TopPopup {
 
                         spacing: 0
 
-                        Text {
+                        ThemedText {
                             text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
                             color: Theme.colPurple
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 18
+                            font.pixelSize: Theme.fontSizeLg
                             font.bold: true
                             font.capitalization: Font.Capitalize
                         }
 
-                        Text {
+                        ThemedText {
                             text: root.currentYear
                             color: Theme.colMuted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 12
+                            font.pixelSize: Theme.fontSizeSm
                             font.bold: true
                         }
 
@@ -266,7 +264,7 @@ TopPopup {
             Layout.fillWidth: true
             Layout.preferredHeight: gridContainer.implicitHeight + 30
             color: Theme.colBgSecondary
-            radius: 8
+            radius: Theme.radiusSm
 
             ColumnLayout {
                 id: gridContainer
@@ -275,7 +273,7 @@ TopPopup {
                 anchors.topMargin: 15
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width - 30
-                spacing: 15
+                spacing: Theme.spacingLg
 
                 RowLayout {
                     Layout.fillWidth: true
@@ -283,13 +281,12 @@ TopPopup {
                     Repeater {
                         model: ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
 
-                        Text {
+                        ThemedText {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                             text: modelData
                             color: index === 0 || index === 6 ? Theme.colRed : Theme.colCyan
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Theme.fontSizeSm
                             font.bold: true
                             opacity: 0.6
                         }
@@ -339,16 +336,15 @@ TopPopup {
                                 }
 
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 32
-                                radius: 8
+                                Layout.preferredHeight: 24
+                                radius: Theme.radiusSm
                                 color: isToday ? Theme.colPurple : (isCurrentMonth && dayHover.containsMouse ? Theme.colBgLighter : "transparent")
 
-                                Text {
+                                ThemedText {
                                     anchors.centerIn: parent
                                     text: isCurrentMonth ? dayNum : ""
                                     color: isToday ? Theme.colBg : (isCurrentMonth ? Theme.colFg : "transparent")
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 13
+                                    font.pixelSize: Theme.fontSizeSm
                                     font.bold: isToday
                                 }
 
@@ -378,7 +374,7 @@ TopPopup {
 
             Behavior on Layout.preferredHeight {
                 NumberAnimation {
-                    duration: 300
+                    duration: Theme.animSlow
                     easing.type: Easing.OutQuint
                 }
 
@@ -391,11 +387,10 @@ TopPopup {
             Layout.leftMargin: 10
             Layout.rightMargin: 10
 
-            Text {
+            ThemedText {
                 text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
                 color: Theme.colCyan
-                font.family: Theme.fontFamily
-                font.pixelSize: 13
+                font.pixelSize: Theme.fontSizeMd
                 font.bold: true
                 font.capitalization: Font.Capitalize
                 Layout.fillWidth: true
@@ -408,11 +403,10 @@ TopPopup {
                 color: Theme.colGreen
             }
 
-            Text {
+            ThemedText {
                 text: "Today"
                 color: Theme.colMuted
-                font.family: Theme.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: Theme.fontSizeSm
             }
 
         }

@@ -24,7 +24,7 @@ keymap.set("n", "<leader>x", "<cmd>Bdelete<cr>", { desc = "Close current buffer"
 keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
 
 -- Plugins
-keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
+keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle file explorer" })
 keymap.set("n", "<leader>gg", "<cmd>LazyGit<CR>", { desc = "Toggle LazyGit" })
 
 -- Better Indenting
@@ -40,26 +40,18 @@ keymap.set("n", "n", "nzzzv", { desc = "Next match (centered)" })
 keymap.set("n", "N", "Nzzzv", { desc = "Prev match (centered)" })
 
 -- Paste without losing registry
-
 keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste over selection" })
 
 -- LSP Keymaps (only when LSP is attached)
-
 vim.api.nvim_create_autocmd("LspAttach", {
-
 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-
 	callback = function(ev)
 		local opts = { buffer = ev.buf }
 
 		keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition", buffer = ev.buf })
-
 		keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Show references", buffer = ev.buf })
-
 		keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation", buffer = ev.buf })
-
 		keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol", buffer = ev.buf })
-
 		keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action", buffer = ev.buf })
 	end,
 })

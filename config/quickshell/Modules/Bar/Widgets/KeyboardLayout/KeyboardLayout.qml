@@ -35,14 +35,13 @@ TopPopup {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
                 color: hoverHandler.hovered ? Theme.colBgSecondary : "transparent"
-                radius: 8
+                radius: Theme.radiusSm
 
-                Text {
+                ThemedText {
                     anchors.centerIn: parent
                     text: modelData.name
                     color: hoverHandler.hovered ? Theme.colPurple : Theme.colFg
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize
+                    font.pixelSize: Theme.fontSizeMd
                 }
 
                 HoverHandler {

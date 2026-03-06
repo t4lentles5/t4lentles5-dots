@@ -15,5 +15,14 @@ QtObject {
     property color colBlueArch: "#0a9cf5"
     property color colGreen: "#9ece6a"
     property string fontFamily: "Maple Mono NF CN"
-    property int fontSize: 14
+    property int fontSizeSm: 10
+    property int fontSizeMd: 14
+    property int fontSizeLg: 20
+    property int radiusSm: 8
+    property int radiusLg: 16
+    property int spacingSm: 8
+    property int spacingLg: 16
+    property int animFast: 120
+    property int animNormal: 200
+    property int animSlow: 300
 }

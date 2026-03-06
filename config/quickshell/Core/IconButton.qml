@@ -18,20 +18,19 @@ Rectangle {
 
     width: 30
     height: 30
-    radius: 8
+    radius: Theme.radiusSm
     color: hoverHandler.hovered ? hoverColor : baseColor
 
-    Text {
+    ThemedText {
         anchors.centerIn: parent
         text: root.icon
         color: root.isActive ? root.activeColor : root.iconColor
-        font.family: Theme.fontFamily
         font.pixelSize: root.iconSize
         visible: root.useText
 
         Behavior on color {
             ColorAnimation {
-                duration: 250
+                duration: Theme.animNormal
             }
 
         }
@@ -50,7 +49,7 @@ Rectangle {
 
     Behavior on color {
         ColorAnimation {
-            duration: 250
+            duration: Theme.animNormal
         }
 
     }

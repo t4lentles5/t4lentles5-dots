@@ -7,7 +7,7 @@ import qs.Core
 Rectangle {
     id: container
 
-    property var selector
+    property var widget
     property string layoutName: ""
 
     function updateLayout(rawName) {
@@ -20,7 +20,7 @@ Rectangle {
     }
 
     color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
-    radius: 16
+    radius: Theme.radiusLg
     implicitWidth: layoutText.implicitWidth + 30
     implicitHeight: 30
 
@@ -63,14 +63,13 @@ Rectangle {
         target: Hyprland
     }
 
-    Text {
+    ThemedText {
         id: layoutText
 
         anchors.centerIn: parent
         text: "  " + container.layoutName
         color: Theme.colFg
-        font.pixelSize: Theme.fontSize
-        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeMd
         font.bold: true
     }
 
@@ -81,15 +80,15 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            if (selector)
-                selector.isOpen = !selector.isOpen;
+            if (widget)
+                widget.isOpen = !widget.isOpen;
 
         }
     }
 
     Behavior on implicitWidth {
         NumberAnimation {
-            duration: 250
+            duration: Theme.animNormal
             easing.type: Easing.OutQuint
         }
 
@@ -97,14 +96,14 @@ Rectangle {
 
     Behavior on color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.animNormal
         }
 
     }
 
     Behavior on border.color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.animNormal
         }
 
     }

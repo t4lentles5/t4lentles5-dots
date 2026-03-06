@@ -277,7 +277,7 @@ Item {
 
                         Behavior on radius {
                             NumberAnimation {
-                                duration: 200
+                                duration: Theme.animNormal
                             }
 
                         }
@@ -288,20 +288,18 @@ Item {
                         anchors.centerIn: parent
                         spacing: -2
 
-                        Text {
+                        ThemedText {
                             text: gaugeRoot.value + "%"
                             color: Theme.colFg
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 18
+                            font.pixelSize: Theme.fontSizeLg
                             font.bold: true
                             Layout.alignment: Qt.AlignHCenter
                         }
 
-                        Text {
+                        ThemedText {
                             text: gaugeRoot.icon
                             color: gaugeRoot.accentColor
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 18
+                            font.pixelSize: Theme.fontSizeLg
                             Layout.alignment: Qt.AlignHCenter
                             opacity: 0.9
                         }
@@ -317,18 +315,17 @@ Item {
 
                 }
 
-                Text {
+                ThemedText {
                     text: gaugeRoot.label
                     color: Theme.colMuted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.fontSizeSm
                     font.bold: true
                     Layout.alignment: Qt.AlignHCenter
                     opacity: gaugeRootHover.containsMouse ? 1 : 0.8
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 200
+                            duration: Theme.animNormal
                         }
 
                     }
