@@ -7,11 +7,14 @@ import qs.Modules.Bar.Widgets.Calendar
 import qs.Modules.Bar.Widgets.KeyboardLayout
 import qs.Modules.Bar.Widgets.MainPanel
 import qs.Modules.Bar.Widgets.MusicPlayer
+import qs.Modules.Bar.Widgets.NotificationCenter
 import qs.Modules.Bar.Widgets.PowerMenu
 import qs.Modules.Bar.Widgets.QuickSettings
 
 PanelWindow {
     id: mainBar
+
+    required property var notificationService
 
     implicitHeight: 45
     color: "transparent"
@@ -76,6 +79,11 @@ PanelWindow {
                 widget: calendar
             }
 
+            NotificationCenterButton {
+                widget: notificationCenter
+                notificationService: mainBar.notificationService
+            }
+
             PowerButton {
                 Layout.rightMargin: 10
                 widget: powerMenu
@@ -133,6 +141,16 @@ PanelWindow {
         popupId: "powerMenu"
         anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 15
+        anchor.rect.y: mainBar.height
+    }
+
+    NotificationCenter {
+        id: notificationCenter
+
+        popupId: "NotificationCenter"
+        notificationService: mainBar.notificationService
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 60
         anchor.rect.y: mainBar.height
     }
 

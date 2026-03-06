@@ -22,7 +22,7 @@ QtObject {
     property int radiusLg: 16
     property int spacingSm: 8
     property int spacingLg: 16
-    property int animFast: 120
-    property int animNormal: 200
-    property int animSlow: 300
+    property int animFast: 150
+    property int animNormal: 250
+    property int animSlow: 350
 }

@@ -62,8 +62,8 @@ CenterWindow {
         }
 
         ListElement {
-            label: "Full (3s delay)"
-            iconSource: "󰔝"
+            label: "Full (5s delay)"
+            iconSource: ""
             shotMode: "full_delay"
         }
 

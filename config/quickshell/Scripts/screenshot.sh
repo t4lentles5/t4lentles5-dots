@@ -77,8 +77,8 @@ take_screenshot() {
 
 case "$MODE" in
 "full_delay" | "area_delay")
-  notify-send -t 1000 "Screenshot" "Taking shot in 3 seconds..."
-  sleep 3
+  notify-send -t 1000 "Screenshot" "Taking shot in 5 seconds..."
+  sleep 5
   ACTUAL_MODE=${MODE%_delay}
   take_screenshot "$ACTUAL_MODE"
   ;;

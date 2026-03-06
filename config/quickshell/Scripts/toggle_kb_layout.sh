@@ -11,4 +11,4 @@ fi
 
 hyprctl keyword input:kb_layout "$NEW_LAYOUT"
 
-notify-send "Keyboard Layout" "Switched to $NEW_LAYOUT" -i input-keyboard -t 1500
+notify-send "Keyboard Layout" "Switched to $NEW_LAYOUT"

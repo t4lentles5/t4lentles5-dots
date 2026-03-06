@@ -309,7 +309,7 @@ CenterWindow {
                             anchors.centerIn: parent
                             width: 28
                             height: 28
-                            source: model.icon ? "image://icon/" + model.icon : ""
+                            source: model.icon ? "image://icon/" + model.icon + "?fallback=application-x-executable" : ""
                             fillMode: Image.PreserveAspectFit
                             scale: isCurrent ? 1.15 : 1
 
