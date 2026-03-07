@@ -83,6 +83,7 @@ CenterWindow {
 
         RowLayout {
             Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
             Layout.leftMargin: 14
             Layout.rightMargin: 14
             spacing: Theme.spacingSm
@@ -98,24 +99,21 @@ CenterWindow {
                 color: Theme.colFg
                 font.pixelSize: Theme.fontSizeLg
                 font.bold: true
-                Layout.fillWidth: true
             }
 
         }
 
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 1
-            color: Theme.colBgLighter
-        }
-
-        ColumnLayout {
+        ListView {
             id: shotView
 
-            property int currentIndex: 0
-
+            currentIndex: 0
             Layout.fillWidth: true
+            Layout.preferredHeight: contentHeight
             spacing: 2
+            model: shotModel
+            clip: true
+            highlightFollowsCurrentItem: true
+            highlightMoveDuration: 250
             Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Down) {
                     if (currentIndex + 1 < shotModel.count) {
@@ -136,74 +134,117 @@ CenterWindow {
                 }
             }
 
-            Repeater {
-                model: shotModel
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+                active: true
+            }
+
+            highlight: Item {
+                width: shotView.width
+                height: 42
+                z: 1
 
                 Rectangle {
-                    readonly property bool isCurrent: shotView.currentIndex === index
-
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 42
+                    anchors.fill: parent
                     radius: Theme.radiusSm
-                    color: isCurrent ? Theme.colBgLighter : (hoverHandler.hovered ? Theme.colBgSecondary : "transparent")
+                    color: Theme.colBgLighter
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 14
-                        anchors.rightMargin: 14
-                        spacing: 12
-
-                        ThemedText {
-                            text: model.iconSource
-                            color: isCurrent ? Theme.colPurple : Theme.colFg
-                            font.pixelSize: Theme.fontSizeLg
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.animNormal
-                                }
-
-                            }
-
-                        }
-
-                        ThemedText {
-                            text: model.label
-                            color: isCurrent ? Theme.colPurple : Theme.colFg
-                            font.bold: isCurrent
-                            Layout.fillWidth: true
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.animNormal
-                                }
-
-                            }
-
-                        }
-
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.leftMargin: 2
+                        anchors.topMargin: 8
+                        anchors.bottomMargin: 8
+                        width: 3
+                        radius: 2
+                        color: Theme.colPurple
                     }
 
-                    HoverHandler {
-                        id: hoverHandler
+                }
 
-                        cursorShape: Qt.PointingHandCursor
-                    }
+            }
 
-                    TapHandler {
-                        onTapped: {
-                            shotView.currentIndex = index;
-                            root.runShot(model.shotMode);
-                        }
-                    }
+            delegate: Item {
+                readonly property bool isCurrent: shotView.currentIndex === index
 
-                    Behavior on color {
-                        ColorAnimation {
+                width: shotView.width
+                height: 42
+                z: 2
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: Theme.radiusSm
+                    color: Theme.colBgLighter
+                    opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
+
+                    Behavior on opacity {
+                        NumberAnimation {
                             duration: Theme.animNormal
                         }
 
                     }
 
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    spacing: 12
+
+                    ThemedText {
+                        text: model.iconSource
+                        color: isCurrent ? Theme.colPurple : Theme.colFg
+                        font.pixelSize: Theme.fontSizeLg
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.animNormal
+                            }
+
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: model.label
+                        color: isCurrent ? Theme.colPurple : Theme.colFg
+                        font.bold: isCurrent
+                        Layout.fillWidth: true
+                        scale: isCurrent ? 1.02 : 1
+                        transformOrigin: Item.Left
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.animNormal
+                            }
+
+                        }
+
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: Theme.animNormal
+                                easing.type: Easing.OutQuint
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                HoverHandler {
+                    id: hoverHandler
+
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: {
+                        shotView.currentIndex = index;
+                        root.runShot(model.shotMode);
+                    }
                 }
 
             }

@@ -116,7 +116,7 @@ CenterWindow {
     }
 
     ColumnLayout {
-        spacing: 20
+        spacing: 16
 
         RowLayout {
             Layout.fillWidth: true
@@ -126,44 +126,20 @@ CenterWindow {
                 id: searchBar
 
                 Layout.fillWidth: true
-                Layout.preferredHeight: 48
-                color: Theme.colBgSecondary
-                radius: Theme.radiusSm
-
-                Rectangle {
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: 1
-                    color: searchField.activeFocus ? Theme.colPurple : Theme.colBgLighter
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animNormal
-                        }
-
-                    }
-
-                }
+                Layout.preferredHeight: 40
+                color: Theme.colBgLighter
+                radius: Theme.radiusLg + 4
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 20
-                    anchors.rightMargin: 20
+                    anchors.leftMargin: Theme.spacingLg
+                    anchors.rightMargin: Theme.spacingLg
                     spacing: Theme.spacingLg
 
                     ThemedText {
                         text: ""
-                        color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
-                        font.pixelSize: 22
-
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: Theme.animNormal
-                            }
-
-                        }
-
+                        color: Theme.colFg
+                        font.pixelSize: Theme.fontSizeLg
                     }
 
                     TextField {
@@ -173,7 +149,8 @@ CenterWindow {
                         placeholderText: "Search clipboard history..."
                         placeholderTextColor: Theme.colMuted
                         color: Theme.colFg
-                        font.pixelSize: 14
+                        font.pixelSize: Theme.fontSizeMd
+                        font.family: Theme.fontFamily
                         background: null
                         onTextChanged: root.filterClipboard(text)
                         Keys.onPressed: function(event) {
@@ -200,22 +177,15 @@ CenterWindow {
 
                 }
 
-                Behavior on border.color {
-                    ColorAnimation {
-                        duration: Theme.animNormal
-                    }
-
-                }
-
             }
 
             Rectangle {
                 id: clearButton
 
-                Layout.preferredHeight: 48
-                Layout.preferredWidth: 48
-                color: Theme.colBgSecondary
-                radius: Theme.radiusSm
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 40
+                color: Theme.colBgLighter
+                radius: 20
 
                 ThemedText {
                     anchors.centerIn: parent
@@ -236,15 +206,11 @@ CenterWindow {
                     id: clearHover
                 }
 
-                TapHandler {
-                    onTapped: root.clearHistory()
-                }
-
-                Behavior on border.color {
-                    ColorAnimation {
-                        duration: Theme.animNormal
-                    }
-
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.clearHistory()
                 }
 
             }
@@ -291,7 +257,7 @@ CenterWindow {
                 ThemedText {
                     text: "No results found"
                     color: Theme.colMuted
-                    font.pixelSize: 16
+                    font.pixelSize: Theme.fontSizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -334,6 +300,19 @@ CenterWindow {
                         anchors.fill: parent
                         radius: Theme.radiusSm
                         color: Theme.colBgLighter
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.leftMargin: 2
+                            anchors.topMargin: 8
+                            anchors.bottomMargin: 8
+                            width: 3
+                            radius: 2
+                            color: Theme.colPurple
+                        }
+
                     }
 
                 }
@@ -373,7 +352,7 @@ CenterWindow {
                         anchors.fill: parent
                         radius: Theme.radiusSm
                         color: Theme.colBgLighter
-                        opacity: hoverHandler.hovered && !isCurrent ? 0.4 : 0
+                        opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                         Behavior on opacity {
                             NumberAnimation {
@@ -386,39 +365,9 @@ CenterWindow {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 20
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
                         spacing: Theme.spacingLg
-
-                        Rectangle {
-                            Layout.preferredWidth: 36
-                            Layout.preferredHeight: 36
-                            radius: Theme.radiusSm
-                            color: isCurrent ? Theme.colPurple : Theme.colBgSecondary
-
-                            ThemedText {
-                                anchors.centerIn: parent
-                                text: "󰆏"
-                                color: isCurrent ? Theme.colBg : Theme.colFg
-                                font.pixelSize: 18
-
-                                Behavior on color {
-                                    ColorAnimation {
-                                        duration: Theme.animNormal
-                                    }
-
-                                }
-
-                            }
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.animNormal
-                                }
-
-                            }
-
-                        }
 
                         ThemedText {
                             text: model.text

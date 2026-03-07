@@ -60,12 +60,6 @@ CenterWindow {
 
     }
 
-    Rectangle {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 1
-        color: Theme.colBgLighter
-    }
-
     RowLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
@@ -234,17 +228,7 @@ CenterWindow {
                         height: 26
                         radius: 5
                         color: Theme.colBgSecondary
-                        border.color: Qt.rgba(1, 1, 1, 0.08)
-                        border.width: 1
 
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 3
-                            radius: 5
-                            color: Qt.rgba(0, 0, 0, 0.25)
-                        }
 
                         ThemedText {
                             id: capText

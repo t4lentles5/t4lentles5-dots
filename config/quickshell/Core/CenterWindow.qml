@@ -193,8 +193,6 @@ PanelWindow {
             anchors.fill: parent
             color: root.backgroundColor
             radius: root.cornerRadius
-            border.color: Qt.rgba(1, 1, 1, 0.05)
-            border.width: 1
             clip: true
         }
 

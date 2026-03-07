@@ -113,7 +113,7 @@ PanelWindow {
 
         popupId: "keyboardLayout"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 220
+        anchor.rect.x: mainBar.width - implicitWidth - 270
         anchor.rect.y: mainBar.height
     }
 
@@ -122,7 +122,7 @@ PanelWindow {
 
         popupId: "quickSettings"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 50
+        anchor.rect.x: mainBar.width - implicitWidth - 110
         anchor.rect.y: mainBar.height
     }
 
@@ -135,22 +135,22 @@ PanelWindow {
         anchor.rect.y: mainBar.height
     }
 
-    PowerMenu {
-        id: powerMenu
-
-        popupId: "powerMenu"
-        anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 15
-        anchor.rect.y: mainBar.height
-    }
-
     NotificationCenter {
         id: notificationCenter
 
         popupId: "NotificationCenter"
         notificationService: mainBar.notificationService
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 60
+        anchor.rect.x: mainBar.width - implicitWidth - 15
+        anchor.rect.y: mainBar.height
+    }
+
+    PowerMenu {
+        id: powerMenu
+
+        popupId: "powerMenu"
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 15
         anchor.rect.y: mainBar.height
     }
 

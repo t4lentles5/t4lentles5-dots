@@ -105,48 +105,24 @@ CenterWindow {
     }
 
     ColumnLayout {
-        spacing: 20
+        spacing: Theme.spacingLg
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 48
-            color: Theme.colBgSecondary
-            radius: Theme.radiusSm
-
-            Rectangle {
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: 1
-                color: searchField.activeFocus ? Theme.colPurple : Theme.colBgLighter
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Theme.animNormal
-                    }
-
-                }
-
-            }
+            Layout.preferredHeight: 40
+            color: Theme.colBgLighter
+            radius: 20
 
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 20
-                anchors.rightMargin: 20
+                anchors.leftMargin: Theme.spacingLg
+                anchors.rightMargin: Theme.spacingLg
                 spacing: Theme.spacingLg
 
                 ThemedText {
                     text: "󰸉"
-                    color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
-                    font.pixelSize: 24
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animNormal
-                        }
-
-                    }
-
+                    color: Theme.colFg
+                    font.pixelSize: Theme.fontSizeLg
                 }
 
                 TextField {
@@ -192,13 +168,6 @@ CenterWindow {
                             }
                         }
                     }
-                }
-
-            }
-
-            Behavior on border.color {
-                ColorAnimation {
-                    duration: Theme.animNormal
                 }
 
             }
@@ -275,6 +244,32 @@ CenterWindow {
 
                 }
 
+                highlight: Item {
+                    width: wallView.cellWidth
+                    height: wallView.cellHeight
+                    z: 6
+
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacingSm
+                        radius: Theme.radiusSm
+                        color: "transparent"
+                        border.color: Theme.colPurple
+                        border.width: 2
+                        scale: 1.05
+
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: Theme.animSlow
+                                easing.type: Easing.OutQuint
+                            }
+
+                        }
+
+                    }
+
+                }
+
                 populate: Transition {
                     NumberAnimation {
                         properties: "opacity, scale"
@@ -300,8 +295,6 @@ CenterWindow {
                         anchors.margins: Theme.spacingSm
                         radius: Theme.radiusSm
                         color: Theme.colBgSecondary
-                        border.color: isCurrent ? Theme.colPurple : "transparent"
-                        border.width: 1
                         scale: isCurrent || hoverHandler.hovered ? 1.05 : 1
 
                         Rectangle {
@@ -382,13 +375,6 @@ CenterWindow {
                             NumberAnimation {
                                 duration: Theme.animSlow
                                 easing.type: Easing.OutQuint
-                            }
-
-                        }
-
-                        Behavior on border.color {
-                            ColorAnimation {
-                                duration: Theme.animNormal
                             }
 
                         }

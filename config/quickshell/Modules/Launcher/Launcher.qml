@@ -97,44 +97,20 @@ CenterWindow {
 
     Rectangle {
         Layout.fillWidth: true
-        Layout.preferredHeight: 48
-        color: Theme.colBgSecondary
-        radius: Theme.radiusSm
-
-        Rectangle {
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 1
-            color: searchField.activeFocus ? Theme.colPurple : Theme.colBgLighter
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Theme.animNormal
-                }
-
-            }
-
-        }
+        Layout.preferredHeight: 40
+        color: Theme.colBgLighter
+        radius: Theme.radiusLg + 4
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-            spacing: Theme.spacingLg
+            anchors.leftMargin: Theme.spacingLg
+            anchors.rightMargin: Theme.spacingLg
+            spacing: Theme.spacingMd
 
             ThemedText {
                 text: ""
-                color: searchField.activeFocus ? Theme.colPurple : Theme.colMuted
-                font.pixelSize: 22
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Theme.animNormal
-                    }
-
-                }
-
+                color: Theme.colFg
+                font.pixelSize: Theme.fontSizeLg
             }
 
             TextField {
@@ -144,7 +120,7 @@ CenterWindow {
                 placeholderText: "Search applications..."
                 placeholderTextColor: Theme.colMuted
                 color: Theme.colFg
-                font.pixelSize: 14
+                font.pixelSize: Theme.fontSizeMd
                 font.family: Theme.fontFamily
                 background: null
                 onTextChanged: root.filterApps(text)
@@ -172,13 +148,6 @@ CenterWindow {
 
         }
 
-        Behavior on border.color {
-            ColorAnimation {
-                duration: Theme.animNormal
-            }
-
-        }
-
     }
 
     Item {
@@ -186,9 +155,9 @@ CenterWindow {
         Layout.fillHeight: true
 
         ColumnLayout {
+            spacing: Theme.spacingLg
             anchors.centerIn: parent
             visible: filteredModel.count === 0 && searchField.text !== ""
-            spacing: Theme.spacingLg
 
             ThemedText {
                 text: "󰩉"
@@ -200,7 +169,7 @@ CenterWindow {
             ThemedText {
                 text: "No applications found"
                 color: Theme.colMuted
-                font.pixelSize: 16
+                font.pixelSize: Theme.fontSizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -212,7 +181,7 @@ CenterWindow {
             anchors.fill: parent
             clip: true
             model: filteredModel
-            spacing: Theme.spacingSm
+            spacing: 2
             currentIndex: -1
             highlightResizeDuration: 0
             highlightMoveDuration: 250
@@ -243,6 +212,19 @@ CenterWindow {
                     anchors.fill: parent
                     radius: Theme.radiusSm
                     color: Theme.colBgLighter
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.leftMargin: 2
+                        anchors.topMargin: 8
+                        anchors.bottomMargin: 8
+                        width: 3
+                        radius: 2
+                        color: Theme.colPurple
+                    }
+
                 }
 
             }
@@ -282,7 +264,7 @@ CenterWindow {
                     anchors.fill: parent
                     radius: Theme.radiusSm
                     color: Theme.colBgLighter
-                    opacity: hoverHandler.hovered && !isCurrent ? 0.4 : 0
+                    opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                     Behavior on opacity {
                         NumberAnimation {
@@ -295,40 +277,22 @@ CenterWindow {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 20
-                    anchors.rightMargin: 20
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
                     spacing: Theme.spacingLg
 
-                    Rectangle {
-                        Layout.preferredWidth: 36
-                        Layout.preferredHeight: 36
-                        radius: Theme.radiusSm
-                        color: "transparent"
+                    Image {
+                        Layout.preferredWidth: 24
+                        Layout.preferredHeight: 24
+                        source: model.icon ? "image://icon/" + model.icon + "?fallback=application-x-executable" : ""
+                        fillMode: Image.PreserveAspectFit
 
-                        Image {
+                        ThemedText {
                             anchors.centerIn: parent
-                            width: 28
-                            height: 28
-                            source: model.icon ? "image://icon/" + model.icon + "?fallback=application-x-executable" : ""
-                            fillMode: Image.PreserveAspectFit
-                            scale: isCurrent ? 1.15 : 1
-
-                            ThemedText {
-                                anchors.centerIn: parent
-                                visible: parent.status !== Image.Ready
-                                text: ""
-                                color: isCurrent ? Theme.colPurple : Theme.colMuted
-                                font.pixelSize: 20
-                            }
-
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: Theme.animNormal
-                                    easing.type: Easing.OutBack
-                                }
-
-                            }
-
+                            visible: parent.status !== Image.Ready
+                            text: ""
+                            color: isCurrent ? Theme.colPurple : Theme.colMuted
+                            font.pixelSize: 18
                         }
 
                     }
