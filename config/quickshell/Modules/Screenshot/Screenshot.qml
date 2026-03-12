@@ -79,25 +79,23 @@ CenterWindow {
         id: mainCol
 
         width: parent.width
-        spacing: Theme.spacingSm
+        spacing: Theme.sizeLg
 
         RowLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
-            Layout.leftMargin: 14
-            Layout.rightMargin: 14
-            spacing: Theme.spacingSm
+            spacing: Theme.sizeXs
 
             ThemedText {
                 text: "󰄄"
                 color: Theme.colPurple
-                font.pixelSize: Theme.fontSizeLg
+                font.pixelSize: Theme.sizeXl
             }
 
             ThemedText {
                 text: "Screenshot"
                 color: Theme.colFg
-                font.pixelSize: Theme.fontSizeLg
+                font.pixelSize: Theme.sizeXl
                 font.bold: true
             }
 
@@ -109,7 +107,7 @@ CenterWindow {
             currentIndex: 0
             Layout.fillWidth: true
             Layout.preferredHeight: contentHeight
-            spacing: 2
+            spacing: Theme.sizeXs
             model: shotModel
             clip: true
             highlightFollowsCurrentItem: true
@@ -146,8 +144,8 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.radiusSm
-                    color: Theme.colBgLighter
+                    radius: Theme.sizeXs
+                    color: Theme.colBgSecondary
 
                     Rectangle {
                         anchors.left: parent.left
@@ -174,8 +172,8 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.radiusSm
-                    color: Theme.colBgLighter
+                    radius: Theme.sizeXs
+                    color: Theme.colBgSecondary
                     opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                     Behavior on opacity {
@@ -189,14 +187,14 @@ CenterWindow {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 16
-                    anchors.rightMargin: 16
-                    spacing: 12
+                    anchors.leftMargin: Theme.sizeLg
+                    anchors.rightMargin: Theme.sizeLg
+                    spacing: Theme.sizeLg
 
                     ThemedText {
                         text: model.iconSource
                         color: isCurrent ? Theme.colPurple : Theme.colFg
-                        font.pixelSize: Theme.fontSizeLg
+                        font.pixelSize: Theme.sizeLg
 
                         Behavior on color {
                             ColorAnimation {
@@ -211,6 +209,7 @@ CenterWindow {
                         text: model.label
                         color: isCurrent ? Theme.colPurple : Theme.colFg
                         font.bold: isCurrent
+                        font.pixelSize: Theme.sizeMd
                         Layout.fillWidth: true
                         scale: isCurrent ? 1.02 : 1
                         transformOrigin: Item.Left

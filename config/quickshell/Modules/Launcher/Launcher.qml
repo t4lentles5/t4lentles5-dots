@@ -98,19 +98,19 @@ CenterWindow {
     Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 40
-        color: Theme.colBgLighter
-        radius: Theme.radiusLg + 4
+        color: Theme.colBgSecondary
+        radius: Theme.sizeXl
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: Theme.spacingLg
-            anchors.rightMargin: Theme.spacingLg
-            spacing: Theme.spacingMd
+            anchors.leftMargin: Theme.sizeLg
+            anchors.rightMargin: Theme.sizeLg
+            spacing: Theme.sizeXs
 
             ThemedText {
                 text: ""
                 color: Theme.colFg
-                font.pixelSize: Theme.fontSizeLg
+                font.pixelSize: Theme.sizeLg
             }
 
             TextField {
@@ -120,7 +120,7 @@ CenterWindow {
                 placeholderText: "Search applications..."
                 placeholderTextColor: Theme.colMuted
                 color: Theme.colFg
-                font.pixelSize: Theme.fontSizeMd
+                font.pixelSize: Theme.sizeMd
                 font.family: Theme.fontFamily
                 background: null
                 onTextChanged: root.filterApps(text)
@@ -155,13 +155,12 @@ CenterWindow {
         Layout.fillHeight: true
 
         ColumnLayout {
-            spacing: Theme.spacingLg
             anchors.centerIn: parent
             visible: filteredModel.count === 0 && searchField.text !== ""
 
             ThemedText {
                 text: "󰩉"
-                color: Theme.colBgLighter
+                color: Theme.colMuted
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -169,7 +168,7 @@ CenterWindow {
             ThemedText {
                 text: "No applications found"
                 color: Theme.colMuted
-                font.pixelSize: Theme.fontSizeMd
+                font.pixelSize: Theme.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -181,7 +180,7 @@ CenterWindow {
             anchors.fill: parent
             clip: true
             model: filteredModel
-            spacing: 2
+            spacing: Theme.sizeXs
             currentIndex: -1
             highlightResizeDuration: 0
             highlightMoveDuration: 250
@@ -210,8 +209,8 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.radiusSm
-                    color: Theme.colBgLighter
+                    radius: Theme.sizeXs
+                    color: Theme.colBgSecondary
 
                     Rectangle {
                         anchors.left: parent.left
@@ -262,8 +261,8 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.radiusSm
-                    color: Theme.colBgLighter
+                    radius: Theme.sizeXs
+                    color: Theme.colBgSecondary
                     opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                     Behavior on opacity {
@@ -277,22 +276,22 @@ CenterWindow {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 16
-                    anchors.rightMargin: 16
-                    spacing: Theme.spacingLg
+                    anchors.leftMargin: Theme.sizeLg
+                    anchors.rightMargin: Theme.sizeLg
+                    spacing: Theme.sizeLg
 
                     Image {
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24
-                        source: model.icon ? "image://icon/" + model.icon + "?fallback=application-x-executable" : ""
+                        source: model.icon ? "image://icon/" + model.icon : ""
                         fillMode: Image.PreserveAspectFit
 
                         ThemedText {
                             anchors.centerIn: parent
-                            visible: parent.status !== Image.Ready
+                            visible: parent.status !== Image.Ready || !parent.source
                             text: ""
                             color: isCurrent ? Theme.colPurple : Theme.colMuted
-                            font.pixelSize: 18
+                            font.pixelSize: Theme.sizeLg
                         }
 
                     }
@@ -301,7 +300,7 @@ CenterWindow {
                         text: model.name
                         color: isCurrent ? Theme.colPurple : Theme.colFg
                         font.bold: isCurrent
-                        font.pixelSize: 14
+                        font.pixelSize: Theme.sizeMd
                         Layout.fillWidth: true
                         scale: isCurrent ? 1.02 : 1
                         transformOrigin: Item.Left

@@ -116,30 +116,28 @@ CenterWindow {
     }
 
     ColumnLayout {
-        spacing: 16
+        spacing: Theme.sizeLg
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: Theme.sizeXs
 
             Rectangle {
-                id: searchBar
-
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40
-                color: Theme.colBgLighter
-                radius: Theme.radiusLg + 4
+                color: Theme.colBgSecondary
+                radius: Theme.sizeXl
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: Theme.spacingLg
-                    anchors.rightMargin: Theme.spacingLg
-                    spacing: Theme.spacingLg
+                    anchors.leftMargin: Theme.sizeLg
+                    anchors.rightMargin: Theme.sizeLg
+                    spacing: Theme.sizeXs
 
                     ThemedText {
                         text: ""
                         color: Theme.colFg
-                        font.pixelSize: Theme.fontSizeLg
+                        font.pixelSize: Theme.sizeLg
                     }
 
                     TextField {
@@ -149,7 +147,7 @@ CenterWindow {
                         placeholderText: "Search clipboard history..."
                         placeholderTextColor: Theme.colMuted
                         color: Theme.colFg
-                        font.pixelSize: Theme.fontSizeMd
+                        font.pixelSize: Theme.sizeMd
                         font.family: Theme.fontFamily
                         background: null
                         onTextChanged: root.filterClipboard(text)
@@ -184,14 +182,14 @@ CenterWindow {
 
                 Layout.preferredHeight: 40
                 Layout.preferredWidth: 40
-                color: Theme.colBgLighter
+                color: Theme.colBgSecondary
                 radius: 20
 
                 ThemedText {
                     anchors.centerIn: parent
                     text: "󰆴"
                     color: clearHover.hovered ? Theme.colRed : Theme.colMuted
-                    font.pixelSize: 22
+                    font.pixelSize: Theme.sizeXl
 
                     Behavior on color {
                         ColorAnimation {
@@ -224,11 +222,10 @@ CenterWindow {
             ColumnLayout {
                 anchors.centerIn: parent
                 visible: filteredModel.count === 0 && searchField.text === ""
-                spacing: Theme.spacingLg
 
                 ThemedText {
                     text: "󰅍"
-                    color: Theme.colBgLighter
+                    color: Theme.colMuted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -236,7 +233,7 @@ CenterWindow {
                 ThemedText {
                     text: "Clipboard is empty"
                     color: Theme.colMuted
-                    font.pixelSize: 16
+                    font.pixelSize: Theme.sizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -245,11 +242,10 @@ CenterWindow {
             ColumnLayout {
                 anchors.centerIn: parent
                 visible: filteredModel.count === 0 && searchField.text !== ""
-                spacing: Theme.spacingLg
 
                 ThemedText {
                     text: "󰩉"
-                    color: Theme.colBgLighter
+                    color: Theme.colMuted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -257,7 +253,7 @@ CenterWindow {
                 ThemedText {
                     text: "No results found"
                     color: Theme.colMuted
-                    font.pixelSize: Theme.fontSizeMd
+                    font.pixelSize: Theme.sizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -269,7 +265,7 @@ CenterWindow {
                 anchors.fill: parent
                 clip: true
                 model: filteredModel
-                spacing: Theme.spacingSm
+                spacing: Theme.sizeXs
                 currentIndex: -1
                 highlightResizeDuration: 0
                 highlightMoveDuration: 250
@@ -298,8 +294,8 @@ CenterWindow {
 
                     Rectangle {
                         anchors.fill: parent
-                        radius: Theme.radiusSm
-                        color: Theme.colBgLighter
+                        radius: Theme.sizeXs
+                        color: Theme.colBgSecondary
 
                         Rectangle {
                             anchors.left: parent.left
@@ -350,8 +346,8 @@ CenterWindow {
 
                     Rectangle {
                         anchors.fill: parent
-                        radius: Theme.radiusSm
-                        color: Theme.colBgLighter
+                        radius: Theme.sizeXs
+                        color: Theme.colBgSecondary
                         opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                         Behavior on opacity {
@@ -365,15 +361,15 @@ CenterWindow {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
-                        spacing: Theme.spacingLg
+                        anchors.leftMargin: Theme.sizeLg
+                        anchors.rightMargin: Theme.sizeLg
+                        spacing: Theme.sizeLg
 
                         ThemedText {
                             text: model.text
                             color: isCurrent ? Theme.colPurple : Theme.colFg
                             font.bold: isCurrent
-                            font.pixelSize: 14
+                            font.pixelSize: Theme.sizeMd
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                             maximumLineCount: 1
