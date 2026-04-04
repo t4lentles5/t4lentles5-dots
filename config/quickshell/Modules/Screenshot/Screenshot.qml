@@ -79,23 +79,22 @@ CenterWindow {
         id: mainCol
 
         width: parent.width
-        spacing: Theme.sizeLg
+        spacing: Constants.sizeLg
 
         RowLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
-            spacing: Theme.sizeXs
+            spacing: Constants.sizeXs
 
             ThemedText {
                 text: "󰄄"
-                color: Theme.colPurple
-                font.pixelSize: Theme.sizeXl
+                color: Colors.purple
+                font.pixelSize: Constants.sizeXl
             }
 
             ThemedText {
                 text: "Screenshot"
-                color: Theme.colFg
-                font.pixelSize: Theme.sizeXl
+                font.pixelSize: Constants.sizeXl
                 font.bold: true
             }
 
@@ -107,7 +106,7 @@ CenterWindow {
             currentIndex: 0
             Layout.fillWidth: true
             Layout.preferredHeight: contentHeight
-            spacing: Theme.sizeXs
+            spacing: Constants.sizeXs
             model: shotModel
             clip: true
             highlightFollowsCurrentItem: true
@@ -144,8 +143,8 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.sizeXs
-                    color: Theme.colBgSecondary
+                    radius: Constants.sizeXs
+                    color: Colors.bgSecondary
 
                     Rectangle {
                         anchors.left: parent.left
@@ -156,7 +155,7 @@ CenterWindow {
                         anchors.bottomMargin: 8
                         width: 3
                         radius: 2
-                        color: Theme.colPurple
+                        color: Colors.purple
                     }
 
                 }
@@ -172,13 +171,13 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.sizeXs
-                    color: Theme.colBgSecondary
+                    radius: Constants.sizeXs
+                    color: Colors.bgSecondary
                     opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: Theme.animNormal
+                            duration: Constants.animNormal
                         }
 
                     }
@@ -187,18 +186,18 @@ CenterWindow {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: Theme.sizeLg
-                    anchors.rightMargin: Theme.sizeLg
-                    spacing: Theme.sizeLg
+                    anchors.leftMargin: Constants.sizeLg
+                    anchors.rightMargin: Constants.sizeLg
+                    spacing: Constants.sizeLg
 
                     ThemedText {
                         text: model.iconSource
-                        color: isCurrent ? Theme.colPurple : Theme.colFg
-                        font.pixelSize: Theme.sizeLg
+                        color: isCurrent ? Colors.purple : Colors.fg
+                        font.pixelSize: Constants.sizeLg
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: Theme.animNormal
+                                duration: Constants.animNormal
                             }
 
                         }
@@ -207,23 +206,23 @@ CenterWindow {
 
                     ThemedText {
                         text: model.label
-                        color: isCurrent ? Theme.colPurple : Theme.colFg
+                        color: isCurrent ? Colors.purple : Colors.fg
                         font.bold: isCurrent
-                        font.pixelSize: Theme.sizeMd
+                        font.pixelSize: Constants.sizeMd
                         Layout.fillWidth: true
                         scale: isCurrent ? 1.02 : 1
                         transformOrigin: Item.Left
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: Theme.animNormal
+                                duration: Constants.animNormal
                             }
 
                         }
 
                         Behavior on scale {
                             NumberAnimation {
-                                duration: Theme.animNormal
+                                duration: Constants.animNormal
                                 easing.type: Easing.OutQuint
                             }
 

@@ -11,18 +11,58 @@ CenterWindow {
 
     property string searchText: ""
 
+    function syncModel(listModel, sourceArray) {
+        let sourceIds = {
+        };
+        for (let i = 0; i < sourceArray.length; i++) {
+            sourceIds[sourceArray[i].itemId] = true;
+        }
+        for (let i = listModel.count - 1; i >= 0; i--) {
+            if (!sourceIds[listModel.get(i).itemId])
+                listModel.remove(i);
+
+        }
+        for (let i = 0; i < sourceArray.length; i++) {
+            let src = sourceArray[i];
+            if (i >= listModel.count) {
+                listModel.append(src);
+                continue;
+            }
+            let dest = listModel.get(i);
+            if (dest.itemId === src.itemId)
+                continue;
+
+            let foundIdx = -1;
+            for (let j = i + 1; j < listModel.count; j++) {
+                if (listModel.get(j).itemId === src.itemId) {
+                    foundIdx = j;
+                    break;
+                }
+            }
+            if (foundIdx !== -1)
+                listModel.move(foundIdx, i, 1);
+            else
+                listModel.insert(i, src);
+        }
+    }
+
     function filterClipboard(query) {
-        filteredModel.clear();
+        let matchedItems = [];
         query = query.toLowerCase();
         for (let i = 0; i < clipboardModel.count; i++) {
             let item = clipboardModel.get(i);
             if (item.text.toLowerCase().includes(query))
-                filteredModel.append(item);
+                matchedItems.push({
+                "itemId": item.itemId,
+                "text": item.text,
+                "fullLine": item.fullLine
+            });
 
         }
-        if (filteredModel.count > 0)
+        syncModel(filteredModel, matchedItems);
+        if (filteredModel.count > 0 && clipboardView.currentIndex === -1)
             clipboardView.currentIndex = 0;
-        else
+        else if (filteredModel.count === 0)
             clipboardView.currentIndex = -1;
     }
 
@@ -35,7 +75,25 @@ CenterWindow {
         root.isOpen = false;
     }
 
+    function deleteItem(index, fullLine) {
+        filteredModel.remove(index);
+        for (let i = 0; i < clipboardModel.count; i++) {
+            if (clipboardModel.get(i).fullLine === fullLine) {
+                clipboardModel.remove(i);
+                break;
+            }
+        }
+        let safeLine = fullLine.replace(/'/g, "'\\''");
+        deleteProc.command = ["bash", "-c", "echo '" + safeLine + "' | cliphist delete"];
+        deleteProc.startDetached();
+    }
+
     function clearHistory() {
+        if (filteredModel.count === 0)
+            return ;
+
+        clipboardModel.clear();
+        filteredModel.remove(0, filteredModel.count);
         clearProc.running = false;
         clearProc.running = true;
     }
@@ -86,7 +144,8 @@ CenterWindow {
                     if (parts.length >= 2)
                         clipboardModel.append({
                         "itemId": parts[0],
-                        "text": parts.slice(1).join('\t')
+                        "text": parts.slice(1).join('\t'),
+                        "fullLine": line
                     });
 
                 });
@@ -105,6 +164,10 @@ CenterWindow {
     }
 
     Process {
+        id: deleteProc
+    }
+
+    Process {
         id: clearProc
 
         command: ["cliphist", "wipe"]
@@ -116,28 +179,27 @@ CenterWindow {
     }
 
     ColumnLayout {
-        spacing: Theme.sizeLg
+        spacing: Constants.sizeLg
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: Theme.sizeXs
+            spacing: Constants.sizeXs
 
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40
-                color: Theme.colBgSecondary
-                radius: Theme.sizeXl
+                color: Colors.bgSecondary
+                radius: Constants.sizeXl
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: Theme.sizeLg
-                    anchors.rightMargin: Theme.sizeLg
-                    spacing: Theme.sizeXs
+                    anchors.leftMargin: Constants.sizeLg
+                    anchors.rightMargin: Constants.sizeLg
+                    spacing: Constants.sizeXs
 
                     ThemedText {
                         text: ""
-                        color: Theme.colFg
-                        font.pixelSize: Theme.sizeLg
+                        font.pixelSize: Constants.sizeLg
                     }
 
                     TextField {
@@ -145,10 +207,10 @@ CenterWindow {
 
                         Layout.fillWidth: true
                         placeholderText: "Search clipboard history..."
-                        placeholderTextColor: Theme.colMuted
-                        color: Theme.colFg
-                        font.pixelSize: Theme.sizeMd
-                        font.family: Theme.fontFamily
+                        placeholderTextColor: Colors.muted
+                        color: Colors.fg
+                        font.pixelSize: Constants.sizeMd
+                        font.family: Constants.fontFamily
                         background: null
                         onTextChanged: root.filterClipboard(text)
                         Keys.onPressed: function(event) {
@@ -177,40 +239,13 @@ CenterWindow {
 
             }
 
-            Rectangle {
-                id: clearButton
-
-                Layout.preferredHeight: 40
-                Layout.preferredWidth: 40
-                color: Theme.colBgSecondary
-                radius: 20
-
-                ThemedText {
-                    anchors.centerIn: parent
-                    text: "󰆴"
-                    color: clearHover.hovered ? Theme.colRed : Theme.colMuted
-                    font.pixelSize: Theme.sizeXl
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animNormal
-                        }
-
-                    }
-
-                }
-
-                HoverHandler {
-                    id: clearHover
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.clearHistory()
-                }
-
+            IconButton {
+                icon: "󰆴"
+                iconColor: Colors.red
+                hoverColor: Colors.red
+                iconSize: Constants.sizeXl
+                visible: filteredModel.count > 0
+                onClicked: root.clearHistory()
             }
 
         }
@@ -221,40 +256,56 @@ CenterWindow {
 
             ColumnLayout {
                 anchors.centerIn: parent
-                visible: filteredModel.count === 0 && searchField.text === ""
+                opacity: filteredModel.count === 0 && searchField.text === "" ? 1 : 0
+                visible: opacity > 0
 
                 ThemedText {
                     text: "󰅍"
-                    color: Theme.colMuted
+                    color: Colors.muted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
 
                 ThemedText {
                     text: "Clipboard is empty"
-                    color: Theme.colMuted
-                    font.pixelSize: Theme.sizeMd
+                    color: Colors.muted
+                    font.pixelSize: Constants.sizeMd
                     Layout.alignment: Qt.AlignHCenter
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Constants.animNormal
+                    }
+
                 }
 
             }
 
             ColumnLayout {
                 anchors.centerIn: parent
-                visible: filteredModel.count === 0 && searchField.text !== ""
+                opacity: filteredModel.count === 0 && searchField.text !== "" ? 1 : 0
+                visible: opacity > 0
 
                 ThemedText {
                     text: "󰩉"
-                    color: Theme.colMuted
+                    color: Colors.muted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
 
                 ThemedText {
                     text: "No results found"
-                    color: Theme.colMuted
-                    font.pixelSize: Theme.sizeMd
+                    color: Colors.muted
+                    font.pixelSize: Constants.sizeMd
                     Layout.alignment: Qt.AlignHCenter
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Constants.animNormal
+                    }
+
                 }
 
             }
@@ -265,12 +316,11 @@ CenterWindow {
                 anchors.fill: parent
                 clip: true
                 model: filteredModel
-                spacing: Theme.sizeXs
+                spacing: Constants.sizeXs
                 currentIndex: -1
                 highlightResizeDuration: 0
                 highlightMoveDuration: 250
                 highlightFollowsCurrentItem: true
-                visible: filteredModel.count > 0
                 Keys.onPressed: function(event) {
                     if (event.key === Qt.Key_Up) {
                         if (currentIndex <= 0) {
@@ -281,32 +331,32 @@ CenterWindow {
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                         if (currentIndex >= 0) {
                             let item = filteredModel.get(currentIndex);
-                            copyToClipboard(item.itemId);
+                            root.copyToClipboard(item.itemId);
                             event.accepted = true;
                         }
                     }
                 }
 
-                highlight: Item {
-                    width: clipboardView.width
-                    height: 44
-                    z: 1
+                remove: Transition {
+                    NumberAnimation {
+                        property: "x"
+                        to: clipboardView.width
+                        duration: Constants.animSlow
+                        easing.type: Easing.InExpo
+                    }
 
-                    Rectangle {
-                        anchors.fill: parent
-                        radius: Theme.sizeXs
-                        color: Theme.colBgSecondary
+                }
 
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            anchors.leftMargin: 2
-                            anchors.topMargin: 8
-                            anchors.bottomMargin: 8
-                            width: 3
-                            radius: 2
-                            color: Theme.colPurple
+                displaced: Transition {
+                    SequentialAnimation {
+                        PauseAnimation {
+                            duration: Constants.animSlow
+                        }
+
+                        NumberAnimation {
+                            properties: "x,y"
+                            duration: Constants.animSlow
+                            easing.type: Easing.OutExpo
                         }
 
                     }
@@ -318,7 +368,7 @@ CenterWindow {
                         properties: "opacity"
                         from: 0
                         to: 1
-                        duration: Theme.animNormal
+                        duration: Constants.animNormal
                         easing.type: Easing.OutQuint
                     }
 
@@ -329,8 +379,34 @@ CenterWindow {
                         properties: "opacity"
                         from: 0
                         to: 1
-                        duration: Theme.animNormal
+                        duration: Constants.animNormal
                         easing.type: Easing.OutQuint
+                    }
+
+                }
+
+                highlight: Item {
+                    width: clipboardView.width
+                    height: clipboardView.currentItem ? clipboardView.currentItem.height : 44
+                    z: 1
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: Constants.sizeXs
+                        color: Colors.bgSecondary
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.leftMargin: 2
+                            anchors.topMargin: 8
+                            anchors.bottomMargin: 8
+                            width: 3
+                            radius: 2
+                            color: Colors.purple
+                        }
+
                     }
 
                 }
@@ -341,18 +417,18 @@ CenterWindow {
                     readonly property bool isCurrent: clipboardView.currentIndex === index
 
                     width: clipboardView.width
-                    height: 44
+                    height: Math.max(44, delegateLayout.implicitHeight + Constants.sizeLg)
                     z: 2
 
                     Rectangle {
                         anchors.fill: parent
-                        radius: Theme.sizeXs
-                        color: Theme.colBgSecondary
+                        radius: Constants.sizeXs
+                        color: Colors.bgSecondary
                         opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: Theme.animNormal
+                                duration: Constants.animNormal
                             }
 
                         }
@@ -360,37 +436,51 @@ CenterWindow {
                     }
 
                     RowLayout {
+                        id: delegateLayout
+
                         anchors.fill: parent
-                        anchors.leftMargin: Theme.sizeLg
-                        anchors.rightMargin: Theme.sizeLg
-                        spacing: Theme.sizeLg
+                        anchors.leftMargin: Constants.sizeLg
+                        anchors.rightMargin: Constants.sizeLg
+                        spacing: Constants.sizeLg
 
                         ThemedText {
                             text: model.text
-                            color: isCurrent ? Theme.colPurple : Theme.colFg
+                            color: isCurrent ? Colors.purple : Colors.fg
                             font.bold: isCurrent
-                            font.pixelSize: Theme.sizeMd
+                            font.pixelSize: Constants.sizeMd
+                            wrapMode: Text.NoWrap
                             Layout.fillWidth: true
-                            elide: Text.ElideRight
                             maximumLineCount: 1
-                            scale: isCurrent ? 1.01 : 1
+                            elide: Text.ElideRight
+                            scale: isCurrent ? 1.02 : 1
                             transformOrigin: Item.Left
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: Theme.animNormal
+                                    duration: Constants.animNormal
                                 }
 
                             }
 
                             Behavior on scale {
                                 NumberAnimation {
-                                    duration: Theme.animNormal
+                                    duration: Constants.animNormal
                                     easing.type: Easing.OutQuint
                                 }
 
                             }
 
+                        }
+
+                        IconButton {
+                            icon: ""
+                            iconColor: Colors.red
+                            hoverColor: Colors.red
+                            iconSize: Constants.sizeMd
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: {
+                                root.deleteItem(index, model.fullLine);
+                            }
                         }
 
                     }
@@ -400,7 +490,7 @@ CenterWindow {
                     }
 
                     TapHandler {
-                        onTapped: copyToClipboard(model.itemId)
+                        onTapped: root.copyToClipboard(model.itemId)
                     }
 
                 }

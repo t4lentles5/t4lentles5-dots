@@ -27,7 +27,67 @@ CenterWindow {
         onExited: function(exitCode) {
             if (exitCode === 0) {
                 try {
-                    root.keybindData = JSON.parse(parseOutput.text);
+                    let rawData = JSON.parse(parseOutput.text);
+                    let processed = [];
+                    for (let i = 0; i < rawData.length; i++) {
+                        let section = rawData[i];
+                        let newBinds = [];
+                        for (let j = 0; j < section.binds.length; j++) {
+                            let bind = section.binds[j];
+                            let keys = bind.keys;
+                            let desc = bind.desc;
+                            let result = [];
+                            let multiKeys = [];
+                            let joiner = "";
+                            if (desc.endsWith(" ←→↑↓")) {
+                                desc = desc.replace(" ←→↑↓", "");
+                                multiKeys = ["←", "→", "↑", "↓"];
+                            } else if (desc.endsWith(" 1..0")) {
+                                desc = desc.replace(" 1..0", "");
+                                multiKeys = ["1", "0"];
+                                joiner = "..";
+                            } else if (desc === "Previous / Next Workspace") {
+                                multiKeys = ["←", "→"];
+                                joiner = "/";
+                            } else if (desc === "Scroll Through Workspaces") {
+                                multiKeys = ["Scroll ↓", "Scroll ↑"];
+                                joiner = "/";
+                            } else {
+                                multiKeys = [keys[keys.length - 1]];
+                            }
+                            for (let k = 0; k < keys.length - 1; k++) {
+                                result.push({
+                                    "text": keys[k],
+                                    "isKey": true
+                                });
+                                result.push({
+                                    "text": "+",
+                                    "isKey": false
+                                });
+                            }
+                            for (let k = 0; k < multiKeys.length; k++) {
+                                result.push({
+                                    "text": multiKeys[k],
+                                    "isKey": true
+                                });
+                                if (k < multiKeys.length - 1 && joiner !== "")
+                                    result.push({
+                                    "text": joiner,
+                                    "isKey": false
+                                });
+
+                            }
+                            newBinds.push({
+                                "uiElements": result,
+                                "desc": desc
+                            });
+                        }
+                        processed.push({
+                            "section": section.section,
+                            "binds": newBinds
+                        });
+                    }
+                    root.keybindData = processed;
                 } catch (e) {
                     console.error("Error parsing keybinds JSON: " + e);
                 }
@@ -43,18 +103,17 @@ CenterWindow {
     RowLayout {
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignHCenter
-        spacing: 12
+        spacing: Constants.sizeXs
 
         ThemedText {
             text: "󰌌"
-            color: Theme.colPurple
-            font.pixelSize: 28
+            color: Colors.purple
+            font.pixelSize: Constants.sizeXl
         }
 
         ThemedText {
-            text: "Hyprland Keybinds"
-            color: Theme.colFg
-            font.pixelSize: Theme.fontSizeLg
+            text: "Keybinds"
+            font.pixelSize: Constants.sizeLg
             font.bold: true
         }
 
@@ -63,7 +122,7 @@ CenterWindow {
     RowLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        spacing: 20
+        spacing: Constants.sizeXs
 
         Flickable {
             Layout.fillWidth: true
@@ -78,7 +137,7 @@ CenterWindow {
                 id: col1
 
                 width: parent.width
-                spacing: 12
+                spacing: Constants.sizeXs
 
                 Repeater {
                     model: {
@@ -88,7 +147,7 @@ CenterWindow {
 
                     delegate: ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 12
+                        spacing: Constants.sizeXs
 
                         SectionHeader {
                             label: modelData.section
@@ -98,7 +157,7 @@ CenterWindow {
                             model: modelData.binds
 
                             KeybindItem {
-                                keys: modelData.keys
+                                uiElements: modelData.uiElements
                                 desc: modelData.desc
                             }
 
@@ -120,7 +179,7 @@ CenterWindow {
         Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: 1
-            color: Theme.colBgLighter
+            color: Colors.bgSecondary
         }
 
         Flickable {
@@ -136,7 +195,7 @@ CenterWindow {
                 id: col2
 
                 width: parent.width
-                spacing: 12
+                spacing: Constants.sizeXs
 
                 Repeater {
                     model: {
@@ -146,7 +205,7 @@ CenterWindow {
 
                     delegate: ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 12
+                        spacing: Constants.sizeXs
 
                         SectionHeader {
                             label: modelData.section
@@ -156,7 +215,7 @@ CenterWindow {
                             model: modelData.binds
 
                             KeybindItem {
-                                keys: modelData.keys
+                                uiElements: modelData.uiElements
                                 desc: modelData.desc
                             }
 
@@ -182,19 +241,19 @@ CenterWindow {
 
         Layout.fillWidth: true
         Layout.topMargin: 4
-        spacing: 10
+        spacing: Constants.sizeXs
 
         Rectangle {
             width: 3
             height: 16
             radius: 2
-            color: Theme.colPurple
+            color: Colors.purple
         }
 
         ThemedText {
             text: label
-            color: Theme.colPurple
-            font.pixelSize: Theme.fontSizeMd
+            color: Colors.purple
+            font.pixelSize: Constants.sizeSm
             font.bold: true
             font.capitalization: Font.AllUppercase
             Layout.fillWidth: true
@@ -203,51 +262,56 @@ CenterWindow {
     }
 
     component KeybindItem: RowLayout {
-        property list<string> keys
+        property var uiElements
         property string desc
 
         Layout.fillWidth: true
-        spacing: Theme.spacingSm
+        spacing: Constants.sizeXs
 
         Row {
             spacing: 4
-            Layout.preferredWidth: 180
+            Layout.preferredWidth: 320
             Layout.alignment: Qt.AlignVCenter
 
             Repeater {
-                model: keys
+                model: uiElements
 
-                delegate: Row {
-                    required property string modelData
-                    required property int index
+                delegate: Item {
+                    required property var modelData
 
-                    spacing: 4
+                    width: modelData.isKey ? keyRect.width : sepText.implicitWidth
+                    height: 26
 
                     Rectangle {
+                        id: keyRect
+
+                        visible: modelData.isKey
                         width: Math.max(capText.implicitWidth + 14, 28)
                         height: 26
                         radius: 5
-                        color: Theme.colBgSecondary
-
+                        color: Colors.bgSecondary
+                        anchors.verticalCenter: parent.verticalCenter
 
                         ThemedText {
                             id: capText
 
                             anchors.centerIn: parent
                             anchors.verticalCenterOffset: -1
-                            text: modelData
-                            color: Theme.colYellow
-                            font.pixelSize: Theme.fontSizeSm
+                            text: modelData.isKey ? modelData.text : ""
+                            color: Colors.yellow
+                            font.pixelSize: Constants.sizeSm
                             font.bold: true
                         }
 
                     }
 
                     ThemedText {
-                        visible: index < keys.length - 1
-                        text: "+"
-                        color: Theme.colMuted
-                        font.pixelSize: Theme.fontSizeSm
+                        id: sepText
+
+                        visible: !modelData.isKey
+                        text: !modelData.isKey ? modelData.text : ""
+                        color: Colors.muted
+                        font.pixelSize: Constants.sizeSm
                         font.bold: true
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -260,8 +324,7 @@ CenterWindow {
 
         ThemedText {
             text: desc
-            color: Theme.colFg
-            font.pixelSize: Theme.fontSizeMd - 1
+            font.pixelSize: Constants.sizeSm
             Layout.fillWidth: true
             elide: Text.ElideRight
         }

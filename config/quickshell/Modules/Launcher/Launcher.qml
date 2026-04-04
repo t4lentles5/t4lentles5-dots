@@ -98,19 +98,18 @@ CenterWindow {
     Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 40
-        color: Theme.colBgSecondary
-        radius: Theme.sizeXl
+        color: Colors.bgSecondary
+        radius: Constants.sizeXl
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: Theme.sizeLg
-            anchors.rightMargin: Theme.sizeLg
-            spacing: Theme.sizeXs
+            anchors.leftMargin: Constants.sizeLg
+            anchors.rightMargin: Constants.sizeLg
+            spacing: Constants.sizeXs
 
             ThemedText {
                 text: ""
-                color: Theme.colFg
-                font.pixelSize: Theme.sizeLg
+                font.pixelSize: Constants.sizeLg
             }
 
             TextField {
@@ -118,10 +117,10 @@ CenterWindow {
 
                 Layout.fillWidth: true
                 placeholderText: "Search applications..."
-                placeholderTextColor: Theme.colMuted
-                color: Theme.colFg
-                font.pixelSize: Theme.sizeMd
-                font.family: Theme.fontFamily
+                placeholderTextColor: Colors.muted
+                color: Colors.fg
+                font.pixelSize: Constants.sizeMd
+                font.family: Constants.fontFamily
                 background: null
                 onTextChanged: root.filterApps(text)
                 Keys.onPressed: function(event) {
@@ -160,15 +159,15 @@ CenterWindow {
 
             ThemedText {
                 text: "󰩉"
-                color: Theme.colMuted
+                color: Colors.muted
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
 
             ThemedText {
                 text: "No applications found"
-                color: Theme.colMuted
-                font.pixelSize: Theme.sizeMd
+                color: Colors.muted
+                font.pixelSize: Constants.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -180,7 +179,7 @@ CenterWindow {
             anchors.fill: parent
             clip: true
             model: filteredModel
-            spacing: Theme.sizeXs
+            spacing: Constants.sizeXs
             currentIndex: -1
             highlightResizeDuration: 0
             highlightMoveDuration: 250
@@ -209,8 +208,8 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.sizeXs
-                    color: Theme.colBgSecondary
+                    radius: Constants.sizeXs
+                    color: Colors.bgSecondary
 
                     Rectangle {
                         anchors.left: parent.left
@@ -221,7 +220,7 @@ CenterWindow {
                         anchors.bottomMargin: 8
                         width: 3
                         radius: 2
-                        color: Theme.colPurple
+                        color: Colors.purple
                     }
 
                 }
@@ -233,7 +232,7 @@ CenterWindow {
                     properties: "opacity"
                     from: 0
                     to: 1
-                    duration: Theme.animNormal
+                    duration: Constants.animNormal
                     easing.type: Easing.OutQuint
                 }
 
@@ -244,7 +243,7 @@ CenterWindow {
                     properties: "opacity"
                     from: 0
                     to: 1
-                    duration: Theme.animNormal
+                    duration: Constants.animNormal
                     easing.type: Easing.OutQuint
                 }
 
@@ -261,13 +260,13 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.sizeXs
-                    color: Theme.colBgSecondary
+                    radius: Constants.sizeXs
+                    color: Colors.bgSecondary
                     opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: Theme.animNormal
+                            duration: Constants.animNormal
                         }
 
                     }
@@ -276,9 +275,9 @@ CenterWindow {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: Theme.sizeLg
-                    anchors.rightMargin: Theme.sizeLg
-                    spacing: Theme.sizeLg
+                    anchors.leftMargin: Constants.sizeLg
+                    anchors.rightMargin: Constants.sizeLg
+                    spacing: Constants.sizeLg
 
                     Image {
                         Layout.preferredWidth: 24
@@ -290,31 +289,31 @@ CenterWindow {
                             anchors.centerIn: parent
                             visible: parent.status !== Image.Ready || !parent.source
                             text: ""
-                            color: isCurrent ? Theme.colPurple : Theme.colMuted
-                            font.pixelSize: Theme.sizeLg
+                            color: isCurrent ? Colors.purple : Colors.muted
+                            font.pixelSize: Constants.sizeLg
                         }
 
                     }
 
                     ThemedText {
                         text: model.name
-                        color: isCurrent ? Theme.colPurple : Theme.colFg
+                        color: isCurrent ? Colors.purple : Colors.fg
                         font.bold: isCurrent
-                        font.pixelSize: Theme.sizeMd
+                        font.pixelSize: Constants.sizeMd
                         Layout.fillWidth: true
                         scale: isCurrent ? 1.02 : 1
                         transformOrigin: Item.Left
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: Theme.animNormal
+                                duration: Constants.animNormal
                             }
 
                         }
 
                         Behavior on scale {
                             NumberAnimation {
-                                duration: Theme.animNormal
+                                duration: Constants.animNormal
                                 easing.type: Easing.OutQuint
                             }
 

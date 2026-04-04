@@ -31,7 +31,7 @@ CenterWindow {
         if (!targetPath)
             return ;
 
-        wallpaperProc.command = ["swww", "img", targetPath, "--transition-type", "grow", "--transition-pos", "0.5,0.5", "--transition-step", "120"];
+        wallpaperProc.command = ["awww", "img", targetPath, "--transition-type", "grow", "--transition-pos", "0.5,0.5", "--transition-step", "120"];
         wallpaperProc.startDetached();
         root.isOpen = false;
     }
@@ -107,19 +107,18 @@ CenterWindow {
     Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 40
-        color: Theme.colBgSecondary
-        radius: Theme.sizeXl
+        color: Colors.bgSecondary
+        radius: Constants.sizeXl
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: Theme.sizeLg
-            anchors.rightMargin: Theme.sizeLg
-            spacing: Theme.sizeXs
+            anchors.leftMargin: Constants.sizeLg
+            anchors.rightMargin: Constants.sizeLg
+            spacing: Constants.sizeXs
 
             ThemedText {
                 text: ""
-                color: Theme.colFg
-                font.pixelSize: Theme.sizeLg
+                font.pixelSize: Constants.sizeLg
             }
 
             TextField {
@@ -127,10 +126,10 @@ CenterWindow {
 
                 Layout.fillWidth: true
                 placeholderText: "Search wallpapers..."
-                placeholderTextColor: Theme.colMuted
-                color: Theme.colFg
-                font.pixelSize: Theme.sizeMd
-                font.family: Theme.fontFamily
+                placeholderTextColor: Colors.muted
+                color: Colors.fg
+                font.pixelSize: Constants.sizeMd
+                font.family: Constants.fontFamily
                 background: null
                 onTextChanged: root.filterWallpapers(text)
                 Keys.onPressed: function(event) {
@@ -181,15 +180,15 @@ CenterWindow {
 
             ThemedText {
                 text: "󰸉"
-                color: Theme.colBgSecondary
+                color: Colors.bgSecondary
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
 
             ThemedText {
                 text: "No wallpapers found in ~/Pictures/Wallpapers"
-                color: Theme.colMuted
-                font.pixelSize: Theme.sizeMd
+                color: Colors.muted
+                font.pixelSize: Constants.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -201,15 +200,15 @@ CenterWindow {
 
             ThemedText {
                 text: "󰩉"
-                color: Theme.colMuted
+                color: Colors.muted
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
 
             ThemedText {
                 text: "No matches found"
-                color: Theme.colMuted
-                font.pixelSize: Theme.sizeMd
+                color: Colors.muted
+                font.pixelSize: Constants.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -233,7 +232,7 @@ CenterWindow {
                     properties: "opacity, scale"
                     from: 0
                     to: 1
-                    duration: Theme.animSlow
+                    duration: Constants.animSlow
                     easing.type: Easing.OutQuint
                 }
 
@@ -246,16 +245,16 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    anchors.margins: Theme.sizeXs
-                    radius: Theme.sizeXs
+                    anchors.margins: Constants.sizeXs
+                    radius: Constants.sizeXs
                     color: "transparent"
-                    border.color: Theme.colPurple
+                    border.color: Colors.purple
                     border.width: 2
                     scale: 1.05
 
                     Behavior on scale {
                         NumberAnimation {
-                            duration: Theme.animSlow
+                            duration: Constants.animSlow
                             easing.type: Easing.OutQuint
                         }
 
@@ -270,7 +269,7 @@ CenterWindow {
                     properties: "opacity, scale"
                     from: 0
                     to: 1
-                    duration: Theme.animSlow
+                    duration: Constants.animSlow
                     easing.type: Easing.OutQuint
                 }
 
@@ -287,9 +286,9 @@ CenterWindow {
 
                 Rectangle {
                     anchors.fill: parent
-                    anchors.margins: Theme.sizeXs
-                    radius: Theme.sizeXs
-                    color: Theme.colBgSecondary
+                    anchors.margins: Constants.sizeXs
+                    radius: Constants.sizeXs
+                    color: Colors.bgSecondary
                     scale: isCurrent || hoverHandler.hovered ? 1.05 : 1
 
                     Rectangle {
@@ -297,7 +296,7 @@ CenterWindow {
 
                         anchors.fill: parent
                         anchors.margins: isCurrent ? 2 : 1
-                        radius: Theme.sizeXs
+                        radius: Constants.sizeXs
                         visible: false
                     }
 
@@ -326,18 +325,17 @@ CenterWindow {
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        height: nameText.contentHeight + Theme.sizeXs
-                        color: "#aa000000"
-                        radius: Theme.sizeXs
+                        height: nameText.contentHeight + Constants.sizeXs
+                        color: Colors.bgSecondary
+                        radius: Constants.sizeXs
 
                         ThemedText {
                             id: nameText
 
                             anchors.centerIn: parent
-                            width: parent.width - Theme.sizeSm
+                            width: parent.width - Constants.sizeSm
                             text: model.name
-                            color: Theme.colFg
-                            font.pixelSize: Theme.sizeSm
+                            font.pixelSize: Constants.sizeSm
                             horizontalAlignment: Text.AlignHCenter
                             elide: Text.ElideRight
                         }
@@ -346,7 +344,7 @@ CenterWindow {
 
                     Behavior on scale {
                         NumberAnimation {
-                            duration: Theme.animSlow
+                            duration: Constants.animSlow
                             easing.type: Easing.OutQuint
                         }
 

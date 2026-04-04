@@ -9,6 +9,7 @@ DIR="$HOME/Pictures/Screenshots"
 TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
 FILENAME="$DIR/Shot-${TIMESTAMP}.png"
 LOG="/tmp/screenshot_debug.log"
+ICON_PATH="/usr/share/icons/Tela-circle-dracula-dark/scalable/apps/accessories-screenshot.svg"
 
 mkdir -p "$DIR"
 
@@ -18,7 +19,7 @@ show_notification() {
   if [ -f "$FILENAME" ]; then
     notify-send -r 699 -i "$FILENAME" "Screenshot" "Copied to clipboard"
   else
-    notify-send -r 699 -i user-trash "Screenshot" "Canceled"
+    notify-send -r 699 -i "$ICON_PATH" "Screenshot" "Canceled"
   fi
 }
 
@@ -77,8 +78,14 @@ take_screenshot() {
 
 case "$MODE" in
 "full_delay" | "area_delay")
-  notify-send -t 1000 "Screenshot" "Taking shot in 5 seconds..."
-  sleep 5
+  NOTIFY_ID=$(notify-send -p -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in 5 seconds...")
+  sleep 1
+  for i in {4..1}; do
+    notify-send -p -r $NOTIFY_ID -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in $i seconds..." >/dev/null 2>&1
+    sleep 1
+  done
+  gdbus call --session --dest org.freedesktop.Notifications --object-path /org/freedesktop/Notifications --method org.freedesktop.Notifications.CloseNotification $NOTIFY_ID >/dev/null 2>&1
+  sleep 0.1
   ACTUAL_MODE=${MODE%_delay}
   take_screenshot "$ACTUAL_MODE"
   ;;
@@ -88,9 +95,9 @@ case "$MODE" in
   if [ -n "$GEOM" ]; then
     grim -g "$GEOM" - | wl-copy --type image/png
     play_sound
-    notify-send -r 699 "Screenshot" "Area copied to clipboard"
+    notify-send -r 699 -i "$ICON_PATH" "Screenshot" "Area copied to clipboard"
   else
-    notify-send -r 699 -i user-trash "Screenshot" "Canceled"
+    notify-send -r 699 -i "$ICON_PATH" "Screenshot" "Canceled"
   fi
   exit 0
   ;;

@@ -1,6 +1,8 @@
+import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Notifications
 import Quickshell.Wayland
 import qs.Core
@@ -11,8 +13,7 @@ PanelWindow {
     required property var notificationService
 
     screen: Quickshell.screens[0]
-    WlrLayershell.namespace: "notifications"
-    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.layer: WlrLayershell.Overlay
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     implicitWidth: 380
     implicitHeight: 1000
@@ -25,7 +26,7 @@ PanelWindow {
     }
 
     margins {
-        top: 60
+        top: 64
         right: 8
     }
 
@@ -35,7 +36,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.right: parent.right
         width: parent.width
-        spacing: Theme.spacingLg
+        spacing: Constants.sizeLg
 
         Repeater {
             id: notificationList
@@ -46,9 +47,8 @@ PanelWindow {
                 id: toastRect
 
                 property bool isRemoving: false
-                property real scaleValue: 0.8
-                property real opacityValue: 0
-                property real slideOffset: 300
+                property bool expanded: false
+                property real slideOffset: 400
 
                 function closeNotification() {
                     if (isRemoving)
@@ -56,21 +56,23 @@ PanelWindow {
 
                     isRemoving = true;
                     animInDelayTimer.stop();
-                    slideOffset = 300;
-                    scaleValue = 0.8;
-                    opacityValue = 0;
+                    slideOffset = 400;
                     removalTimer.start();
                 }
 
                 width: notificationContainer.width
-                height: layout.implicitHeight + Theme.spacingLg * 2
-                color: Theme.colBgSecondary
-                radius: Theme.radiusLg
-                scale: scaleValue
-                opacity: opacityValue
+                height: layout.implicitHeight + Constants.sizeLg * 2
+                color: Colors.bg
+                radius: Constants.sizeXs
+                layer.enabled: true
+                opacity: 1
                 Component.onCompleted: {
-                    animInDelayTimer.interval = index * Theme.animFast;
+                    animInDelayTimer.interval = index * Constants.animNormal;
                     animInDelayTimer.start();
+                }
+
+                Process {
+                    id: actionCommand
                 }
 
                 Timer {
@@ -82,15 +84,13 @@ PanelWindow {
                             return ;
 
                         toastRect.slideOffset = 0;
-                        toastRect.scaleValue = 1;
-                        toastRect.opacityValue = 1;
                     }
                 }
 
                 Timer {
                     id: removalTimer
 
-                    interval: Theme.animSlow
+                    interval: Constants.animSlow
                     repeat: false
                     onTriggered: {
                         if (notificationService)
@@ -99,15 +99,25 @@ PanelWindow {
                     }
                 }
 
+                MouseArea {
+                    id: mainMouseArea
+
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: toastRect.closeNotification()
+                    onExited: toastRect.color = Colors.bg
+                }
+
                 RowLayout {
                     id: layout
 
                     anchors.fill: parent
-                    anchors.margins: Theme.spacingLg
-                    spacing: Theme.spacingLg
+                    anchors.margins: Constants.sizeLg
+                    spacing: Constants.sizeLg
 
                     Image {
                         Layout.alignment: Qt.AlignTop
+                        Layout.topMargin: 4
                         Layout.preferredWidth: 48
                         Layout.preferredHeight: 48
                         source: {
@@ -131,94 +141,179 @@ PanelWindow {
                     ColumnLayout {
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignTop
-                        spacing: 4
+                        spacing: Constants.sizeMd
 
-                        Text {
+                        ColumnLayout {
                             Layout.fillWidth: true
-                            text: model.summary
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSizeMd
-                            font.bold: true
-                            color: Theme.colFg
-                            wrapMode: Text.Wrap
+                            spacing: 4
+
+                            ThemedText {
+                                Layout.fillWidth: true
+                                text: model.summary
+                                font.pixelSize: Constants.sizeMd
+                                font.bold: true
+                                wrapMode: Text.Wrap
+                            }
+
+                            ThemedText {
+                                id: bodyText
+
+                                Layout.fillWidth: true
+                                text: model.body
+                                wrapMode: Text.Wrap
+                                opacity: 0.8
+                                maximumLineCount: toastRect.expanded ? 100 : 3
+                                elide: Text.ElideRight
+                            }
+
                         }
 
-                        Text {
-                            Layout.fillWidth: true
-                            text: model.body
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSizeSm
-                            color: Theme.colFg
-                            wrapMode: Text.Wrap
-                            opacity: 0.8
+                        RowLayout {
+                            id: actionButtons
+
+                            visible: model.summary === "Power Menu"
+                            spacing: Constants.sizeMd
+
+                            Rectangle {
+                                Layout.preferredWidth: 80
+                                Layout.preferredHeight: 28
+                                color: acceptMouse.containsMouse ? Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.1) : Colors.bgSecondary
+                                radius: Constants.sizeXs
+
+                                ThemedText {
+                                    anchors.centerIn: parent
+                                    text: "Accept"
+                                    color: Colors.green
+                                    font.bold: true
+                                    font.pixelSize: Constants.sizeSm
+                                }
+
+                                MouseArea {
+                                    id: acceptMouse
+
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    preventStealing: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        actionCommand.command = ["bash", "-c", "pgrep -n -f [p]ower_action.sh | xargs -r kill -USR1"];
+                                        actionCommand.startDetached();
+                                        toastRect.closeNotification();
+                                    }
+                                }
+
+                            }
+
+                            Rectangle {
+                                Layout.preferredWidth: 80
+                                Layout.preferredHeight: 28
+                                color: cancelMouse.containsMouse ? Qt.rgba(Colors.red.r, Colors.red.g, Colors.red.b, 0.1) : Colors.bgSecondary
+                                radius: Constants.sizeXs
+
+                                ThemedText {
+                                    anchors.centerIn: parent
+                                    text: "Cancel"
+                                    color: Colors.red
+                                    font.bold: true
+                                    font.pixelSize: Constants.sizeSm
+                                }
+
+                                MouseArea {
+                                    id: cancelMouse
+
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    preventStealing: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        actionCommand.command = ["bash", "-c", "pgrep -n -f [p]ower_action.sh | xargs -r kill -TERM"];
+                                        actionCommand.startDetached();
+                                        toastRect.closeNotification();
+                                    }
+                                }
+
+                            }
+
                         }
 
                     }
 
+                }
+
+                IconButton {
+                    id: expandButton
+
+                    anchors.top: parent.top
+                    anchors.right: parent.right
+                    anchors.margins: Constants.sizeXs
+                    icon: toastRect.expanded ? "" : ""
+                    iconSize: Constants.sizeMd
+                    visible: bodyText.truncated || toastRect.expanded
+                    hoverColor: Colors.fg
+                    iconColor: Colors.muted
+                    onClicked: {
+                        toastRect.expanded = !toastRect.expanded;
+                    }
                 }
 
                 Rectangle {
-                    id: progressBar
+                    id: progressTrack
 
                     anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.bottomMargin: 4
-                    anchors.leftMargin: Theme.radiusLg
-                    height: 4
-                    radius: 2
-                    color: Theme.colCyan
-                    width: toastRect.width - Theme.radiusLg * 2
+                    width: parent.width
+                    height: 2
+                    color: Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.1)
+                    visible: true
 
-                    NumberAnimation on width {
-                        id: progressAnim
+                    Rectangle {
+                        id: progressBar
 
-                        to: 0
-                        duration: 5000
-                        running: toastRect.opacityValue === 1 && !toastRect.isRemoving
-                        paused: hoverArea.containsMouse
-                        onFinished: {
-                            if (!toastRect.isRemoving)
-                                toastRect.closeNotification();
+                        height: parent.height
+                        color: Colors.purple
+                        width: parent.width
 
+                        NumberAnimation on width {
+                            id: progressAnim
+
+                            to: 0
+                            duration: model.summary === "Power Menu" ? 10000 : 5000
+                            running: toastRect.slideOffset === 0 && !toastRect.isRemoving && !toastRect.expanded
+                            paused: mainMouseArea.containsMouse || toastRect.expanded
+                            onFinished: {
+                                if (!toastRect.isRemoving)
+                                    toastRect.closeNotification();
+
+                            }
                         }
+
                     }
 
-                }
-
-                MouseArea {
-                    id: hoverArea
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: toastRect.closeNotification()
-                    onEntered: toastRect.color = Qt.darker(Theme.colBgSecondary, 1.1)
-                    onExited: toastRect.color = Theme.colBgSecondary
                 }
 
                 transform: Translate {
                     x: toastRect.slideOffset
-                    y: 0
-                }
 
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: Theme.animSlow
-                        easing.type: Easing.OutExpo
+                    Behavior on y {
+                        NumberAnimation {
+                            duration: Constants.animNormal
+                            easing.type: Easing.OutCubic
+                        }
+
                     }
 
                 }
 
-                Behavior on opacity {
+                Behavior on height {
                     NumberAnimation {
-                        duration: Theme.animSlow
-                        easing.type: Easing.OutCubic
+                        duration: Constants.animSlow
+                        easing.type: Easing.OutExpo
                     }
 
                 }
 
                 Behavior on slideOffset {
                     NumberAnimation {
-                        duration: Theme.animSlow
+                        duration: Constants.animSlow
                         easing.type: Easing.OutExpo
                     }
 
@@ -231,7 +326,7 @@ PanelWindow {
         move: Transition {
             NumberAnimation {
                 properties: "x,y"
-                duration: Theme.animSlow
+                duration: Constants.animSlow
                 easing.type: Easing.OutExpo
             }
 
