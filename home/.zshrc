@@ -4,7 +4,12 @@
 #  ┬  ┬┌─┐┬─┐┌─┐
 #  └┐┌┘├─┤├┬┘└─┐
 #   └┘ ┴ ┴┴└─└─┘
-export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
+zshaddhistory() {
+  local line="${1%%$'\n'}"
+  [[ "$line" =~ ^(ls|cd|pwd|exit|sudo reboot|history|cd -|cd \.\.)$ ]] && return 1
+  return 0
+}
+
 export SUDO_PROMPT="Deploying root access for %u. Password pls: "
 
 if [ -d "$HOME/.local/bin" ] ;
@@ -16,7 +21,7 @@ fi
 #  ┴─┘└─┘┴ ┴─┴┘  └─┘┘└┘└─┘┴┘└┘└─┘
 autoload -Uz compinit
 
-local zcompdump="$HOME/.config/zsh/zcompdump"
+zcompdump="$HOME/.config/zsh/zcompdump"
 
 if [[ -n "$zcompdump"(#qN.mh+24) ]]; then
     compinit -i -d "$zcompdump"
@@ -29,8 +34,6 @@ if [[ ! -f "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc" ]]; then
 fi
 
 autoload -Uz add-zsh-hook
-autoload -Uz vcs_info
-precmd () { vcs_info }
 _comp_options+=(globdots)
 
 zstyle ':completion:*' menu select
@@ -40,7 +43,6 @@ zstyle ':completion:*' matcher-list \
 		'm:{a-zA-Z}={A-Za-z}' \
 		'+r:|[._-]=* r:|=*' \
 		'+l:|=*'
-zstyle ':vcs_info:*' formats ' %B%s-[%F{magenta}%f %F{yellow}%b%f]-'
 zstyle ':fzf-tab:*' fzf-flags --style=full --height=90% --pointer '>' \
                 --color 'pointer:green:bold,bg+:-1:,fg+:green:bold,info:blue:bold,marker:yellow:bold,hl:gray:bold,hl+:yellow:bold' \
                 --input-label ' Search ' --color 'input-border:blue,input-label:blue:bold' \
@@ -129,6 +131,7 @@ alias ls='eza --icons=always --color=always -a'
 alias ll='eza --icons=always --color=always -la'
 alias cls='clear'
 alias fastfetch='clear && fastfetch'
+alias update='sudo pacman -Syu --noconfirm && yay -Syu --noconfirm'
 
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
 #  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │ 
@@ -136,10 +139,7 @@ alias fastfetch='clear && fastfetch'
 
 export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 eval "$(starship init zsh)"
+eval "$(fnm env --use-on-cd --shell zsh)"
 
 # pokemon-colorscripts -r --no-title
-pokemon-colorscripts -rn gengar,snorlax,charizard,sceptile,blastoise,wobbuffet,onix,dragonite,lugia,articuno,zapdos,moltres,arcanine,venusaur --no-title
-
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+pokemon-colorscripts -n gengar --no-title
