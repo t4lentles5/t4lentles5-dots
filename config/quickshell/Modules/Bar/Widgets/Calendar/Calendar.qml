@@ -68,8 +68,7 @@ TopPopup {
         monthTransitionAnim.start();
     }
 
-    implicitWidth: 360
-    preferredHeight: mainCol.implicitHeight + (root.contentPadding * 2)
+    preferredHeight: implicitHeight
     animateHeight: true
 
     SequentialAnimation {
@@ -83,18 +82,18 @@ TopPopup {
 
         ParallelAnimation {
             NumberAnimation {
-                target: daysContainer
+                target: daysGrid
                 property: "opacity"
                 to: 0
-                duration: Theme.animFast
+                duration: Constants.animFast
                 easing.type: Easing.OutQuint
             }
 
             NumberAnimation {
                 target: daysTranslate
                 property: "x"
-                to: 15 * root.animDirection
-                duration: Theme.animFast
+                to: Constants.sizeLg * root.animDirection
+                duration: Constants.animFast
                 easing.type: Easing.OutQuint
             }
 
@@ -102,15 +101,15 @@ TopPopup {
                 target: monthLabelContainer
                 property: "opacity"
                 to: 0
-                duration: Theme.animFast
+                duration: Constants.animFast
                 easing.type: Easing.OutQuint
             }
 
             NumberAnimation {
                 target: monthTranslate
                 property: "x"
-                to: 15 * root.animDirection
-                duration: Theme.animFast
+                to: Constants.sizeLg * root.animDirection
+                duration: Constants.animFast
                 easing.type: Easing.OutQuint
             }
 
@@ -128,17 +127,17 @@ TopPopup {
                 } else {
                     root.doNextMonth();
                 }
-                daysTranslate.x = -15 * root.animDirection;
-                monthTranslate.x = -15 * root.animDirection;
+                daysTranslate.x = -Constants.sizeLg * root.animDirection;
+                monthTranslate.x = -Constants.sizeLg * root.animDirection;
             }
         }
 
         ParallelAnimation {
             NumberAnimation {
-                target: daysContainer
+                target: daysGrid
                 property: "opacity"
                 to: 1
-                duration: Theme.animSlow
+                duration: Constants.animFast
                 easing.type: Easing.OutQuad
             }
 
@@ -146,7 +145,7 @@ TopPopup {
                 target: daysTranslate
                 property: "x"
                 to: 0
-                duration: Theme.animSlow
+                duration: Constants.animFast
                 easing.type: Easing.OutQuad
             }
 
@@ -154,7 +153,7 @@ TopPopup {
                 target: monthLabelContainer
                 property: "opacity"
                 to: 1
-                duration: Theme.animSlow
+                duration: Constants.animFast
                 easing.type: Easing.OutQuad
             }
 
@@ -162,7 +161,7 @@ TopPopup {
                 target: monthTranslate
                 property: "x"
                 to: 0
-                duration: Theme.animSlow
+                duration: Constants.animFast
                 easing.type: Easing.OutQuad
             }
 
@@ -179,77 +178,87 @@ TopPopup {
     ColumnLayout {
         id: mainCol
 
-        width: parent.width
-        spacing: Theme.spacingLg
+        Layout.fillWidth: true
+        spacing: Constants.sizeLg
 
         Rectangle {
+            Layout.preferredWidth: headerContent.implicitWidth + (Constants.sizeLg * 2)
+            Layout.preferredHeight: headerContent.implicitHeight + (Constants.sizeLg * 2)
+            color: Colors.bgSecondary
+            radius: Constants.sizeXs
             Layout.fillWidth: true
-            Layout.preferredHeight: 70
-            color: Theme.colBgSecondary
-            radius: Theme.radiusSm
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 15
-                anchors.rightMargin: 15
+            ColumnLayout {
+                id: headerContent
 
-                Item {
-                    id: monthLabelContainer
-
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: monthCol.implicitHeight
-
-                    ColumnLayout {
-                        id: monthCol
-
-                        spacing: 0
-
-                        ThemedText {
-                            text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
-                            color: Theme.colPurple
-                            font.pixelSize: Theme.fontSizeLg
-                            font.bold: true
-                            font.capitalization: Font.Capitalize
-                        }
-
-                        ThemedText {
-                            text: root.currentYear
-                            color: Theme.colMuted
-                            font.pixelSize: Theme.fontSizeSm
-                            font.bold: true
-                        }
-
-                    }
-
-                    transform: Translate {
-                        id: monthTranslate
-
-                        x: 0
-                    }
-
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                }
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
 
                 RowLayout {
-                    spacing: 5
+                    id: headerLayout
 
-                    IconButton {
-                        icon: "󰁍"
-                        onClicked: root.prevMonth()
+                    Layout.fillWidth: true
+                    Layout.leftMargin: Constants.sizeLg
+                    Layout.rightMargin: Constants.sizeLg
+
+                    Item {
+                        id: monthLabelContainer
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: monthCol.implicitHeight
+
+                        ColumnLayout {
+                            id: monthCol
+
+                            ThemedText {
+                                text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
+                                color: Colors.purple
+                                font.pixelSize: Constants.sizeSm
+                                font.bold: true
+                                font.capitalization: Font.Capitalize
+                            }
+
+                            ThemedText {
+                                text: root.currentYear
+                                color: Colors.muted
+                                font.pixelSize: Constants.sizeSm
+                                font.bold: true
+                            }
+
+                        }
+
+                        transform: Translate {
+                            id: monthTranslate
+
+                            x: 0
+                        }
+
                     }
 
-                    IconButton {
-                        icon: "󰃭"
-                        iconColor: Theme.colPurple
-                        onClicked: root.jumpToToday()
+                    Item {
+                        Layout.fillWidth: true
                     }
 
-                    IconButton {
-                        icon: "󰁔"
-                        onClicked: root.nextMonth()
+                    RowLayout {
+                        spacing: 4
+
+                        IconButton {
+                            icon: "󰁍"
+                            onClicked: root.prevMonth()
+                        }
+
+                        IconButton {
+                            icon: "󰃭"
+                            iconColor: Colors.purple
+                            onClicked: root.jumpToToday()
+                        }
+
+                        IconButton {
+                            icon: "󰁔"
+                            onClicked: root.nextMonth()
+                        }
+
                     }
 
                 }
@@ -261,19 +270,17 @@ TopPopup {
         Rectangle {
             id: calendarBg
 
-            Layout.fillWidth: true
-            Layout.preferredHeight: gridContainer.implicitHeight + 30
-            color: Theme.colBgSecondary
-            radius: Theme.radiusSm
+            Layout.preferredWidth: gridContainer.implicitWidth + Constants.sizeLg * 2
+            Layout.preferredHeight: gridContainer.implicitHeight + Constants.sizeLg * 2
+            color: Colors.bgSecondary
+            radius: Constants.sizeXs
 
             ColumnLayout {
                 id: gridContainer
 
-                anchors.top: parent.top
-                anchors.topMargin: 15
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width - 30
-                spacing: Theme.spacingLg
+                anchors.fill: parent
+                anchors.margins: Constants.sizeLg
+                spacing: Constants.sizeXs
 
                 RowLayout {
                     Layout.fillWidth: true
@@ -285,96 +292,87 @@ TopPopup {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                             text: modelData
-                            color: index === 0 || index === 6 ? Theme.colRed : Theme.colCyan
-                            font.pixelSize: Theme.fontSizeSm
+                            color: index === 0 || index === 6 ? Colors.red : Colors.cyan
+                            font.pixelSize: Constants.sizeSm
                             font.bold: true
-                            opacity: 0.6
                         }
 
                     }
 
                 }
 
-                Item {
-                    id: daysContainer
+                GridLayout {
+                    id: daysGrid
 
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: daysGrid.implicitHeight
+                    Layout.preferredWidth: implicitWidth
+                    columns: 7
+                    rowSpacing: Constants.sizeXs
+                    columnSpacing: Constants.sizeXs
 
-                    GridLayout {
-                        id: daysGrid
+                    Repeater {
+                        model: {
+                            let offset = root.firstDayOffset(root.currentMonth, root.currentYear);
+                            let days = root.daysInMonth(root.currentMonth, root.currentYear);
+                            return Math.ceil((offset + days) / 7) * 7;
+                        }
 
-                        anchors.fill: parent
-                        columns: 7
-                        rowSpacing: 5
-                        columnSpacing: 5
+                        delegate: Rectangle {
+                            property int dayOffset: root.firstDayOffset(root.currentMonth, root.currentYear)
+                            property int daysInThisMonth: root.daysInMonth(root.currentMonth, root.currentYear)
+                            property int prevMonthDays: root.daysInMonth(root.currentMonth - 1, root.currentYear)
+                            property int dayNum: {
+                                if (index < dayOffset)
+                                    return prevMonthDays - dayOffset + index + 1;
 
-                        Repeater {
-                            model: {
-                                let offset = root.firstDayOffset(root.currentMonth, root.currentYear);
-                                let days = root.daysInMonth(root.currentMonth, root.currentYear);
-                                return Math.ceil((offset + days) / 7) * 7;
+                                if (index < dayOffset + daysInThisMonth)
+                                    return index - dayOffset + 1;
+
+                                return index - (dayOffset + daysInThisMonth) + 1;
+                            }
+                            property bool isCurrentMonth: index >= dayOffset && index < dayOffset + daysInThisMonth
+                            property bool isToday: {
+                                let today = new Date();
+                                return isCurrentMonth && dayNum === today.getDate() && root.currentMonth === today.getMonth() && root.currentYear === today.getFullYear();
                             }
 
-                            delegate: Rectangle {
-                                property int dayOffset: root.firstDayOffset(root.currentMonth, root.currentYear)
-                                property int daysInThisMonth: root.daysInMonth(root.currentMonth, root.currentYear)
-                                property int prevMonthDays: root.daysInMonth(root.currentMonth - 1, root.currentYear)
-                                property int dayNum: {
-                                    if (index < dayOffset)
-                                        return prevMonthDays - dayOffset + index + 1;
+                            Layout.preferredWidth: Constants.sizeSm * 2
+                            Layout.preferredHeight: Constants.sizeSm * 2
+                            radius: Constants.sizeSm
+                            color: isToday ? Colors.purple : (isCurrentMonth && dayHover.containsMouse ? Colors.bgSecondary : "transparent")
 
-                                    if (index < dayOffset + daysInThisMonth)
-                                        return index - dayOffset + 1;
+                            ThemedText {
+                                anchors.centerIn: parent
+                                text: isCurrentMonth ? dayNum : ""
+                                color: isToday ? Colors.bg : (isCurrentMonth ? Colors.fg : "transparent")
+                                font.pixelSize: Constants.sizeSm
+                                font.bold: isToday
+                            }
 
-                                    return index - (dayOffset + daysInThisMonth) + 1;
-                                }
-                                property bool isCurrentMonth: index >= dayOffset && index < dayOffset + daysInThisMonth
-                                property bool isToday: {
-                                    let today = new Date();
-                                    return isCurrentMonth && dayNum === today.getDate() && root.currentMonth === today.getMonth() && root.currentYear === today.getFullYear();
-                                }
+                            MouseArea {
+                                id: dayHover
 
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 24
-                                radius: Theme.radiusSm
-                                color: isToday ? Theme.colPurple : (isCurrentMonth && dayHover.containsMouse ? Theme.colBgLighter : "transparent")
-
-                                ThemedText {
-                                    anchors.centerIn: parent
-                                    text: isCurrentMonth ? dayNum : ""
-                                    color: isToday ? Theme.colBg : (isCurrentMonth ? Theme.colFg : "transparent")
-                                    font.pixelSize: Theme.fontSizeSm
-                                    font.bold: isToday
-                                }
-
-                                MouseArea {
-                                    id: dayHover
-
-                                    anchors.fill: parent
-                                    hoverEnabled: isCurrentMonth
-                                    enabled: isCurrentMonth
-                                }
-
+                                anchors.fill: parent
+                                hoverEnabled: isCurrentMonth
+                                enabled: isCurrentMonth
                             }
 
                         }
 
                     }
 
-                    transform: Translate {
-                        id: daysTranslate
+                }
 
-                        x: 0
-                    }
+                transform: Translate {
+                    id: daysTranslate
 
+                    x: 0
                 }
 
             }
 
             Behavior on Layout.preferredHeight {
                 NumberAnimation {
-                    duration: Theme.animSlow
+                    duration: Constants.animFast
                     easing.type: Easing.OutQuint
                 }
 
@@ -383,14 +381,10 @@ TopPopup {
         }
 
         RowLayout {
-            Layout.fillWidth: true
-            Layout.leftMargin: 10
-            Layout.rightMargin: 10
-
             ThemedText {
                 text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
-                color: Theme.colCyan
-                font.pixelSize: Theme.fontSizeMd
+                color: Colors.cyan
+                font.pixelSize: Constants.sizeSm
                 font.bold: true
                 font.capitalization: Font.Capitalize
                 Layout.fillWidth: true
@@ -400,13 +394,13 @@ TopPopup {
                 width: 6
                 height: 6
                 radius: 3
-                color: Theme.colGreen
+                color: Colors.green
             }
 
             ThemedText {
                 text: "Today"
-                color: Theme.colMuted
-                font.pixelSize: Theme.fontSizeSm
+                color: Colors.muted
+                font.pixelSize: Constants.sizeSm
             }
 
         }

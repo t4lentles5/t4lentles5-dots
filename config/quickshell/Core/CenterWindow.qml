@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.Core
 
@@ -10,11 +11,9 @@ PanelWindow {
 
     property string popupId: ""
     property bool isOpen: false
-    property int cornerRadius: 8
-    property int contentPadding: 16
     default property alias content: innerLayout.data
-    property int animationDuration: 300
-    property color backgroundColor: Theme.colBg
+    property int animationDuration: 500
+    property color backgroundColor: Colors.bg
     property int preferredWidth: 600
     property int preferredHeight: 500
     property bool _windowVisible: false
@@ -22,6 +21,7 @@ PanelWindow {
     signal popupOpened()
     signal popupClosed()
 
+    surfaceFormat.opaque: false
     onIsOpenChanged: {
         if (popupId === "")
             return ;
@@ -76,138 +76,67 @@ PanelWindow {
     Timer {
         id: closeDelayTimer
 
-        interval: root.animationDuration * 0.8
+        interval: root.animationDuration
         repeat: false
         onTriggered: root._windowVisible = false
     }
 
     Item {
-        id: container
+        anchors.fill: parent
+        clip: true
 
-        width: root.preferredWidth
-        height: root.preferredHeight
-        anchors.centerIn: parent
-        transformOrigin: Item.Center
-        focus: root.isOpen
-        Keys.onEscapePressed: root.isOpen = false
-        states: [
-            State {
-                name: "open"
-                when: root.isOpen
+        Item {
+            id: container
 
-                PropertyChanges {
-                    target: container
-                    opacity: 1
-                    scale: 1
-                }
+            width: root.preferredWidth
+            height: root.preferredHeight
+            anchors.horizontalCenter: parent.horizontalCenter
+            transformOrigin: Item.Center
+            focus: root.isOpen
+            Keys.onEscapePressed: root.isOpen = false
+            layer.enabled: true
+            y: root.height > 0 ? (root.isOpen ? (root.height - root.preferredHeight) / 2 : root.height + root.preferredHeight) : 3000
+            opacity: root.isOpen ? 1 : 0
 
-                PropertyChanges {
-                    target: containerTranslate
-                    y: 0
-                }
+            MouseArea {
+                anchors.fill: parent
+            }
 
-            },
-            State {
-                name: "closed"
-                when: !root.isOpen
+            Rectangle {
+                anchors.fill: parent
+                color: root.backgroundColor
+                radius: Constants.sizeLg
+                clip: true
+            }
 
-                PropertyChanges {
-                    target: container
-                    opacity: 0
-                    scale: 0.95
-                }
+            ColumnLayout {
+                id: innerLayout
 
-                PropertyChanges {
-                    target: containerTranslate
-                    y: 20
+                anchors.fill: parent
+                anchors.margins: Constants.sizeLg
+                spacing: Constants.sizeLg
+            }
+
+            Behavior on y {
+                enabled: root.height > 0
+
+                NumberAnimation {
+                    duration: root.isOpen ? root.animationDuration : 250
+                    easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
+                    easing.overshoot: 0.4
                 }
 
             }
-        ]
-        transitions: [
-            Transition {
-                from: "closed"
-                to: "open"
 
-                ParallelAnimation {
-                    NumberAnimation {
-                        target: container
-                        property: "opacity"
-                        duration: root.animationDuration
-                        easing.type: Easing.OutQuad
-                    }
-
-                    NumberAnimation {
-                        target: container
-                        property: "scale"
-                        duration: root.animationDuration
-                        easing.type: Easing.OutQuint
-                    }
-
-                    NumberAnimation {
-                        target: containerTranslate
-                        property: "y"
-                        duration: root.animationDuration
-                        easing.type: Easing.OutQuint
-                    }
-
-                }
-
-            },
-            Transition {
-                from: "open"
-                to: "closed"
-
-                ParallelAnimation {
-                    NumberAnimation {
-                        target: container
-                        property: "opacity"
-                        duration: root.animationDuration * 0.8
-                        easing.type: Easing.InQuad
-                    }
-
-                    NumberAnimation {
-                        target: container
-                        property: "scale"
-                        duration: root.animationDuration * 0.8
-                        easing.type: Easing.InQuint
-                    }
-
-                    NumberAnimation {
-                        target: containerTranslate
-                        property: "y"
-                        duration: root.animationDuration * 0.8
-                        easing.type: Easing.InQuint
-                    }
-
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 300
+                    easing.type: Easing.Bezier
+                    easing.bezierCurve: [0.25, 0.1, 0.25, 1]
                 }
 
             }
-        ]
 
-        MouseArea {
-            anchors.fill: parent
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: root.backgroundColor
-            radius: root.cornerRadius
-            clip: true
-        }
-
-        ColumnLayout {
-            id: innerLayout
-
-            anchors.fill: parent
-            anchors.margins: root.contentPadding
-            spacing: Theme.spacingLg
-        }
-
-        transform: Translate {
-            id: containerTranslate
-
-            y: 0
         }
 
     }

@@ -4,17 +4,17 @@ import Quickshell
 import Quickshell.Hyprland
 import qs.Core
 
-Rectangle {
-    color: Theme.colBgSecondary
-    radius: Theme.radiusLg
-    implicitWidth: layout.implicitWidth + 30
-    implicitHeight: 34
+BarButton {
+    id: root
+
+    implicitWidth: layout.implicitWidth + 24
+    mouseArea.hoverEnabled: false
 
     RowLayout {
         id: layout
 
         anchors.centerIn: parent
-        spacing: 12
+        spacing: Constants.sizeSm
 
         Repeater {
             model: 10
@@ -32,7 +32,7 @@ Rectangle {
                 Layout.preferredWidth: isActive ? 28 : (hasWindows ? 10 : 8)
                 Layout.preferredHeight: isActive ? 10 : (hasWindows ? 10 : 8)
                 radius: isActive ? 5 : (hasWindows ? 5 : 4)
-                color: isActive ? Theme.colYellow : (hasWindows ? Theme.colCyan : (mouseArea.containsMouse ? Theme.colFg : Theme.colMuted))
+                color: isActive ? Colors.yellow : (hasWindows ? Colors.cyan : (mouseArea.containsMouse ? Colors.fg : Colors.muted))
 
                 MouseArea {
                     id: mouseArea
@@ -46,7 +46,7 @@ Rectangle {
 
                 Behavior on Layout.preferredWidth {
                     NumberAnimation {
-                        duration: Theme.animSlow
+                        duration: Constants.animSlow
                         easing.type: Easing.OutBack
                     }
 
@@ -54,7 +54,7 @@ Rectangle {
 
                 Behavior on Layout.preferredHeight {
                     NumberAnimation {
-                        duration: Theme.animSlow
+                        duration: Constants.animSlow
                         easing.type: Easing.OutBack
                     }
 
@@ -62,7 +62,7 @@ Rectangle {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: Theme.animSlow
+                        duration: Constants.animSlow
                     }
 
                 }

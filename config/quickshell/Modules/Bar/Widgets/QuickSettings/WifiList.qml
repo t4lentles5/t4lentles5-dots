@@ -1,7 +1,5 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Io
 import qs.Core
 
@@ -11,56 +9,64 @@ Rectangle {
     property bool expanded: false
     property bool enabled: false
     property var wifiList: []
+    property bool timedOut: false
 
     signal connect(string ssid)
 
     Layout.fillWidth: true
-    Layout.preferredHeight: expanded ? Math.max(wifiListCol.implicitHeight + 20, 100) : 0
+    Layout.preferredHeight: expanded ? Math.max(wifiListCol.implicitHeight + (Constants.sizeSm * 2), 80) : 0
     opacity: expanded ? 1 : 0
-    visible: expanded || Layout.preferredHeight > 0
-    color: Theme.colBgSecondary
-    radius: Theme.radiusSm
+    visible: opacity > 0
     clip: true
+    radius: Constants.sizeXs
+    color: Colors.bgSecondary
 
-    Item {
+    Timer {
+        id: scanTimeout
+
+        interval: 10000
+        running: root.expanded && root.wifiList.length === 0
+        onTriggered: root.timedOut = true
+        onRunningChanged: {
+            if (!running && !root.expanded)
+                root.timedOut = false;
+
+        }
+    }
+
+    ColumnLayout {
         anchors.centerIn: parent
-        width: 100
-        height: 50
+        spacing: Constants.sizeXs
         visible: root.expanded && root.wifiList.length === 0
 
-        ColumnLayout {
-            anchors.centerIn: parent
-            spacing: Theme.spacingSm
-
-            Item {
-                Layout.alignment: Qt.AlignHCenter
-                width: 32
-                height: 32
-
-                ThemedText {
-                    anchors.centerIn: parent
-                    text: "󰑐"
-                    color: Theme.colPurple
-                    font.pixelSize: 24
-                }
-
-                RotationAnimation on rotation {
-                    from: 0
-                    to: 360
-                    duration: 1000
-                    loops: Animation.Infinite
-                    running: parent.visible
-                }
-
-            }
+        Item {
+            Layout.alignment: Qt.AlignHCenter
+            width: 20
+            height: 20
+            visible: !root.timedOut
 
             ThemedText {
-                Layout.alignment: Qt.AlignHCenter
-                text: "Scanning..."
-                color: Theme.colMuted
-                font.pixelSize: Theme.fontSizeSm
+                anchors.centerIn: parent
+                text: "󰑐"
+                color: Colors.muted
+                font.pixelSize: Constants.sizeMd
             }
 
+            RotationAnimation on rotation {
+                from: 0
+                to: 360
+                duration: 1200
+                loops: Animation.Infinite
+                running: parent.visible
+            }
+
+        }
+
+        ThemedText {
+            Layout.alignment: Qt.AlignHCenter
+            text: root.timedOut ? "No networks found" : "Scanning..."
+            color: Colors.muted
+            font.pixelSize: Constants.sizeSm
         }
 
     }
@@ -71,46 +77,70 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 10
-        spacing: 5
+        anchors.topMargin: Constants.sizeSm
+        anchors.leftMargin: Constants.sizeSm
+        anchors.rightMargin: Constants.sizeSm
+        anchors.bottomMargin: Constants.sizeSm
         visible: root.wifiList.length > 0
 
         ThemedText {
-            text: "Available Networks"
-            color: Theme.colMuted
-            font.pixelSize: Theme.fontSizeSm
-            Layout.bottomMargin: 5
+            text: "Networks"
+            font.pixelSize: Constants.sizeSm
+            font.letterSpacing: 1
+            color: Colors.muted
         }
 
         Repeater {
             model: root.wifiList
 
-            Rectangle {
+            Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 34
-                color: hoverHandlerW.hovered ? Theme.colBgLighter : "transparent"
-                radius: Theme.radiusSm
+                implicitHeight: 28
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    spacing: 10
+                    spacing: Constants.sizeXs
+
+                    Rectangle {
+                        width: 4
+                        height: 4
+                        radius: 2
+                        color: Colors.purple
+                        opacity: modelData.active ? 0.8 : 0
+                        Layout.alignment: Qt.AlignVCenter
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Constants.animNormal
+                            }
+
+                        }
+
+                    }
 
                     ThemedText {
                         text: modelData.ssid
-                        color: modelData.active ? Theme.colPurple : Theme.colFg
-                        font.bold: modelData.active
+                        color: modelData.active ? Colors.purple : Colors.fg
+                        font.pixelSize: Constants.sizeSm
+                        font.weight: modelData.active ? Font.Medium : Font.Normal
+                        opacity: hoverHandlerW.hovered ? 1 : (modelData.active ? 0.9 : 0.65)
                         Layout.fillWidth: true
                         elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Constants.animNormal
+                            }
+
+                        }
+
                     }
 
                     ThemedText {
                         text: modelData.signal + "%"
-                        color: Theme.colMuted
-                        font.pixelSize: Theme.fontSizeSm
-                        verticalAlignment: Text.AlignVCenter
+                        color: Colors.muted
+                        font.pixelSize: 9
+                        opacity: 0.4
                     }
 
                 }
@@ -123,13 +153,20 @@ Rectangle {
                     onTapped: root.connect(modelData.ssid)
                 }
 
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Theme.animSlow
-                    }
+            }
 
-                }
+        }
 
+    }
+
+    transform: Translate {
+        y: root.expanded ? 0 : -Constants.sizeSm
+
+        Behavior on y {
+            NumberAnimation {
+                duration: Constants.animFast
+                easing.type: Easing.Bezier
+                easing.bezierCurve: root.expanded ? [0.05, 0.9, 0.1, 1] : [0.3, 0, 0.8, 0.15]
             }
 
         }
@@ -138,16 +175,18 @@ Rectangle {
 
     Behavior on Layout.preferredHeight {
         NumberAnimation {
-            duration: Theme.animSlow
-            easing.type: Easing.OutQuint
+            duration: Constants.animFast
+            easing.type: Easing.Bezier
+            easing.bezierCurve: root.expanded ? [0.05, 0.9, 0.1, 1] : [0.3, 0, 0.8, 0.15]
         }
 
     }
 
     Behavior on opacity {
         NumberAnimation {
-            duration: Theme.animNormal
-            easing.type: Easing.OutQuint
+            duration: Constants.animFast
+            easing.type: Easing.Bezier
+            easing.bezierCurve: root.expanded ? [0.05, 0.9, 0.1, 1] : [0.3, 0, 0.8, 0.15]
         }
 
     }

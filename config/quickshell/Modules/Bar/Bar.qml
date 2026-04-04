@@ -4,19 +4,20 @@ import Quickshell
 import qs.Core
 import qs.Modules.Bar.Components
 import qs.Modules.Bar.Widgets.Calendar
+import qs.Modules.Bar.Widgets.Dashboard
 import qs.Modules.Bar.Widgets.KeyboardLayout
-import qs.Modules.Bar.Widgets.MainPanel
 import qs.Modules.Bar.Widgets.MusicPlayer
 import qs.Modules.Bar.Widgets.NotificationCenter
 import qs.Modules.Bar.Widgets.PowerMenu
 import qs.Modules.Bar.Widgets.QuickSettings
+import qs.Modules.Bar.Widgets.SystemTray
 
 PanelWindow {
     id: mainBar
 
     required property var notificationService
 
-    implicitHeight: 45
+    implicitHeight: 48
     color: "transparent"
 
     anchors {
@@ -34,27 +35,27 @@ PanelWindow {
 
     Rectangle {
         anchors.fill: parent
-        color: Theme.colBg
-        radius: 24
+        color: Colors.bg
+        radius: 22
 
         RowLayout {
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            spacing: Theme.spacingSm
+            spacing: Constants.sizeXs
+            anchors.leftMargin: 8
 
             ArchButton {
-                Layout.leftMargin: 10
-                widget: mainPanel
+                widget: dashboard
             }
 
-            MusicStatusButton {
-                widget: musicPlayer
+            Workspaces {
             }
 
         }
 
-        Workspaces {
+        MusicStatusButton {
+            widget: musicPlayer
             anchors.centerIn: parent
         }
 
@@ -62,7 +63,16 @@ PanelWindow {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            spacing: Theme.spacingSm
+            spacing: Constants.sizeXs
+            anchors.rightMargin: 8
+
+            ClockButton {
+                widget: calendar
+            }
+
+            BatteryIndicator {
+                notificationService: mainBar.notificationService
+            }
 
             KeyboardLayoutButton {
                 widget: keyboardLayout
@@ -72,20 +82,16 @@ PanelWindow {
                 widget: quickSettings
             }
 
-            BatteryIndicator {
-            }
-
-            ClockButton {
-                widget: calendar
-            }
-
-            NotificationCenterButton {
-                widget: notificationCenter
+            NotificationsButton {
                 notificationService: mainBar.notificationService
+                widget: notificationCenter
+            }
+
+            SystemTrayButton {
+                widget: systemTray
             }
 
             PowerButton {
-                Layout.rightMargin: 10
                 widget: powerMenu
             }
 
@@ -93,36 +99,21 @@ PanelWindow {
 
     }
 
-    MainPanel {
-        id: mainPanel
+    Dashboard {
+        id: dashboard
 
-        popupId: "mainPanel"
+        popupId: "dashboard"
+        anchor.window: mainBar
+        anchor.rect.x: (mainBar.width / 2) - (implicitWidth / 2)
+        anchor.rect.y: mainBar.height
     }
 
     MusicPlayer {
         id: musicPlayer
 
-        popupId: "MusicPlayer"
+        popupId: "musicPlayer"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 1625
-        anchor.rect.y: mainBar.height
-    }
-
-    KeyboardLayout {
-        id: keyboardLayout
-
-        popupId: "keyboardLayout"
-        anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 270
-        anchor.rect.y: mainBar.height
-    }
-
-    QuickSettings {
-        id: quickSettings
-
-        popupId: "quickSettings"
-        anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 110
+        anchor.rect.x: (mainBar.width / 2) - (implicitWidth / 2)
         anchor.rect.y: mainBar.height
     }
 
@@ -131,6 +122,24 @@ PanelWindow {
 
         popupId: "calendar"
         anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 260
+        anchor.rect.y: mainBar.height
+    }
+
+    KeyboardLayout {
+        id: keyboardLayout
+
+        popupId: "keyboardLayout"
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 165
+        anchor.rect.y: mainBar.height
+    }
+
+    QuickSettings {
+        id: quickSettings
+
+        popupId: "quickSettings"
+        anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 15
         anchor.rect.y: mainBar.height
     }
@@ -138,8 +147,17 @@ PanelWindow {
     NotificationCenter {
         id: notificationCenter
 
-        popupId: "NotificationCenter"
         notificationService: mainBar.notificationService
+        popupId: "notificationCenter"
+        anchor.window: mainBar
+        anchor.rect.x: mainBar.width - implicitWidth - 15
+        anchor.rect.y: mainBar.height
+    }
+
+    SystemTray {
+        id: systemTray
+
+        popupId: "systemTray"
         anchor.window: mainBar
         anchor.rect.x: mainBar.width - implicitWidth - 15
         anchor.rect.y: mainBar.height

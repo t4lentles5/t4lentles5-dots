@@ -1,13 +1,11 @@
 import QtQuick
-import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import qs.Core
 
-Rectangle {
+BarButton {
     id: container
 
-    property var widget
     property string layoutName: ""
 
     function updateLayout(rawName) {
@@ -19,10 +17,18 @@ Rectangle {
             container.layoutName = rawName.substring(0, 2).toUpperCase();
     }
 
-    color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
-    radius: Theme.radiusLg
-    implicitWidth: layoutText.implicitWidth + 30
-    implicitHeight: 30
+    text: "  " + container.layoutName
+    textColor: Colors.fg
+
+    Connections {
+        function onRawEvent(event) {
+            if (event.name === "activelayout")
+                kbdProc.running = true;
+
+        }
+
+        target: Hyprland
+    }
 
     Process {
         id: kbdProc
@@ -46,64 +52,6 @@ Rectangle {
                 } catch (e) {
                 }
             }
-        }
-
-    }
-
-    Connections {
-        function onRawEvent(event) {
-            if (event.name === "activelayout") {
-                var parts = event.data.split(",");
-                if (parts.length >= 2)
-                    updateLayout(parts[1]);
-
-            }
-        }
-
-        target: Hyprland
-    }
-
-    ThemedText {
-        id: layoutText
-
-        anchors.centerIn: parent
-        text: "  " + container.layoutName
-        color: Theme.colFg
-        font.pixelSize: Theme.fontSizeMd
-        font.bold: true
-    }
-
-    MouseArea {
-        id: mouseArea
-
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            if (widget)
-                widget.isOpen = !widget.isOpen;
-
-        }
-    }
-
-    Behavior on implicitWidth {
-        NumberAnimation {
-            duration: Theme.animNormal
-            easing.type: Easing.OutQuint
-        }
-
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Theme.animNormal
-        }
-
-    }
-
-    Behavior on border.color {
-        ColorAnimation {
-            duration: Theme.animNormal
         }
 
     }

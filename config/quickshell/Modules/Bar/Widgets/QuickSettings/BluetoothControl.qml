@@ -33,7 +33,6 @@ RowLayout {
         btConnectProc.running = true;
     }
 
-    spacing: 2
     onExpandedChanged: {
         if (expanded && enabled) {
             btDiscoveryProc.running = true;
@@ -145,18 +144,21 @@ RowLayout {
     }
 
     Item {
-        Layout.preferredWidth: 84
-        Layout.preferredHeight: 40
+        Layout.preferredWidth: 88
+        Layout.fillWidth: true
+        Layout.preferredHeight: rowLayout.implicitHeight
 
         Rectangle {
             id: bgRect
 
             anchors.fill: parent
-            radius: Theme.radiusSm
-            color: root.enabled ? Theme.colBlue : Theme.colBg
+            radius: Constants.sizeLg
+            color: Colors.bgSecondary
         }
 
         RowLayout {
+            id: rowLayout
+
             anchors.fill: parent
             spacing: 0
             layer.enabled: true
@@ -164,67 +166,35 @@ RowLayout {
             IconButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                icon: "󰂯"
-                iconSize: 20
-                radius: 0
-                iconColor: Theme.colFg
-                useText: false
-                isActive: false
-                baseColor: root.enabled ? Theme.colBlue : "transparent"
-                hoverColor: root.enabled ? Qt.lighter(Theme.colBlue, 1.2) : Theme.colBgLighter
+                icon: root.enabled ? "󰂯" : "󰂲"
+                iconSize: Constants.sizeXl
+                iconColor: root.enabled ? Colors.blue : Colors.muted
+                hoverColor: root.enabled ? Colors.blue : Colors.muted
+                bgColor: "transparent"
                 onClicked: root.toggle()
-
-                ThemedText {
-                    anchors.centerIn: parent
-                    text: parent.icon
-                    color: root.enabled ? Theme.colBg : Theme.colFg
-                    font.pixelSize: parent.iconSize
-                }
-
             }
 
             Rectangle {
                 width: 1
                 Layout.fillHeight: true
-                Layout.topMargin: Theme.spacingSm
-                Layout.bottomMargin: Theme.spacingSm
-                color: root.enabled ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(1, 1, 1, 0.1)
-                opacity: root.enabled ? 1 : 0.2
+                Layout.topMargin: Constants.sizeXs
+                Layout.bottomMargin: Constants.sizeXs
+                color: Colors.muted
+                opacity: 0.3
+                visible: root.enabled
             }
 
             IconButton {
-                Layout.preferredWidth: 24
-                Layout.fillHeight: true
-                icon: root.expanded ? "▲" : "▼"
-                iconSize: 10
-                radius: 0
-                iconColor: Theme.colMuted
-                useText: false
-                isActive: false
-                baseColor: root.enabled ? Theme.colBlue : "transparent"
-                hoverColor: root.enabled ? Qt.lighter(Theme.colBlue, 1.2) : Theme.colBgLighter
+                icon: root.expanded ? "" : ""
+                iconSize: Constants.sizeMd
+                hoverColor: Colors.purple
+                visible: root.enabled
+                bgColor: "transparent"
                 onClicked: {
                     if (root.enabled)
                         root.expanded = !root.expanded;
 
                 }
-
-                ThemedText {
-                    anchors.centerIn: parent
-                    text: parent.icon
-                    color: root.enabled ? (parent.hovered ? Theme.colFg : Theme.colBg) : Theme.colMuted
-                    font.pixelSize: parent.iconSize
-                    opacity: root.enabled ? (parent.hovered ? 1 : 0.8) : 0.3
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animSlow
-                        }
-
-                    }
-
-                }
-
             }
 
             layer.effect: Component {
@@ -233,7 +203,7 @@ RowLayout {
                     maskSource: Rectangle {
                         width: bgRect.width
                         height: bgRect.height
-                        radius: Theme.radiusSm
+                        radius: Constants.sizeLg
                     }
 
                 }

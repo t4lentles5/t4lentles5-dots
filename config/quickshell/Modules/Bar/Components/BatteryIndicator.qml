@@ -1,32 +1,78 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Io
 import qs.Core
 
-Rectangle {
+BarButton {
     id: root
 
     property int batteryLevel: 0
     property string batteryStatus: "Discharging"
     property bool hasBattery: false
     property string batPath: ""
+    property var notificationService
+    property string _prevStatus: ""
+    property int _prevLevel: -1
     property color activeColor: {
         if (root.batteryStatus === "Charging")
-            return Theme.colGreen;
+            return Colors.green;
 
         if (root.batteryLevel < 20)
-            return Theme.colRed;
+            return Colors.red;
 
-        return Theme.colYellow;
+        return Colors.yellow;
     }
 
+    onBatteryStatusChanged: {
+        if (batteryStatus === "" || batteryStatus === _prevStatus)
+            return ;
+
+        if (_prevStatus !== "") {
+            let summary = "Battery";
+            let body = "";
+            let icon = "";
+            if (batteryStatus === "Charging") {
+                summary = "󰂄 Battery";
+                body = "Charger connected";
+                icon = Constants.iconPath + "battery-good-charging.svg";
+            } else if (batteryStatus === "Discharging") {
+                summary = "󰂃 Battery";
+                body = "Charger disconnected";
+                icon = Constants.iconPath + "battery-good.svg";
+            } else if (batteryStatus === "Full") {
+                summary = "󰁹 Battery";
+                body = "Battery fully charged";
+                icon = Constants.iconPath + "battery-full.svg";
+            }
+            if (body !== "" && notificationService)
+                notificationService.notify(summary, body, icon);
+
+        }
+        _prevStatus = batteryStatus;
+    }
+    onBatteryLevelChanged: {
+        if (batteryLevel <= 0 || batteryLevel === _prevLevel)
+            return ;
+
+        if (_prevLevel !== -1 && batteryStatus === "Discharging") {
+            let threshold = 0;
+            if (batteryLevel <= 5 && _prevLevel > 5)
+                threshold = 5;
+            else if (batteryLevel <= 10 && _prevLevel > 10)
+                threshold = 10;
+            else if (batteryLevel <= 20 && _prevLevel > 20)
+                threshold = 20;
+            if (threshold > 0 && notificationService)
+                notificationService.notify("󰂃 Low Battery", "Battery level: " + batteryLevel + "%", Constants.iconPath + "battery-caution.svg");
+
+        }
+        _prevLevel = batteryLevel;
+    }
+    isButton: false
     visible: hasBattery && batPath !== ""
-    color: Theme.colBgSecondary
-    radius: Theme.radiusLg
-    implicitHeight: 34
     implicitWidth: mainRow.implicitWidth + 24
     Component.onCompleted: findBattery.running = true
+    text: ""
 
     Process {
         id: findBattery
@@ -47,7 +93,7 @@ Rectangle {
     Timer {
         id: updateTimer
 
-        interval: 10000
+        interval: 5000
         running: false
         repeat: true
         triggeredOnStart: true
@@ -94,7 +140,7 @@ Rectangle {
         id: mainRow
 
         anchors.centerIn: parent
-        spacing: Theme.spacingSm
+        spacing: Constants.sizeXs
 
         ThemedText {
             id: batIcon
@@ -121,7 +167,6 @@ Rectangle {
                 return "󰂃";
             }
             color: root.activeColor
-            font.pixelSize: Theme.fontSizeMd
 
             SequentialAnimation on opacity {
                 id: breathAnim
@@ -153,7 +198,6 @@ Rectangle {
         ThemedText {
             text: root.batteryLevel + "%"
             color: root.activeColor
-            font.pixelSize: Theme.fontSizeMd
             font.bold: true
             visible: root.batteryLevel > 0
         }
@@ -162,7 +206,7 @@ Rectangle {
 
     Behavior on activeColor {
         ColorAnimation {
-            duration: Theme.animSlow
+            duration: Constants.animSlow
             easing.type: Easing.OutQuint
         }
 

@@ -7,291 +7,281 @@ TopPopup {
     id: root
 
     property var notificationService
+    property var currentTime: new Date()
+    property bool controlCenterOpen: false
 
-    implicitWidth: 420
-    preferredHeight: mainCol.implicitHeight + (root.contentPadding * 2)
-    animateHeight: true
+    function timeAgo(date, now) {
+        if (!date || isNaN(date.getTime()) || !now || isNaN(now.getTime()))
+            return "...";
+
+        let diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+        if (diff < 60)
+            return "Just now";
+
+        if (diff < 3600)
+            return Math.floor(diff / 60) + "m ago";
+
+        if (diff < 86400)
+            return Math.floor(diff / 3600) + "h ago";
+
+        return Math.floor(diff / 86400) + "d ago";
+    }
+
+    preferredHeight: implicitHeight
+    implicitWidth: 400
+    onVisibleChanged: {
+        if (visible)
+            currentTime = new Date();
+
+    }
+
+    Timer {
+        interval: 60000
+        running: root.visible
+        repeat: true
+        onTriggered: root.currentTime = new Date()
+    }
 
     ColumnLayout {
         id: mainCol
 
-        width: parent.width
-        spacing: Theme.spacingLg
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        spacing: Constants.sizeLg
 
-        Rectangle {
+        RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: 70
-            color: Theme.colBgSecondary
-            radius: Theme.radiusSm
+            spacing: Constants.sizeXs
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 15
-                anchors.rightMargin: 15
+            ThemedText {
+                text: "NOTIFICATIONS"
+                font.pixelSize: Constants.sizeMd
+                font.letterSpacing: 2
+                color: Colors.cyan
+                Layout.fillWidth: true
+            }
 
-                ThemedText {
-                    text: "Notifications"
-                    font.pixelSize: Theme.fontSizeLg
-                    font.bold: true
-                    color: Theme.colFg
-                    Layout.fillWidth: true
-                }
-
-                Rectangle {
-                    width: dndRow.implicitWidth + 24
-                    height: 36
-                    radius: Theme.radiusSm
-                    color: mouseDnd.containsMouse ? Theme.colBgLighter : (notificationService && notificationService.dndEnabled ? Theme.colRed : "transparent")
-
-                    RowLayout {
-                        id: dndRow
-
-                        anchors.centerIn: parent
-                        spacing: 6
-
-                        ThemedText {
-                            text: "󰂛"
-                            color: (notificationService && notificationService.dndEnabled) ? Theme.colBg : Theme.colFg
-                            font.pixelSize: Theme.fontSizeMd
-                        }
-
-                        ThemedText {
-                            text: "DND"
-                            color: (notificationService && notificationService.dndEnabled) ? Theme.colBg : Theme.colFg
-                            font.pixelSize: Theme.fontSizeSm
-                            font.bold: true
-                        }
-
-                    }
-
-                    MouseArea {
-                        id: mouseDnd
-
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if (notificationService)
-                                notificationService.dndEnabled = !notificationService.dndEnabled;
-
-                        }
-                    }
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animFast
-                        }
-
-                    }
+            IconButton {
+                icon: (notificationService && notificationService.dndEnabled) ? "󰂛" : "󰂚"
+                iconColor: Colors.blue
+                hoverColor: Colors.blue
+                iconSize: Constants.sizeMd
+                onClicked: {
+                    if (notificationService)
+                        notificationService.dndEnabled = !notificationService.dndEnabled;
 
                 }
+            }
 
-                Rectangle {
-                    width: clearRow.implicitWidth + 24
-                    height: 36
-                    radius: Theme.radiusSm
-                    color: mouseClear.containsMouse ? Theme.colRed : "transparent"
-
-                    RowLayout {
-                        id: clearRow
-
-                        anchors.centerIn: parent
-                        spacing: 6
-
-                        ThemedText {
-                            text: "󰃢"
-                            color: mouseClear.containsMouse ? Theme.colBg : Theme.colFg
-                            font.pixelSize: Theme.fontSizeMd
-                        }
-
-                        ThemedText {
-                            text: "Clear"
-                            color: mouseClear.containsMouse ? Theme.colBg : Theme.colFg
-                            font.pixelSize: Theme.fontSizeSm
-                            font.bold: true
-                        }
-
-                    }
-
-                    MouseArea {
-                        id: mouseClear
-
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if (notificationService)
-                                notificationService.clearHistory();
-
-                        }
-                    }
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animFast
-                        }
-
-                    }
+            IconButton {
+                icon: "󰃢"
+                iconColor: Colors.red
+                hoverColor: Colors.red
+                iconSize: Constants.sizeMd
+                visible: historyView.count > 0
+                onClicked: {
+                    if (notificationService)
+                        notificationService.clearHistory();
 
                 }
-
             }
 
         }
 
-        Rectangle {
+        RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: 350
-            color: "transparent"
-            radius: Theme.radiusSm
-            clip: true
+            spacing: Constants.sizeXs
 
-            ScrollView {
-                anchors.fill: parent
-                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 350
 
-                ListView {
-                    id: historyView
+                ThemedText {
+                    anchors.centerIn: parent
+                    text: "No notifications"
+                    color: Colors.muted
+                    font.pixelSize: Constants.sizeSm
+                    opacity: historyView.count === 0 ? 1 : 0
+                    visible: opacity > 0
 
-                    width: parent.width
-                    model: notificationService ? notificationService.historyList : null
-                    spacing: Theme.spacingLg
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Constants.animNormal
+                        }
 
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "No notifications"
-                        color: Theme.colMuted
-                        font.pixelSize: Theme.fontSizeMd
-                        visible: historyView.count === 0
                     }
 
-                    remove: Transition {
-                        ParallelAnimation {
+                }
+
+                ScrollView {
+                    anchors.fill: parent
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                    clip: true
+
+                    ListView {
+                        id: historyView
+
+                        width: parent.width
+                        model: notificationService ? notificationService.historyList : null
+                        spacing: Constants.sizeXs
+
+                        remove: Transition {
                             NumberAnimation {
                                 property: "x"
                                 to: historyView.width
-                                duration: Theme.animNormal
+                                duration: Constants.animSlow
                                 easing.type: Easing.InExpo
                             }
 
-                            NumberAnimation {
-                                property: "opacity"
-                                to: 0
-                                duration: Theme.animNormal
-                                easing.type: Easing.OutCubic
-                            }
-
                         }
 
-                    }
-
-                    displaced: Transition {
-                        NumberAnimation {
-                            properties: "x,y"
-                            duration: Theme.animNormal
-                            easing.type: Easing.OutExpo
-                        }
-
-                    }
-
-                    delegate: Rectangle {
-                        width: ListView.view.width
-                        height: delegateLayout.implicitHeight + (Theme.spacingLg * 2)
-                        color: Theme.colBgSecondary
-                        radius: Theme.radiusLg
-                        border.color: Qt.rgba(Theme.colMuted.r, Theme.colMuted.g, Theme.colMuted.b, 0.4)
-                        border.width: 1
-
-                        RowLayout {
-                            id: delegateLayout
-
-                            anchors.fill: parent
-                            anchors.margins: Theme.spacingLg
-                            spacing: Theme.spacingLg
-
-                            Image {
-                                Layout.alignment: Qt.AlignTop
-                                Layout.preferredWidth: 40
-                                Layout.preferredHeight: 40
-                                source: {
-                                    if (model.image)
-                                        return model.image;
-
-                                    if (model.icon) {
-                                        let iconStr = model.icon.toString();
-                                        if (iconStr.startsWith("/") || iconStr.startsWith("file://") || iconStr.startsWith("image://")) {
-                                            return iconStr;
-                                        }
-                                        return "image://icon/" + iconStr + "?fallback=dialog-information";
-                                    }
-
-                                    return "";
-                                }
-                                sourceSize: Qt.size(40, 40)
-                                visible: source.toString() !== ""
-                                fillMode: Image.PreserveAspectCrop
-                            }
-
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 4
-
-                                ThemedText {
-                                    text: model.summary
-                                    font.pixelSize: Theme.fontSizeMd
-                                    font.bold: true
-                                    wrapMode: Text.Wrap
-                                    color: Theme.colFg
-                                    Layout.fillWidth: true
+                        displaced: Transition {
+                            SequentialAnimation {
+                                PauseAnimation {
+                                    duration: Constants.animSlow
                                 }
 
-                                ThemedText {
-                                    text: model.body
-                                    color: Theme.colFg
-                                    opacity: 0.8
-                                    font.pixelSize: Theme.fontSizeSm
-                                    wrapMode: Text.Wrap
-                                    Layout.fillWidth: true
+                                NumberAnimation {
+                                    properties: "x,y"
+                                    duration: Constants.animSlow
+                                    easing.type: Easing.OutExpo
                                 }
 
                             }
 
                         }
 
-                        Rectangle {
-                            id: closeBtn
+                        delegate: Rectangle {
+                            id: delegateRoot
 
-                            anchors.top: parent.top
-                            anchors.right: parent.right
-                            anchors.margins: Theme.spacingSm
-                            width: 24
-                            height: 24
-                            radius: Theme.radiusSm
-                            color: closeMouse.containsMouse ? Theme.colRed : "transparent"
+                            property bool expanded: false
 
-                            ThemedText {
-                                anchors.centerIn: parent
-                                text: "󰅖"
-                                color: closeMouse.containsMouse ? Theme.colBg : Theme.colFg
-                                font.pixelSize: Theme.fontSizeMd
-                            }
+                            width: ListView.view.width
+                            height: delegateLayout.implicitHeight + Constants.sizeLg * 2
+                            color: Colors.bgSecondary
+                            radius: Constants.sizeXs
+                            border.width: 1
+                            border.color: Colors.muted
 
-                            MouseArea {
-                                id: closeMouse
+                            RowLayout {
+                                id: delegateLayout
 
                                 anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (notificationService)
-                                        notificationService.removeHistoryItem(index);
+                                anchors.leftMargin: Constants.sizeSm
+                                anchors.rightMargin: Constants.sizeSm
+                                anchors.topMargin: Constants.sizeSm
+                                anchors.bottomMargin: Constants.sizeSm
+                                spacing: Constants.sizeSm
+
+                                Image {
+                                    id: notifImage
+
+                                    Layout.alignment: Qt.AlignTop
+                                    Layout.topMargin: 4
+                                    Layout.preferredWidth: 40
+                                    Layout.preferredHeight: 40
+                                    source: {
+                                        if (model.image)
+                                            return model.image;
+
+                                        if (model.icon) {
+                                            const ico = model.icon.toString();
+                                            if (ico.startsWith("/") || ico.startsWith("file://") || ico.startsWith("image://"))
+                                                return ico;
+
+                                            return "image://icon/" + ico + "?fallback=dialog-information";
+                                        }
+                                        return "";
+                                    }
+                                    visible: source.toString() !== ""
+                                    fillMode: Image.PreserveAspectCrop
+                                    opacity: 1
+                                }
+
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    Layout.alignment: Qt.AlignTop
+                                    spacing: 2
+
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        spacing: Constants.sizeXs
+
+                                        ThemedText {
+                                            text: model.summary
+                                            font.pixelSize: Constants.sizeSm
+                                            font.weight: Font.Medium
+                                            elide: Text.ElideRight
+                                            Layout.fillWidth: true
+                                        }
+
+                                        ThemedText {
+                                            text: {
+                                                let ts = model.timestamp;
+                                                if (!ts)
+                                                    return "Just now";
+
+                                                let n = Number(ts);
+                                                let d = new Date(n < 1e+10 ? n * 1000 : n);
+                                                return root.timeAgo(d, root.currentTime);
+                                            }
+                                            color: Colors.muted
+                                            font.pixelSize: Constants.sizeSm - 2
+                                        }
+
+                                        IconButton {
+                                            icon: delegateRoot.expanded ? "" : ""
+                                            iconColor: Colors.blue
+                                            hoverColor: Colors.blue
+                                            iconSize: Constants.sizeSm - 2
+                                            visible: bodyText.truncated || delegateRoot.expanded
+                                            onClicked: {
+                                                delegateRoot.expanded = !delegateRoot.expanded;
+                                            }
+                                        }
+
+                                        IconButton {
+                                            icon: ""
+                                            iconColor: Colors.red
+                                            hoverColor: Colors.red
+                                            iconSize: Constants.sizeSm - 2
+                                            onClicked: {
+                                                if (notificationService)
+                                                    notificationService.removeHistoryItem(index);
+
+                                            }
+                                        }
+
+                                    }
+
+                                    ThemedText {
+                                        id: bodyText
+
+                                        text: model.body
+                                        color: Colors.muted
+                                        font.pixelSize: Constants.sizeSm - 2
+                                        wrapMode: Text.Wrap
+                                        Layout.fillWidth: true
+                                        maximumLineCount: delegateRoot.expanded ? 100 : 2
+                                        elide: Text.ElideRight
+
+                                        Behavior on opacity {
+                                            NumberAnimation {
+                                                duration: Constants.animNormal
+                                            }
+
+                                        }
+
+                                    }
 
                                 }
+
                             }
 
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.animFast
+                            Behavior on height {
+                                NumberAnimation {
+                                    duration: Constants.animSlow
+                                    easing.type: Easing.OutExpo
                                 }
 
                             }

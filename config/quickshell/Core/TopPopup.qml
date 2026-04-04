@@ -10,19 +10,23 @@ PopupWindow {
 
     property string popupId: ""
     property bool isOpen: false
-    property int cornerRadius: 16
-    property int contentPadding: 16
+    property int cornerRadius: Constants.sizeLg
+    property int contentPadding: Constants.sizeLg
     default property alias content: innerLayout.data
     property int preferredHeight
     property int animationDuration: 300
-    property color backgroundColor: Theme.colBg
+    property color backgroundColor: Colors.bg
     property bool animateHeight: false
     property bool _windowVisible: false
-    readonly property int verticalOffset: 40
-    readonly property int overscrollOffset: 100
+    readonly property int verticalOffset: Constants.sizeLg
+    property int xPos: 0
+    property int yPos: 0
+    readonly property int slideDistance: (preferredHeight > 0 ? preferredHeight : implicitHeight) + verticalOffset
 
     signal popupClosed()
 
+    implicitWidth: innerLayout.implicitWidth + (contentPadding + cornerRadius) * 2
+    implicitHeight: innerLayout.implicitHeight + contentPadding * 2
     onIsOpenChanged: {
         if (popupId === "")
             return ;
@@ -43,7 +47,6 @@ PopupWindow {
     }
     color: "transparent"
     visible: _windowVisible
-    implicitHeight: (preferredHeight > 0 ? preferredHeight : (innerLayout.implicitHeight + root.contentPadding * 2)) + verticalOffset
 
     Connections {
         function onActivePopupChanged() {
@@ -71,118 +74,144 @@ PopupWindow {
         onTriggered: root.isOpen = false
     }
 
-    HoverHandler {
-        onHoveredChanged: {
-            if (hovered)
-                autoCloseTimer.stop();
-            else if (root.isOpen)
-                autoCloseTimer.start();
-        }
+    MouseArea {
+        anchors.fill: parent
+        onPressed: root.isOpen = false
     }
 
     Item {
-        id: container
+        id: popupContainer
 
         width: root.implicitWidth
-        height: root.implicitHeight - verticalOffset
-        y: root.isOpen ? 0 : -root.implicitHeight
+        height: root.isOpen ? root.slideDistance : 0
         clip: true
 
-        Rectangle {
-            color: root.backgroundColor
-            anchors.bottom: bg.top
-            anchors.left: bg.left
-            anchors.right: bg.right
-            height: overscrollOffset
+        HoverHandler {
+            onHoveredChanged: {
+                if (hovered)
+                    autoCloseTimer.stop();
+                else if (root.isOpen)
+                    autoCloseTimer.start();
+            }
         }
 
-        Shape {
-            id: bg
+        Item {
+            id: animContainer
 
-            property color shapeColor: root.backgroundColor
-            readonly property real r: root.cornerRadius
-            readonly property real w: width
-            readonly property real h: height
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: root.implicitHeight
+            x: 0
+            y: root.isOpen ? 0 : -height
 
-            anchors.fill: parent
-
-            ShapePath {
-                strokeWidth: 0
-                strokeColor: "transparent"
-                fillColor: bg.shapeColor
-                startX: 0
-                startY: 0
-
-                PathArc {
-                    relativeX: bg.r
-                    relativeY: bg.r
-                    radiusX: bg.r
-                    radiusY: bg.r
-                }
-
-                PathLine {
-                    relativeX: 0
-                    relativeY: bg.h - (2 * bg.r)
-                }
-
-                PathQuad {
-                    relativeX: bg.r
-                    relativeY: bg.r
-                    relativeControlX: 0
-                    relativeControlY: bg.r
-                }
-
-                PathLine {
-                    relativeX: bg.w - (4 * bg.r)
-                    relativeY: 0
-                }
-
-                PathQuad {
-                    relativeX: bg.r
-                    relativeY: -bg.r
-                    relativeControlX: bg.r
-                    relativeControlY: 0
-                }
-
-                PathLine {
-                    relativeX: 0
-                    relativeY: -(bg.h - (2 * bg.r))
-                }
-
-                PathArc {
-                    relativeX: bg.r
-                    relativeY: -bg.r
-                    radiusX: bg.r
-                    radiusY: bg.r
-                }
-
-                PathLine {
-                    relativeX: -bg.w
-                    relativeY: 0
-                }
-
+            MouseArea {
+                anchors.fill: parent
             }
 
-            ColumnLayout {
-                id: innerLayout
+            Rectangle {
+                color: root.backgroundColor
+                height: 1000
+                anchors.bottom: bg.top
+                anchors.left: bg.left
+                anchors.right: bg.right
+            }
 
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: root.contentPadding + root.cornerRadius
-                anchors.rightMargin: root.contentPadding + root.cornerRadius
-                anchors.top: parent.top
-                anchors.topMargin: root.contentPadding
-                height: root.preferredHeight > 0 ? (root.preferredHeight - root.contentPadding * 2) : implicitHeight
+            Shape {
+                id: bg
 
-                transform: Translate {
-                    id: contentTranslate
+                property color shapeColor: root.backgroundColor
+                readonly property real r: root.cornerRadius
+                readonly property real w: width
+                readonly property real h: height
 
-                    y: root.isOpen ? 0 : -root.verticalOffset
+                anchors.fill: parent
 
-                    Behavior on y {
-                        NumberAnimation {
-                            duration: root.animationDuration
-                            easing.type: Easing.OutExpo
+                ShapePath {
+                    strokeWidth: 0
+                    strokeColor: "transparent"
+                    fillColor: bg.shapeColor
+                    startX: 0
+                    startY: 0
+
+                    PathArc {
+                        relativeX: bg.r
+                        relativeY: bg.r
+                        radiusX: bg.r
+                        radiusY: bg.r
+                    }
+
+                    PathLine {
+                        relativeX: 0
+                        relativeY: bg.h - (2 * bg.r)
+                    }
+
+                    PathQuad {
+                        relativeX: bg.r
+                        relativeY: bg.r
+                        relativeControlX: 0
+                        relativeControlY: bg.r
+                    }
+
+                    PathLine {
+                        relativeX: bg.w - (4 * bg.r)
+                        relativeY: 0
+                    }
+
+                    PathQuad {
+                        relativeX: bg.r
+                        relativeY: -bg.r
+                        relativeControlX: bg.r
+                        relativeControlY: 0
+                    }
+
+                    PathLine {
+                        relativeX: 0
+                        relativeY: -(bg.h - (2 * bg.r))
+                    }
+
+                    PathArc {
+                        relativeX: bg.r
+                        relativeY: -bg.r
+                        radiusX: bg.r
+                        radiusY: bg.r
+                    }
+
+                    PathLine {
+                        relativeX: -bg.w
+                        relativeY: 0
+                    }
+
+                }
+
+                ColumnLayout {
+                    id: innerLayout
+
+                    x: root.contentPadding + root.cornerRadius
+                    y: root.contentPadding
+                    width: root.implicitWidth - (root.contentPadding + root.cornerRadius) * 2
+
+                    transform: Translate {
+                        id: contentTranslate
+
+                        x: 0
+                        y: root.isOpen ? 0 : -root.verticalOffset
+
+                        Behavior on x {
+                            NumberAnimation {
+                                duration: root.isOpen ? root.animationDuration : 250
+                                easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
+                                easing.overshoot: 0.4
+                            }
+
+                        }
+
+                        Behavior on y {
+                            NumberAnimation {
+                                duration: root.isOpen ? root.animationDuration : 250
+                                easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
+                                easing.overshoot: 0.4
+                            }
+
                         }
 
                     }
@@ -191,12 +220,31 @@ PopupWindow {
 
             }
 
+            Behavior on x {
+                NumberAnimation {
+                    duration: root.isOpen ? root.animationDuration : 250
+                    easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
+                    easing.overshoot: 0.4
+                }
+
+            }
+
+            Behavior on y {
+                NumberAnimation {
+                    duration: root.isOpen ? root.animationDuration : 250
+                    easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
+                    easing.overshoot: 0.4
+                }
+
+            }
+
         }
 
-        Behavior on y {
+        Behavior on height {
             NumberAnimation {
-                duration: root.animationDuration
-                easing.type: Easing.OutExpo
+                duration: root.isOpen ? root.animationDuration : 250
+                easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
+                easing.overshoot: 0.4
             }
 
         }

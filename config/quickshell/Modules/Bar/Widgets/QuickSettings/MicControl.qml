@@ -3,15 +3,17 @@ import QtQuick.Layouts
 import Quickshell.Io
 import qs.Core
 
-QuickActionButton {
+IconButton {
     id: root
 
     property bool muted: false
 
     icon: muted ? "󰍭" : "󰍬"
     isActive: muted
-    activeColor: Theme.colRed
-    iconColor: Theme.colBlue
+    activeColor: Colors.muted
+    iconColor: Colors.blue
+    hoverColor: Colors.blue
+    iconSize: Constants.sizeXl
     Component.onCompleted: micCheckProc.running = true
     onClicked: {
         micToggleProc.running = false;

@@ -16,7 +16,7 @@ TopPopup {
         "code": "latam"
     }]
 
-    implicitWidth: 280
+    implicitWidth: 200
 
     Process {
         id: proc
@@ -26,22 +26,21 @@ TopPopup {
         id: mainCol
 
         Layout.fillWidth: true
-        spacing: 4
+        spacing: Constants.sizeXs
 
         Repeater {
             model: root.model
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 36
-                color: hoverHandler.hovered ? Theme.colBgSecondary : "transparent"
-                radius: Theme.radiusSm
+                Layout.preferredHeight: 30
+                color: hoverHandler.hovered ? Colors.bgSecondary : "transparent"
+                radius: Constants.sizeXs
 
                 ThemedText {
                     anchors.centerIn: parent
                     text: modelData.name
-                    color: hoverHandler.hovered ? Theme.colPurple : Theme.colFg
-                    font.pixelSize: Theme.fontSizeMd
+                    color: hoverHandler.hovered ? Colors.purple : Colors.fg
                 }
 
                 HoverHandler {
@@ -50,7 +49,8 @@ TopPopup {
 
                 TapHandler {
                     onTapped: {
-                        proc.command = ["hyprctl", "keyword", "input:kb_layout", modelData.code];
+                        let iconPath = Constants.deviceIconPath.toString().replace("file://", "") + "input-keyboard.svg";
+                        proc.command = ["sh", "-c", `hyprctl keyword input:kb_layout ${modelData.code} && notify-send -i ${iconPath} "Keyboard Layout" "Switched to ${modelData.code}"`];
                         proc.running = true;
                         root.isOpen = false;
                     }

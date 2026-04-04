@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -8,261 +8,149 @@ import qs.Core
 TopPopup {
     id: root
 
-    property string selectedId: ""
+    property bool controlCenterOpen: true
     property var menuModel: [{
         "id": "lock",
-        "name": "Lock",
         "icon": "󰍁",
         "command": ["sh", "-c", "sleep 0.3; hyprlock"],
-        "color": Theme.colGreen,
+        "color": Colors.green,
         "confirm": false
     }, {
         "id": "suspend",
-        "name": "Suspend",
         "icon": "",
         "command": ["sh", "-c", "mpc -q pause; amixer set Master mute; systemctl suspend"],
-        "color": Theme.colBlue,
+        "color": Colors.blue,
         "confirm": true
     }, {
         "id": "logout",
-        "name": "Logout",
         "icon": "󰗽",
         "command": ["hyprctl", "dispatch", "exit"],
-        "color": Theme.colPurple,
+        "color": Colors.purple,
         "confirm": true
     }, {
         "id": "reboot",
-        "name": "Reboot",
         "icon": "󰜉",
         "command": ["systemctl", "reboot"],
-        "color": Theme.colYellow,
+        "color": Colors.yellow,
         "confirm": true
     }, {
         "id": "shutdown",
-        "name": "Shutdown",
         "icon": "",
         "command": ["systemctl", "poweroff"],
-        "color": Theme.colRed,
+        "color": Colors.red,
         "confirm": true
     }]
 
-    implicitWidth: 280
-    preferredHeight: mainCol.implicitHeight + 32
-    onPopupClosed: {
-        selectedId = "";
-    }
+    signal requestClose()
+
+    implicitHeight: contentColumn.implicitHeight + Constants.sizeLg * 2
 
     Process {
-        id: execProc
+        id: actionProc
     }
 
     ColumnLayout {
-        id: mainCol
+        id: contentColumn
 
         Layout.fillWidth: true
         Layout.fillHeight: true
-        spacing: Theme.spacingSm
+        spacing: Constants.sizeXs
 
         Repeater {
             model: root.menuModel
 
-            delegate: ColumnLayout {
-                id: itemCol
+            delegate: Item {
+                id: delegateRoot
 
-                readonly property bool isSelected: root.selectedId === modelData.id
+                readonly property bool isHovered: hoverHandler.hovered
 
                 Layout.fillWidth: true
-                spacing: 4
+                implicitHeight: 40
+                implicitWidth: Math.max(160, innerRow.implicitWidth)
 
                 Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 48
-                    color: itemCol.isSelected ? Theme.colBgLighter : (hnd.hovered ? Theme.colBgSecondary : "transparent")
-                    border.color: itemCol.isSelected ? modelData.color : (hnd.hovered ? Theme.colMuted : "transparent")
-                    border.width: itemCol.isSelected ? 2 : 1
-                    radius: Theme.radiusSm
+                    anchors.fill: parent
+                    radius: Constants.sizeXs
+                    color: modelData.color
+                    opacity: isHovered ? 0.15 : 0
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 14
-                        anchors.rightMargin: 14
-                        spacing: 14
-
-                        ThemedText {
-                            text: modelData.icon
-                            color: (hnd.hovered || itemCol.isSelected) ? modelData.color : Theme.colFg
-                            font.pixelSize: Theme.fontSizeLg
-                        }
-
-                        ThemedText {
-                            text: modelData.name
-                            color: (hnd.hovered || itemCol.isSelected) ? modelData.color : Theme.colFg
-                            font.pixelSize: Theme.fontSizeMd
-                            font.bold: itemCol.isSelected
-                            Layout.fillWidth: true
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.animSlow
-                                }
-
-                            }
-
-                        }
-
-                        ThemedText {
-                            text: itemCol.isSelected ? "󰅂" : "󰅀"
-                            color: Theme.colMuted
-                            font.pixelSize: Theme.fontSizeMd
-                            visible: modelData.confirm
-                            rotation: itemCol.isSelected ? 180 : 0
-
-                            Behavior on rotation {
-                                NumberAnimation {
-                                    duration: Theme.animSlow
-                                    easing.type: Easing.OutQuint
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                    HoverHandler {
-                        id: hnd
-
-                        cursorShape: Qt.PointingHandCursor
-                    }
-
-                    TapHandler {
-                        onTapped: {
-                            if (!modelData.confirm) {
-                                execProc.command = modelData.command;
-                                execProc.running = true;
-                                root.isOpen = false;
-                            } else {
-                                root.selectedId = itemCol.isSelected ? "" : modelData.id;
-                            }
-                        }
-                    }
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.animSlow
-                        }
-
-                    }
-
-                    Behavior on border.color {
-                        ColorAnimation {
-                            duration: Theme.animSlow
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Constants.animNormal
                         }
 
                     }
 
                 }
 
-                Rectangle {
-                    id: confirmArea
+                RowLayout {
+                    id: innerRow
 
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: itemCol.isSelected ? 54 : 0
-                    Layout.leftMargin: 4
-                    Layout.rightMargin: 4
-                    clip: true
-                    color: Theme.colBgSecondary
-                    radius: Theme.radiusSm
-                    opacity: itemCol.isSelected ? 1 : 0
-                    border.color: Theme.colBgLighter
-                    border.width: itemCol.isSelected ? 1 : 0
+                    anchors.fill: parent
+                    anchors.leftMargin: Constants.sizeLg
+                    anchors.rightMargin: Constants.sizeLg
+                    spacing: Constants.sizeLg
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: Theme.spacingSm
-                        spacing: 10
+                    ThemedText {
+                        text: modelData.icon
+                        font.pixelSize: Constants.sizeXl
+                        color: isHovered ? modelData.color : Colors.muted
+                        scale: isHovered ? 1.1 : 1
 
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            color: Theme.colBgLighter
-                            radius: 6
-                            opacity: hndCancel.hovered ? 1 : 0.8
-
-                            ThemedText {
-                                anchors.centerIn: parent
-                                text: "No"
-                                color: Theme.colFg
-                                font.pixelSize: Theme.fontSizeMd
-                            }
-
-                            TapHandler {
-                                onTapped: root.selectedId = ""
-                            }
-
-                            HoverHandler {
-                                id: hndCancel
-
-                                cursorShape: Qt.PointingHandCursor
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Constants.animNormal
                             }
 
                         }
 
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            color: hndConfirm.hovered ? Qt.lighter(modelData.color, 1.2) : modelData.color
-                            radius: 6
-
-                            ThemedText {
-                                anchors.centerIn: parent
-                                text: "Yes"
-                                color: "white"
-                                font.pixelSize: Theme.fontSizeMd
-                                font.bold: true
-                            }
-
-                            TapHandler {
-                                onTapped: {
-                                    execProc.command = modelData.command;
-                                    execProc.running = true;
-                                    root.isOpen = false;
-                                }
-                            }
-
-                            HoverHandler {
-                                id: hndConfirm
-
-                                cursorShape: Qt.PointingHandCursor
-                            }
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.animSlow
-                                }
-
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: Constants.animNormal
+                                easing.type: Easing.OutQuint
                             }
 
                         }
 
                     }
 
-                    Behavior on Layout.preferredHeight {
-                        NumberAnimation {
-                            duration: Theme.animSlow
-                            easing.type: Easing.OutQuint
+                    ThemedText {
+                        text: modelData.id.charAt(0).toUpperCase() + modelData.id.slice(1)
+                        font.pixelSize: Constants.sizeMd
+                        font.weight: Font.Medium
+                        color: isHovered ? Colors.fg : Colors.muted
+                        Layout.fillWidth: true
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Constants.animNormal
+                            }
+
                         }
 
                     }
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Theme.animSlow
-                            easing.type: Easing.OutQuint
+                }
+
+                HoverHandler {
+                    id: hoverHandler
+
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: {
+                        if (modelData.confirm) {
+                            let scriptPath = Quickshell.shellDir + "/Scripts/power_action.sh";
+                            let args = [scriptPath, modelData.id];
+                            for (let arg of modelData.command) args.push(arg)
+                            actionProc.command = ["bash"].concat(args);
+                        } else {
+                            actionProc.command = modelData.command;
                         }
-
+                        actionProc.startDetached();
+                        root.isOpen = false;
                     }
-
                 }
 
             }

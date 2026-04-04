@@ -3,15 +3,17 @@ import QtQuick.Layouts
 import Quickshell.Io
 import qs.Core
 
-QuickActionButton {
+IconButton {
     id: root
 
     property bool activeState: false
 
     icon: activeState ? "󰖔" : "󰖙"
     isActive: activeState
-    activeColor: Theme.colYellow
-    iconColor: activeState ? Theme.colBg : Theme.colYellow
+    activeColor: Colors.yellow
+    iconColor: Colors.yellow
+    hoverColor: Colors.yellow
+    iconSize: Constants.sizeXl
     onClicked: {
         activeState = !activeState;
         if (activeState)

@@ -7,17 +7,17 @@ import qs.Core
 TopPopup {
     id: root
 
-    implicitWidth: 450
-    preferredHeight: Math.min(mainCol.implicitHeight + (root.contentPadding * 2), 650)
-    animateHeight: true
+    property bool quickSettingsOpen: false
+
     onPopupClosed: {
         wifiControl.expanded = false;
         btControl.expanded = false;
     }
 
-    ScrollView {
-        id: scrollView
+    implicitWidth: mainCol.implicitWidth + Constants.sizeLg * 2
+    implicitHeight: mainCol.implicitHeight + Constants.sizeLg * 2
 
+    ScrollView {
         Layout.fillWidth: true
         Layout.fillHeight: true
         contentWidth: availableWidth
@@ -27,120 +27,98 @@ TopPopup {
         ColumnLayout {
             id: mainCol
 
-            width: scrollView.availableWidth
-            spacing: Theme.spacingLg
+            width: parent.width
+            spacing: Constants.sizeLg
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: Theme.spacingLg
+                spacing: Constants.sizeLg
 
-                Rectangle {
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 64
-                    color: Theme.colBgSecondary
-                    radius: Theme.radiusSm
+                    spacing: Constants.sizeLg
 
-                    Item {
-                        anchors.fill: parent
-                        anchors.leftMargin: Theme.spacingLg
-                        anchors.rightMargin: Theme.spacingLg
+                    WifiControl {
+                        id: wifiControl
 
-                        RowLayout {
-                            anchors.left: parent.left
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            spacing: Theme.spacingLg
-
-                            WifiControl {
-                                id: wifiControl
-                            }
-
-                            BluetoothControl {
-                                id: btControl
-                            }
+                        onExpandedChanged: {
+                            if (expanded)
+                                btControl.expanded = false;
 
                         }
+                    }
 
-                        RowLayout {
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            spacing: Theme.spacingLg
+                    BluetoothControl {
+                        id: btControl
 
-                            NightLightControl {
-                                id: nlControl
-                            }
-
-                            MicControl {
-                                id: micControl
-                            }
-
-                            ColorPickerControl {
-                                id: cpControl
-
-                                onRequestClose: root.isOpen = false
-                            }
+                        onExpandedChanged: {
+                            if (expanded)
+                                wifiControl.expanded = false;
 
                         }
-
                     }
 
-                }
-
-                WifiList {
-                    expanded: wifiControl.expanded
-                    enabled: wifiControl.enabled
-                    wifiList: wifiControl.wifiList
-                    onConnect: (ssid) => {
-                        return wifiControl.connect(ssid);
+                    NightLightControl {
                     }
-                }
 
-                BluetoothList {
-                    expanded: btControl.expanded
-                    enabled: btControl.enabled
-                    btList: btControl.btList
-                    onConnect: (mac) => {
-                        return btControl.connect(mac);
+                    VolumeControl {
+                        id: volControl
                     }
+
+                    MicControl {
+                    }
+
+                    ColorPickerControl {
+                        onRequestClose: root.controlCenterOpen = false
+                    }
+
                 }
 
             }
 
+            WifiList {
+                Layout.fillWidth: true
+                expanded: wifiControl.expanded
+                enabled: wifiControl.enabled
+                wifiList: wifiControl.wifiList
+                onConnect: (ssid) => {
+                    return wifiControl.connect(ssid);
+                }
+            }
+
+            BluetoothList {
+                Layout.fillWidth: true
+                expanded: btControl.expanded
+                enabled: btControl.enabled
+                btList: btControl.btList
+                onConnect: (mac) => {
+                    return btControl.connect(mac);
+                }
+            }
+
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: slidersCol.implicitHeight + 36
-                color: Theme.colBgSecondary
-                radius: Theme.radiusSm
+                implicitHeight: sliderCol.implicitHeight + (Constants.sizeLg * 2)
+                color: Colors.bgSecondary
+                radius: Constants.sizeXs
 
                 ColumnLayout {
-                    id: slidersCol
+                    id: sliderCol
 
-                    anchors.centerIn: parent
-                    width: parent.width - 32
-                    spacing: 20
+                    anchors.fill: parent
+                    anchors.margins: Constants.sizeLg
+                    spacing: Constants.sizeLg
 
-                    RowLayout {
+                    VolumeSlider {
                         Layout.fillWidth: true
-                        spacing: 10
-
-                        VolumeControl {
-                            id: volControl
+                        volume: volControl.volume
+                        muted: volControl.muted
+                        onMoved: (val) => {
+                            return volControl.setVolume(val);
                         }
-
-                        VolumeSlider {
-                            Layout.fillWidth: true
-                            volume: volControl.volume
-                            onMoved: (val) => {
-                                return volControl.setVolume(val);
-                            }
-                        }
-
                     }
 
-                    BrightnessControl {
-                        id: brightControl
-
+                    BrightnessSlider {
                         Layout.fillWidth: true
                     }
 

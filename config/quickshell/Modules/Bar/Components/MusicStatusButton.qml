@@ -1,11 +1,10 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import qs.Core
 
-Rectangle {
+BarButton {
     id: root
 
     property var widget
@@ -18,7 +17,7 @@ Rectangle {
             return "";
 
         let s = str.toString();
-        return s.length > 20 ? s.substring(0, 15) + "..." : s;
+        return s.length > 25 ? s.substring(0, 20) + "..." : s;
     }
 
     function updateText() {
@@ -51,12 +50,12 @@ Rectangle {
             artist = artist || "Unknown";
             let title = finalPlayer.trackTitle;
             if (title) {
-                musicText.text = ` [ ${truncate(artist)} - ${truncate(title)} ]`;
+                root.text = ` [ ${truncate(artist)} - ${truncate(title)} ]`;
                 root.hasMusic = true;
                 return ;
             }
         }
-        musicText.text = " [ No music ]";
+        root.text = " [ No music ]";
         root.hasMusic = false;
     }
 
@@ -75,40 +74,18 @@ Rectangle {
         }
     }
 
-    color: mouseArea.containsMouse ? Theme.colBgLighter : Theme.colBgSecondary
-    radius: Theme.radiusLg
-    implicitHeight: 30
-    implicitWidth: musicText.implicitWidth + 30
     Component.onCompleted: updateText()
-
-    MouseArea {
-        id: mouseArea
-
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        cursorShape: Qt.PointingHandCursor
-        onClicked: (mouse) => {
-            if (mouse.button === Qt.RightButton) {
-                Hyprland.dispatch("workspace 9");
-            } else if (mouse.button === Qt.LeftButton) {
-                if (root.activePlayer)
-                    widget.isOpen = !widget.isOpen;
-                else
-                    Hyprland.dispatch("exec sh -c 'youtube-music || spotify'");
-            }
+    textColor: Colors.green
+    mouseArea.acceptedButtons: Qt.LeftButton | Qt.RightButton
+    mouseArea.onClicked: (mouse) => {
+        if (mouse.button === Qt.RightButton) {
+            Hyprland.dispatch("workspace 9");
+        } else if (mouse.button === Qt.LeftButton) {
+            if (root.activePlayer)
+                widget.isOpen = !widget.isOpen;
+            else
+                Hyprland.dispatch("exec sh -c 'youtube-music || spotify'");
         }
-    }
-
-    ThemedText {
-        id: musicText
-
-        anchors.centerIn: parent
-        text: " [ No music ]"
-        color: Theme.colGreen
-        font.pixelSize: Theme.fontSizeMd
-        font.bold: true
-        elide: Text.ElideRight
-        maximumLineCount: 1
     }
 
     Instantiator {
@@ -127,13 +104,6 @@ Rectangle {
             onIdentityChanged: root.updateText()
             Component.onCompleted: root.registerPlayer(p)
             Component.onDestruction: root.unregisterPlayer(p)
-        }
-
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Theme.animNormal
         }
 
     }

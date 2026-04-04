@@ -5,32 +5,50 @@ Rectangle {
     id: root
 
     property string icon: ""
-    property int iconSize: 16
-    property color iconColor: Theme.colFg
-    property color activeColor: Theme.colPurple
-    property color hoverColor: Theme.colBgLighter
+    property int iconSize: Constants.sizeLg
+    property color bgColor: Colors.bgSecondary
+    property color iconColor: Colors.fg
+    property color activeColor: Colors.purple
+    property color hoverColor: Colors.purple
     property bool isActive: false
     property bool useText: true
-    property color baseColor: "transparent"
-    readonly property alias hovered: hoverHandler.hovered
+    property real hoverScale: 1.2
+    property alias hovered: hoverHandler.hovered
 
     signal clicked()
 
-    width: 30
-    height: 30
-    radius: Theme.radiusSm
-    color: hoverHandler.hovered ? hoverColor : baseColor
+    color: bgColor
+    radius: iconSize
+    implicitWidth: iconSize * 2
+    implicitHeight: iconSize * 2
 
     ThemedText {
         anchors.centerIn: parent
         text: root.icon
-        color: root.isActive ? root.activeColor : root.iconColor
+        color: {
+            if (root.isActive)
+                return root.activeColor;
+
+            if (hoverHandler.hovered)
+                return root.hoverColor;
+
+            return root.iconColor;
+        }
         font.pixelSize: root.iconSize
         visible: root.useText
+        scale: hoverHandler.hovered ? root.hoverScale : 1
 
         Behavior on color {
             ColorAnimation {
-                duration: Theme.animNormal
+                duration: Constants.animNormal
+            }
+
+        }
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Constants.animNormal
+                easing.type: Easing.OutQuint
             }
 
         }
@@ -45,13 +63,6 @@ Rectangle {
 
     TapHandler {
         onTapped: root.clicked()
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Theme.animNormal
-        }
-
     }
 
 }

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Io
 import qs.Core
 
@@ -18,16 +17,14 @@ RowLayout {
     }
 
     Layout.fillWidth: true
-    spacing: 10
+    spacing: Constants.sizeSm
 
     Timer {
         interval: 2000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: {
-            brightGetProc.running = true;
-        }
+        onTriggered: brightGetProc.running = true
     }
 
     Process {
@@ -59,19 +56,20 @@ RowLayout {
         id: brightSetProc
     }
 
-    Rectangle {
-        width: 40
-        height: 40
-        radius: Theme.radiusSm
-        color: Theme.colBg
+    ThemedText {
+        text: {
+            if (root.brightness <= 33)
+                return "󰃞";
 
-        ThemedText {
-            anchors.centerIn: parent
-            text: "󰃠"
-            color: Theme.colCyan
-            font.pixelSize: Theme.fontSizeLg
+            if (root.brightness <= 66)
+                return "󰃟";
+
+            return "󰃠";
         }
-
+        color: Colors.yellow
+        font.pixelSize: Constants.sizeMd
+        Layout.preferredWidth: Constants.sizeXl
+        horizontalAlignment: Text.AlignHCenter
     }
 
     Slider {
@@ -82,22 +80,24 @@ RowLayout {
         to: 100
         value: root.brightness
         onMoved: root.setBrightness(Math.round(value))
+        topPadding: Constants.sizeSm
+        bottomPadding: Constants.sizeSm
 
         background: Rectangle {
             x: brightSlider.leftPadding
             y: brightSlider.topPadding + brightSlider.availableHeight / 2 - height / 2
             implicitWidth: 200
-            implicitHeight: 8
+            implicitHeight: 3
             width: brightSlider.availableWidth
             height: implicitHeight
-            radius: 4
-            color: Theme.colBg
+            radius: 2
+            color: Colors.border
 
             Rectangle {
-                width: brightSlider.visualPosition * parent.width
+                width: Math.max(height, brightSlider.visualPosition * parent.width)
                 height: parent.height
-                color: Theme.colCyan
-                radius: 4
+                color: Colors.yellow
+                radius: 2
             }
 
         }
@@ -105,26 +105,16 @@ RowLayout {
         handle: Rectangle {
             x: brightSlider.leftPadding + brightSlider.visualPosition * (brightSlider.availableWidth - width)
             y: brightSlider.topPadding + brightSlider.availableHeight / 2 - height / 2
-            width: brightSlider.pressed ? 22 : 18
-            height: brightSlider.pressed ? 22 : 18
-            radius: width / 2
-            color: Theme.colFg
-            border.color: Theme.colCyan
-            border.width: 2
-            visible: brightSlider.pressed || brightSlider.hovered
+            implicitWidth: Constants.sizeSm
+            implicitHeight: Constants.sizeSm
+            radius: 6
+            color: Colors.yellow
+            border.color: Qt.darker(color, 1.2)
+            border.width: 1
 
-            Behavior on width {
+            Behavior on x {
                 NumberAnimation {
-                    duration: Theme.animNormal
-                    easing.type: Easing.OutBack
-                }
-
-            }
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: Theme.animNormal
-                    easing.type: Easing.OutBack
+                    duration: 100
                 }
 
             }
@@ -135,9 +125,8 @@ RowLayout {
 
     ThemedText {
         text: root.brightness + "%"
-        color: Theme.colFg
-        font.pixelSize: Theme.fontSizeMd
-        Layout.preferredWidth: 35
+        font.pixelSize: Constants.sizeSm
+        Layout.preferredWidth: 28
         horizontalAlignment: Text.AlignRight
     }
 

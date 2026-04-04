@@ -3,13 +3,15 @@ import QtQuick.Layouts
 import Quickshell.Io
 import qs.Core
 
-QuickActionButton {
+IconButton {
     id: root
 
     signal requestClose()
 
     icon: "󰈋"
-    iconColor: Theme.colCyan
+    iconColor: Colors.red
+    hoverColor: Colors.red
+    iconSize: Constants.sizeXl
     onClicked: {
         root.requestClose();
         colorPickerTimer.start();

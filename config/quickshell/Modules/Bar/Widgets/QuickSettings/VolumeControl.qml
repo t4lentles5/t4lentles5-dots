@@ -5,7 +5,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Core
 
-Rectangle {
+IconButton {
     id: root
 
     property int volume: 0
@@ -23,16 +23,11 @@ Rectangle {
         muteGetProc.running = true;
     }
 
-    width: 40
-    height: 40
-    radius: Theme.radiusSm
-    color: muted ? Theme.colRed : (volHover.hovered ? Theme.colBgLighter : Theme.colBg)
-
-    HoverHandler {
-        id: volHover
-
-        enabled: !root.muted
-    }
+    iconSize: Constants.sizeXl
+    icon: muted ? "󰝟" : "󰕾"
+    iconColor: muted ? Colors.muted : Colors.cyan
+    hoverColor: muted ? Colors.muted : Colors.cyan
+    onClicked: root.toggleMute()
 
     Timer {
         interval: 2000
@@ -77,19 +72,6 @@ Rectangle {
 
     Process {
         id: volSetProc
-    }
-
-    ThemedText {
-        anchors.centerIn: parent
-        text: root.muted ? "󰝟" : "󰕾"
-        color: root.muted ? Theme.colBg : Theme.colBlue
-        font.pixelSize: Theme.fontSizeLg
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggleMute()
     }
 
 }

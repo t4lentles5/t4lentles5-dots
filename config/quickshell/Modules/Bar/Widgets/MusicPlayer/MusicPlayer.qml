@@ -9,10 +9,11 @@ import qs.Core
 TopPopup {
     id: root
 
-    property int cardPadding: 16
     property var managedPlayers: []
     property var activePlayer: null
-    readonly property int statePlaying: 1
+    property real position: 0
+    property bool isSliderPressed: false
+    property string currentTrackId: ""
 
     function updatePlayer() {
         let players = managedPlayers;
@@ -24,8 +25,9 @@ TopPopup {
                 continue;
 
             let id = (p.identity || "").toLowerCase();
-            if (id.includes("spotify") || id.includes("youtube")) {
-                if (p.playbackState === root.statePlaying) {
+            if (id.includes("spotify") || id.includes("youtube") || id.includes("music")) {
+                let isPlaying = (p.playbackState === 1 || p.playbackState === Mpris.Playing || String(p.playbackState).toLowerCase().includes("playing"));
+                if (isPlaying) {
                     playing = p;
                     break;
                 }
@@ -59,7 +61,24 @@ TopPopup {
         }
     }
 
-    implicitWidth: 260
+    implicitWidth: 360
+
+    Timer {
+        interval: 100
+        running: {
+            if (!root.activePlayer)
+                return false;
+
+            let s = root.activePlayer.playbackState;
+            return s === 1 || s === Mpris.Playing || String(s).toLowerCase().includes("playing");
+        }
+        repeat: true
+        onTriggered: {
+            if (root.activePlayer && !root.isSliderPressed)
+                root.position += 0.1;
+
+        }
+    }
 
     Instantiator {
         model: Mpris.players
@@ -67,207 +86,157 @@ TopPopup {
         delegate: QtObject {
             property var p: modelData
             property var state: p.playbackState
+            property var title: p.trackTitle
 
             onStateChanged: root.updatePlayer()
+            onTitleChanged: root.updatePlayer()
             Component.onCompleted: root.registerPlayer(p)
             Component.onDestruction: root.unregisterPlayer(p)
         }
 
     }
 
-    Item {
+    RowLayout {
+        id: rowLayout
+
+        spacing: Constants.sizeLg
+        visible: root.activePlayer !== null
         Layout.fillWidth: true
-        Layout.preferredHeight: 140
-        visible: root.activePlayer === null
+
+        Item {
+            Layout.preferredWidth: 100
+            Layout.preferredHeight: 100
+            Layout.alignment: Qt.AlignVCenter
+
+            Rectangle {
+                id: albumArtContainer
+
+                anchors.fill: parent
+                radius: Constants.sizeXs
+                color: Colors.bgSecondary
+                border.width: 1
+                border.color: Colors.border
+            }
+
+            Image {
+                id: albumArt
+
+                anchors.fill: albumArtContainer
+                anchors.margins: 1
+                source: root.activePlayer ? (root.activePlayer.trackArtUrl || "") : ""
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+                opacity: status === Image.Ready ? 1 : 0
+                visible: false
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 400
+                        easing.type: Easing.OutCubic
+                    }
+
+                }
+
+            }
+
+            Rectangle {
+                id: albumArtMask
+
+                anchors.fill: albumArtContainer
+                radius: albumArtContainer.radius
+                color: "white"
+                visible: false
+            }
+
+            OpacityMask {
+                anchors.fill: albumArtContainer
+                source: albumArt
+                maskSource: albumArtMask
+            }
+
+            ThemedText {
+                anchors.centerIn: parent
+                text: ""
+                color: Colors.purple
+                font.pixelSize: 28
+                visible: albumArt.status !== Image.Ready
+            }
+
+        }
 
         ColumnLayout {
-            anchors.centerIn: parent
-            spacing: 8
-
-            ThemedText {
-                text: "󰎆"
-                color: Theme.colMuted
-                font.pixelSize: 48
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            ThemedText {
-                text: "No Media Playing"
-                color: Theme.colMuted
-                font.pixelSize: Theme.fontSizeMd
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-        }
-
-        Behavior on opacity {
-            NumberAnimation {
-                duration: Theme.animNormal
-            }
-
-        }
-
-    }
-
-    ColumnLayout {
-        Layout.fillWidth: true
-        spacing: 8
-        visible: root.activePlayer !== null
-
-        Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 300
-            color: Theme.colBgSecondary
-            radius: Theme.radiusSm
+            Layout.alignment: Qt.AlignVCenter
+            spacing: Constants.sizeLg
 
             ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 16
-                spacing: 16
+                Layout.fillWidth: true
+                spacing: 0
 
-                Item {
+                ThemedText {
+                    text: root.activePlayer ? (root.activePlayer.trackTitle || "Not Playing") : ""
+                    font.pixelSize: Constants.sizeLg
+                    font.weight: Font.Bold
+                    elide: Text.ElideRight
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 160
-                    Layout.alignment: Qt.AlignHCenter
-
-                    Rectangle {
-                        id: artMask
-
-                        anchors.fill: parent
-                        radius: Theme.radiusSm
-                        visible: false
-                    }
-
-                    Image {
-                        id: albumArt
-
-                        anchors.fill: parent
-                        source: root.activePlayer ? (root.activePlayer.trackArtUrl || "") : ""
-                        fillMode: Image.PreserveAspectCrop
-                        asynchronous: true
-                        visible: false
-                    }
-
-                    Rectangle {
-                        anchors.fill: parent
-                        radius: Theme.radiusSm
-                        color: Theme.colBgLighter
-                        opacity: albumArt.status === Image.Ready ? 0 : 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: ""
-                            color: Theme.colPurple
-                            font.pixelSize: 60
-                        }
-
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: Theme.animSlow
-                                easing.type: Easing.OutQuint
-                            }
-
-                        }
-
-                    }
-
-                    OpacityMask {
-                        anchors.fill: parent
-                        source: albumArt
-                        maskSource: artMask
-                        opacity: albumArt.status === Image.Ready ? 1 : 0
-
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: Theme.animSlow
-                                easing.type: Easing.OutQuint
-                            }
-
-                        }
-
-                    }
-
                 }
 
-                ColumnLayout {
+                ThemedText {
+                    text: root.activePlayer ? (root.activePlayer.trackArtist || "Unknown Artist") : ""
+                    color: Colors.purple
+                    font.pixelSize: Constants.sizeSm
+                    font.weight: Font.Medium
+                    elide: Text.ElideRight
                     Layout.fillWidth: true
-                    spacing: 2
-
-                    ThemedText {
-                        text: root.activePlayer ? (root.activePlayer.trackTitle || "Unknown Title") : ""
-                        color: Theme.colFg
-                        font.pixelSize: Theme.fontSizeMd
-                        font.bold: true
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                    }
-
-                    ThemedText {
-                        text: root.activePlayer ? (root.activePlayer.trackArtist || "Unknown Artist") : ""
-                        color: Theme.colCyan
-                        font.pixelSize: Theme.fontSizeSm
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                    }
-
-                }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignHCenter
-                    spacing: 20
-
-                    IconButton {
-                        icon: "󰒮"
-                        iconSize: 26
-                        width: 36
-                        height: 36
-                        iconColor: (root.activePlayer && root.activePlayer.canGoPrevious) ? Theme.colFg : Theme.colMuted
-                        onClicked: {
-                            if (root.activePlayer)
-                                root.activePlayer.previous();
-
-                        }
-                    }
-
-                    IconButton {
-                        icon: (root.activePlayer && root.activePlayer.playbackState === root.statePlaying) ? "󰏤" : "󰐊"
-                        iconSize: 28
-                        width: 48
-                        height: 48
-                        radius: Theme.radiusLg
-                        iconColor: Theme.colBg
-                        hoverColor: Theme.colCyan
-                        baseColor: Theme.colPurple
-                        onClicked: {
-                            if (root.activePlayer)
-                                root.activePlayer.togglePlaying();
-
-                        }
-                    }
-
-                    IconButton {
-                        icon: "󰒭"
-                        iconSize: 26
-                        width: 36
-                        height: 36
-                        iconColor: (root.activePlayer && root.activePlayer.canGoNext) ? Theme.colFg : Theme.colMuted
-                        onClicked: {
-                            if (root.activePlayer)
-                                root.activePlayer.next();
-
-                        }
-                    }
-
                 }
 
             }
 
-        }
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Constants.sizeXs
 
-        Behavior on opacity {
-            NumberAnimation {
-                duration: Theme.animNormal
+                IconButton {
+                    icon: "󰒮"
+                    iconSize: Constants.sizeXl
+                    iconColor: (root.activePlayer && root.activePlayer.canGoPrevious) ? Colors.fg : Colors.muted
+                    hoverColor: Colors.fg
+                    onClicked: {
+                        if (root.activePlayer)
+                            root.activePlayer.previous();
+
+                    }
+                }
+
+                IconButton {
+                    id: playButton
+
+                    property bool isPlaying: root.activePlayer && (root.activePlayer.playbackState === 1 || root.activePlayer.playbackState === Mpris.Playing || String(root.activePlayer.playbackState).toLowerCase().includes("playing"))
+
+                    icon: (root.activePlayer && playButton.isPlaying) ? "󰏤" : "󰐊"
+                    iconSize: Constants.sizeXl
+                    iconColor: Colors.bg
+                    hoverColor: Colors.bg
+                    bgColor: Colors.purple
+                    onClicked: {
+                        if (root.activePlayer)
+                            root.activePlayer.togglePlaying();
+
+                    }
+                }
+
+                IconButton {
+                    icon: "󰒭"
+                    iconSize: Constants.sizeXl
+                    iconColor: (root.activePlayer && root.activePlayer.canGoNext) ? Colors.fg : Colors.muted
+                    hoverColor: Colors.fg
+                    onClicked: {
+                        if (root.activePlayer)
+                            root.activePlayer.next();
+
+                    }
+                }
+
             }
 
         }

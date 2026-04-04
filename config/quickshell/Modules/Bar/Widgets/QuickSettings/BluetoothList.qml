@@ -1,7 +1,5 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Io
 import qs.Core
 
@@ -11,56 +9,64 @@ Rectangle {
     property bool expanded: false
     property bool enabled: false
     property var btList: []
+    property bool timedOut: false
 
     signal connect(string mac)
 
     Layout.fillWidth: true
-    Layout.preferredHeight: expanded ? Math.max(btListCol.implicitHeight + 20, 100) : 0
+    Layout.preferredHeight: expanded ? Math.max(btListCol.implicitHeight + 16, 80) : 0
     opacity: expanded ? 1 : 0
-    visible: expanded || Layout.preferredHeight > 0
-    color: Theme.colBgSecondary
-    radius: Theme.radiusSm
+    visible: opacity > 0
     clip: true
+    radius: Constants.sizeXs
+    color: Colors.bgSecondary
 
-    Item {
+    Timer {
+        id: scanTimeout
+
+        interval: 10000
+        running: root.expanded && root.btList.length === 0
+        onTriggered: root.timedOut = true
+        onRunningChanged: {
+            if (!running && !root.expanded)
+                root.timedOut = false;
+
+        }
+    }
+
+    ColumnLayout {
         anchors.centerIn: parent
-        width: 100
-        height: 50
+        spacing: Constants.sizeXs
         visible: root.expanded && root.btList.length === 0
 
-        ColumnLayout {
-            anchors.centerIn: parent
-            spacing: Theme.spacingSm
-
-            Item {
-                Layout.alignment: Qt.AlignHCenter
-                width: 32
-                height: 32
-
-                ThemedText {
-                    anchors.centerIn: parent
-                    text: "󰑐"
-                    color: Theme.colBlue
-                    font.pixelSize: 24
-                }
-
-                RotationAnimation on rotation {
-                    from: 0
-                    to: 360
-                    duration: 1000
-                    loops: Animation.Infinite
-                    running: parent.visible
-                }
-
-            }
+        Item {
+            Layout.alignment: Qt.AlignHCenter
+            width: 20
+            height: 20
+            visible: !root.timedOut
 
             ThemedText {
-                Layout.alignment: Qt.AlignHCenter
-                text: "Scanning..."
-                color: Theme.colMuted
-                font.pixelSize: Theme.fontSizeSm
+                anchors.centerIn: parent
+                text: "󰑐"
+                color: Colors.muted
+                font.pixelSize: Constants.sizeMd
             }
 
+            RotationAnimation on rotation {
+                from: 0
+                to: 360
+                duration: 1200
+                loops: Animation.Infinite
+                running: parent.visible && !root.timedOut
+            }
+
+        }
+
+        ThemedText {
+            Layout.alignment: Qt.AlignHCenter
+            text: root.timedOut ? "No devices found" : "Scanning..."
+            color: Colors.muted
+            font.pixelSize: Constants.sizeSm
         }
 
     }
@@ -71,37 +77,54 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 10
-        spacing: 5
+        anchors.topMargin: Constants.sizeSm
+        anchors.leftMargin: Constants.sizeSm
+        anchors.rightMargin: Constants.sizeSm
+        anchors.bottomMargin: Constants.sizeSm
         visible: root.btList.length > 0
 
         ThemedText {
-            text: "Available Devices"
-            color: Theme.colMuted
-            font.pixelSize: Theme.fontSizeSm
-            Layout.bottomMargin: 5
+            text: "Devices"
+            font.pixelSize: Constants.sizeSm
+            font.letterSpacing: 1
+            color: Colors.muted
         }
 
         Repeater {
             model: root.btList
 
-            Rectangle {
+            Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 34
-                color: hoverHandlerB.hovered ? Theme.colBgLighter : "transparent"
-                radius: Theme.radiusSm
+                implicitHeight: 28
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
+                    anchors.leftMargin: Constants.sizeSm
+                    anchors.rightMargin: Constants.sizeXs
+                    spacing: Constants.sizeXs
+
+                    ThemedText {
+                        text: "󰂱"
+                        font.pixelSize: Constants.sizeXs
+                        color: Colors.blue
+                        opacity: 0.5
+                        Layout.alignment: Qt.AlignVCenter
+                    }
 
                     ThemedText {
                         text: modelData.name
-                        color: Theme.colFg
+                        font.pixelSize: Constants.sizeSm
+                        opacity: hoverHandlerB.hovered ? 1 : 0.65
                         Layout.fillWidth: true
                         elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Constants.animNormal
+                            }
+
+                        }
+
                     }
 
                 }
@@ -114,13 +137,20 @@ Rectangle {
                     onTapped: root.connect(modelData.mac)
                 }
 
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Theme.animSlow
-                    }
+            }
 
-                }
+        }
 
+    }
+
+    transform: Translate {
+        y: root.expanded ? 0 : -Constants.sizeSm
+
+        Behavior on y {
+            NumberAnimation {
+                duration: Constants.animFast
+                easing.type: Easing.Bezier
+                easing.bezierCurve: root.expanded ? [0.05, 0.9, 0.1, 1] : [0.3, 0, 0.8, 0.15]
             }
 
         }
@@ -129,16 +159,18 @@ Rectangle {
 
     Behavior on Layout.preferredHeight {
         NumberAnimation {
-            duration: Theme.animSlow
-            easing.type: Easing.OutQuint
+            duration: Constants.animFast
+            easing.type: Easing.Bezier
+            easing.bezierCurve: root.expanded ? [0.05, 0.9, 0.1, 1] : [0.3, 0, 0.8, 0.15]
         }
 
     }
 
     Behavior on opacity {
         NumberAnimation {
-            duration: Theme.animNormal
-            easing.type: Easing.OutQuint
+            duration: Constants.animFast
+            easing.type: Easing.Bezier
+            easing.bezierCurve: root.expanded ? [0.05, 0.9, 0.1, 1] : [0.3, 0, 0.8, 0.15]
         }
 
     }

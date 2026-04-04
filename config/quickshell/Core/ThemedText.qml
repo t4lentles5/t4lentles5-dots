@@ -2,6 +2,7 @@ import QtQuick
 import qs.Core
 
 Text {
-    font.family: Theme.fontFamily
-    font.pixelSize: Theme.fontSizeMd
+    font.family: Constants.fontFamily
+    font.pixelSize: Constants.sizeSm
+    color: Colors.fg
 }
