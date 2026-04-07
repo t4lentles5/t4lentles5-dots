@@ -94,7 +94,7 @@ TopPopup {
                     ThemedText {
                         text: modelData.icon
                         font.pixelSize: Constants.sizeXl
-                        color: isHovered ? modelData.color : Colors.muted
+                        color: isHovered ? modelData.color : Colors.fg
                         scale: isHovered ? 1.1 : 1
 
                         Behavior on color {
@@ -118,7 +118,7 @@ TopPopup {
                         text: modelData.id.charAt(0).toUpperCase() + modelData.id.slice(1)
                         font.pixelSize: Constants.sizeMd
                         font.weight: Font.Medium
-                        color: isHovered ? Colors.fg : Colors.muted
+                        color: Colors.fg
                         Layout.fillWidth: true
 
                         Behavior on color {

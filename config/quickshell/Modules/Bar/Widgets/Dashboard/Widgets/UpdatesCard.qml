@@ -171,6 +171,42 @@ Rectangle {
 
         }
 
+        Item {
+            visible: !root.hasUpdates
+            Layout.fillWidth: true
+            Layout.preferredHeight: 32
+
+            Rectangle {
+                anchors.fill: parent
+                radius: Constants.sizeXs
+                color: Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.07)
+                border.color: Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.3)
+                border.width: 1
+            }
+
+            RowLayout {
+                anchors.centerIn: parent
+                spacing: Constants.sizeXs
+
+                ThemedText {
+                    text: "󰄬"
+                    color: Colors.green
+                    font.pixelSize: Constants.sizeSm
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                ThemedText {
+                    text: "Up to date"
+                    color: Colors.green
+                    font.pixelSize: Constants.sizeSm
+                    font.weight: Font.Medium
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+            }
+
+        }
+
     }
 
 }

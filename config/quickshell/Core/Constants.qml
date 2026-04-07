@@ -5,7 +5,7 @@ QtObject {
     property string iconTheme: "file:///usr/share/icons/Tela-circle-dracula-dark/"
     property string deviceIconPath: iconTheme + "22/devices/"
     property string iconPath: iconTheme + "22/panel/"
-    property string fontFamily: "Maple Mono NF CN"
+    property string fontFamily: "JetBrainsMono Nerd Font"
     property int sizeXs: 8
     property int sizeSm: 12
     property int sizeMd: 14

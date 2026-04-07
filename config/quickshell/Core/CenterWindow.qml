@@ -106,6 +106,8 @@ PanelWindow {
                 anchors.fill: parent
                 color: root.backgroundColor
                 radius: Constants.sizeLg
+                border.width: 1
+                border.color: Colors.border
                 clip: true
             }
 

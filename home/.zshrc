@@ -10,7 +10,7 @@ zshaddhistory() {
   return 0
 }
 
-export SUDO_PROMPT="Deploying root access for %u. Password pls: "
+export SUDO_PROMPT="[sudo] %u: "
 
 if [ -d "$HOME/.local/bin" ] ;
   then PATH="$HOME/.local/bin:$PATH"

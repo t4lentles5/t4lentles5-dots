@@ -24,7 +24,7 @@ TopPopup {
         }
     }
 
-    implicitWidth: 150 + (root.contentPadding * 2)
+    implicitWidth: 180 + (root.contentPadding * 2)
     onIsOpenChanged: {
         if (!isOpen) {
             trayMenu.isOpen = false;
