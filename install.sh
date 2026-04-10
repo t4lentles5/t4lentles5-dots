@@ -35,16 +35,14 @@ fi
 # ── 2. official dependencies ──────────────────────────────────────────────────
 log "Installing dependencies from official repositories..."
 dependencies=(
-  bat bc btop cava dunst eza fd fzf
-  gnome-calculator gnome-font-viewer gnome-disk-utility
-  gvfs gvfs-mtp highlight hypridle hyprlock hyprpicker hyprsunset
-  imagemagick inetutils iwd jq lazygit loupe
-  nautilus network-manager-applet networkmanager noto-fonts-emoji
-  nwg-look openssl pacman-contrib pamixer pavucontrol
-  pipewire pipewire-alsa pipewire-audio pipewire-pulse
-  python-gobject python-pygments python-pip
-  ranger rfkill ripgrep starship
-  ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
+  hyprland kitty openssh polkit-kde-agent qt5-wayland qt6-wayland
+  smartmontools uwsm vim wget wireless_tools xdg-desktop-portal-hyprland
+  xdg-utils bat bc btop cava eza fd fzf gnome-calculator gnome-font-viewer
+  gnome-disk-utility gvfs gvfs-mtp highlight hypridle hyprlock hyprpicker
+  hyprsunset imagemagick inetutils iwd jq lazygit loupe nautilus network-manager-applet
+  networkmanager noto-fonts-emoji nwg-look openssl pacman-contrib pamixer pavucontrol
+  pipewire pipewire-alsa pipewire-audio pipewire-pulse python-gobject python-pygments
+  python-pip ranger rfkill ripgrep starship ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
   tumbler unzip upower wireplumber wl-clipboard wlsunset
   xclip xdg-desktop-portal-gtk zsh
   zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting
@@ -151,7 +149,43 @@ if command -v nwg-look &>/dev/null; then
   nwg-look -a && ok "nwg-look applied settings." || warn "nwg-look -a failed, check your gtk config files."
 fi
 
-# ── 6. zsh shell (mandatory) ──────────────────────────────────────────────────
+# ── 6. SDDM theme ─────────────────────────────────────────────────────────────
+log "Configuring SDDM theme..."
+if [ -f "$REPO_DIR/etc/sddm.conf" ]; then
+  if [ -f /etc/sddm.conf ]; then
+    cp /etc/sddm.conf "$BACKUP_DIR/sddm.conf.bak"
+    ok "Existing /etc/sddm.conf backed up."
+  fi
+  sudo cp "$REPO_DIR/etc/sddm.conf" /etc/sddm.conf
+  ok "SDDM theme set to tokyo-night."
+else
+  warn "etc/sddm.conf not found in repo, skipping SDDM config."
+fi
+
+# ── 7. disable dunst (notifications handled by QuickShell) ────────────────────
+log "Disabling dunst (notifications are managed by QuickShell)..."
+if command -v dunst &>/dev/null; then
+  # Kill any running dunst instance
+  killall dunst 2>/dev/null && ok "Stopped running dunst process."
+
+  # Mask the systemd user service so it never starts again
+  systemctl --user mask dunst.service 2>/dev/null &&
+    ok "dunst.service masked." ||
+    warn "Could not mask dunst.service (may not exist as a systemd service)."
+
+  # Disable D-Bus activation if the service file exists
+  DBUS_SERVICE="/usr/share/dbus-1/services/org.knopwob.dunst.service"
+  if [ -f "$DBUS_SERVICE" ]; then
+    sudo mv "$DBUS_SERVICE" "${DBUS_SERVICE}.disabled"
+    ok "dunst D-Bus activation disabled."
+  fi
+
+  ok "dunst disabled — QuickShell will handle notifications."
+else
+  ok "dunst is not installed, no conflicts."
+fi
+
+# ── 8. zsh shell (mandatory) ──────────────────────────────────────────────────
 log "Setting zsh as default shell..."
 if [ "$SHELL" != "$(which zsh)" ]; then
   chsh -s "$(which zsh)" || error "Could not change shell to zsh. Run manually: chsh -s \$(which zsh)"
@@ -160,7 +194,7 @@ else
   ok "zsh is already the default shell."
 fi
 
-# ── 7. Node.js LTS via fnm ────────────────────────────────────────────────────
+# ── 9. Node.js LTS via fnm ────────────────────────────────────────────────────
 log "Installing Node.js LTS with fnm..."
 if command -v fnm &>/dev/null; then
   export FNM_DIR="${FNM_DIR:-$HOME/.local/share/fnm}"

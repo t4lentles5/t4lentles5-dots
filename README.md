@@ -2,14 +2,12 @@
 
 # t4lentles5 Dotfiles
 
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1775658862/output_pr1rht.gif" alt="Preview 1" width="48%" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1775658639/output_eazyne.gif" alt="Preview 2" width="48%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1775658862/output_pr1rht.gif" alt="Preview 1" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1775658639/output_eazyne.gif" alt="Preview 2" />
 
 </div>
 
 ## 🚀 Quick Install
-
-Installation is simple and safe. I have prepared a script that takes care of installing dependencies, backing up your current configuration, and magically applying the new setup.
 
 Open your terminal and run the following commands:
 
@@ -25,7 +23,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-> **⚠️ Important:**
+> [!IMPORTANT]
 >
 > - This script is exclusively designed for **Arch Linux** based distributions (it uses `pacman` natively).
 > - **NOTE:** Run the script as your **normal user**. The script will ask for `sudo` permissions on its own when strictly necessary to install system packages.
@@ -45,8 +43,9 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
    - Deploys base files from `home/` to your home root `~/`
    - Moves images from `Wallpapers/` to `~/Pictures/Wallpapers/`
 6. **Visual Autoconfiguration**: Runs extra utilities (`nwg-look`) to automatically inject your new GTK theme.
-7. **Terminal Setup**: Changes your default shell to `zsh` using the new configuration.
-8. **Web Development Environment**: Installs `fnm` and prepares the latest LTS version of **Node.js**.
+7. **Disables dunst**: Stops and masks [dunst](https://dunst-project.org/) to avoid conflicts, since **all notifications are handled natively by QuickShell**.
+8. **Terminal Setup**: Changes your default shell to `zsh` using the new configuration.
+9. **Web Development Environment**: Installs `fnm` and prepares the latest LTS version of **Node.js**.
 
 ---
 
@@ -73,6 +72,7 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
 ## 📂 How is it organized?
 
 - 📁 `config/`: Everything intended for your system's `~/.config/` folder.
+- 📁 `etc/`: System-level configuration files (e.g. SDDM theme) copied to `/etc/`.
 - 📁 `home/`: Standalone hidden files (e.g. your `.zshrc`) that are placed directly in `~/`.
 - 📁 `Wallpapers/`: Your wallpaper collection used by the configuration.
 - 📜 `install.sh`: The main orchestration script.
@@ -157,14 +157,16 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
 
 ## 🆘 Troubleshooting
 
-| Problem                           | Solution                                                            |
-| --------------------------------- | ------------------------------------------------------------------- |
-| Quickshell widgets not responding | Make sure `quickshell` is running: `quickshell &`                   |
-| Clipboard history empty           | Check `wl-paste` and `cliphist` are installed and running           |
-| Wrong keyboard layout             | Verify `kb_layout` in `userprefs.conf`; toggle with `SUPER + SPACE` |
-| GTK theme not applied             | Run `nwg-look` manually after logging in                            |
-| Fonts look broken                 | Install a Nerd Font manually: `yay -S ttf-jetbrains-mono-nerd`      |
-| `yay` not found after install     | Restart your shell or run `source ~/.zshrc`                         |
+| Problem                           | Solution                                                                   |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| Quickshell widgets not responding | Make sure `quickshell` is running: `quickshell &`                          |
+| Clipboard history empty           | Check `wl-paste` and `cliphist` are installed and running                  |
+| Wrong keyboard layout             | Verify `kb_layout` in `userprefs.conf`; toggle with `SUPER + SPACE`        |
+| GTK theme not applied             | Run `nwg-look` manually after logging in                                   |
+| Fonts look broken                 | Install a Nerd Font manually: `yay -S ttf-jetbrains-mono-nerd`             |
+| `yay` not found after install     | Restart your shell or run `source ~/.zshrc`                                |
+| Notifications not appearing       | They are handled by QuickShell, not dunst. Make sure QuickShell is running |
+| Want to use dunst instead?        | Run `systemctl --user unmask dunst.service` and restore its D-Bus file     |
 
 ---
 
