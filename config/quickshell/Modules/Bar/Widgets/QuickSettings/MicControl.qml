@@ -18,6 +18,12 @@ IconButton {
     onClicked: {
         micToggleProc.running = false;
         micToggleProc.running = true;
+        micNotifyProc.command = ["notify-send", "-a", "System", "-i", Constants.iconPath.replace("file://", "") + (root.muted ? "microphone-sensitivity-high.svg" : "microphone-sensitivity-muted.svg"), "Microphone", root.muted ? "Unmuted" : "Muted", "-t", "1500"];
+        micNotifyProc.running = true;
+    }
+
+    Process {
+        id: micNotifyProc
     }
 
     Process {

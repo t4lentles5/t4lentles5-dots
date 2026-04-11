@@ -391,17 +391,13 @@ CenterWindow {
                     }
 
                     IconButton {
-                        icon: "󰅂"
+                        icon: ""
                         iconSize: Constants.sizeMd
                         visible: delegateRoot.hasActions
-                        bgColor: "transparent"
                         iconColor: Colors.muted
-                        hoverColor: Colors.purple
-                        activeColor: Colors.purple
+                        hoverColor: Colors.fg
+                        activeColor: Colors.fg
                         isActive: delegateRoot.isExpanded
-                        hoverScale: 1.1
-                        width: Constants.sizeLg * 2
-                        height: Constants.sizeLg * 2
                         anchors.right: parent.right
                         anchors.rightMargin: Constants.sizeLg
                         anchors.verticalCenter: mainContent.verticalCenter

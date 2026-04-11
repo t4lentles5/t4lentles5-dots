@@ -17,6 +17,8 @@ RowLayout {
     function toggle() {
         wifiSetProc.command = ["nmcli", "radio", "wifi", root.isActive ? "off" : "on"];
         wifiSetProc.running = true;
+        wifiNotifyProc.command = ["notify-send", "-a", "System", "-i", Constants.iconPath.replace("file://", "") + (root.isActive ? "network-wireless-disconnected.svg" : "network-wireless-connected.svg"), "Wi-Fi", root.isActive ? "Disabled" : "Enabled", "-t", "1500"];
+        wifiNotifyProc.running = true;
         root.isActive = !root.isActive;
     }
 
@@ -35,6 +37,10 @@ RowLayout {
         if (!isActive)
             expanded = false;
 
+    }
+
+    Process {
+        id: wifiNotifyProc
     }
 
     Timer {

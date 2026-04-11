@@ -18,6 +18,16 @@ KEY_MAP = {
     "mouse_up": "Scroll ↑",
     "mouse:272": "LClick",
     "mouse:273": "RClick",
+    "XF86AudioRaiseVolume": "Vol ↑",
+    "XF86AudioLowerVolume": "Vol ↓",
+    "XF86AudioMute": "Mute",
+    "XF86AudioMicMute": "Mic Mute",
+    "XF86MonBrightnessUp": "Bri ↑",
+    "XF86MonBrightnessDown": "Bri ↓",
+    "XF86AudioPlay": "Play/Pause",
+    "XF86AudioNext": "Next",
+    "XF86AudioPrev": "Prev",
+    "XF86AudioStop": "Stop",
 }
 
 MOD_MAP = {
@@ -62,7 +72,7 @@ def parse_keybinds(filepath):
                 current_desc = line[2:].strip()
                 continue
 
-            m = re.match(r"^bind[em]?\s*=\s*(.+?),\s*(.+?),", line)
+            m = re.match(r"^bind[a-z]*\s*=\s*(.*?),\s*(.+?),", line)
             if not m or not current_section:
                 continue
 

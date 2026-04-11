@@ -17,6 +17,8 @@ RowLayout {
     function toggle() {
         btSetProc.command = ["bluetoothctl", "power", root.isActive ? "off" : "on"];
         btSetProc.running = true;
+        btNotifyProc.command = ["notify-send", "-a", "System", "-i", Constants.iconPath.replace("file://", "") + (root.isActive ? "preferences-system-bluetooth-inactive.svg" : "preferences-system-bluetooth-active.svg"), "Bluetooth", root.isActive ? "Disabled" : "Enabled", "-t", "1500"];
+        btNotifyProc.running = true;
         root.isActive = !root.isActive;
     }
 
@@ -51,6 +53,10 @@ RowLayout {
         if (!isActive)
             expanded = false;
 
+    }
+
+    Process {
+        id: btNotifyProc
     }
 
     Timer {
