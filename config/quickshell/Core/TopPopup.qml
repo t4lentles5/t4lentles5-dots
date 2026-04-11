@@ -14,7 +14,7 @@ PopupWindow {
     property int contentPadding: Constants.sizeLg
     default property alias content: innerLayout.data
     property int preferredHeight
-    property int animationDuration: 300
+    property int animationDuration: Constants.animNormal
     property color backgroundColor: Colors.bg
     property bool animateHeight: false
     property bool _windowVisible: false
@@ -198,18 +198,16 @@ PopupWindow {
 
                         Behavior on x {
                             NumberAnimation {
-                                duration: root.isOpen ? root.animationDuration : 250
-                                easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
-                                easing.overshoot: 0.4
+                                duration: root.animationDuration
+                                easing.type: root.isOpen ? Easing.OutCubic : Easing.InCubic
                             }
 
                         }
 
                         Behavior on y {
                             NumberAnimation {
-                                duration: root.isOpen ? root.animationDuration : 250
-                                easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
-                                easing.overshoot: 0.4
+                                duration: root.animationDuration
+                                easing.type: root.isOpen ? Easing.OutCubic : Easing.InCubic
                             }
 
                         }
@@ -222,18 +220,16 @@ PopupWindow {
 
             Behavior on x {
                 NumberAnimation {
-                    duration: root.isOpen ? root.animationDuration : 250
-                    easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
-                    easing.overshoot: 0.4
+                    duration: root.animationDuration
+                    easing.type: root.isOpen ? Easing.OutCubic : Easing.InCubic
                 }
 
             }
 
             Behavior on y {
                 NumberAnimation {
-                    duration: root.isOpen ? root.animationDuration : 250
-                    easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
-                    easing.overshoot: 0.4
+                    duration: root.animationDuration
+                    easing.type: root.isOpen ? Easing.OutCubic : Easing.InCubic
                 }
 
             }
@@ -242,9 +238,8 @@ PopupWindow {
 
         Behavior on height {
             NumberAnimation {
-                duration: root.isOpen ? root.animationDuration : 250
-                easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
-                easing.overshoot: 0.4
+                duration: root.animationDuration
+                easing.type: root.isOpen ? Easing.OutCubic : Easing.InCubic
             }
 
         }

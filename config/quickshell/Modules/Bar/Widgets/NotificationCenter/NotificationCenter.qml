@@ -1,3 +1,4 @@
+import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -63,8 +64,8 @@ TopPopup {
 
             IconButton {
                 icon: (notificationService && notificationService.dndEnabled) ? "󰂛" : "󰂚"
-                iconColor: Colors.blue
-                hoverColor: Colors.blue
+                iconColor: (notificationService && notificationService.dndEnabled) ? Colors.muted : Colors.blue
+                hoverColor: (notificationService && notificationService.dndEnabled) ? Colors.muted : Colors.blue
                 iconSize: Constants.sizeMd
                 onClicked: {
                     if (notificationService)
@@ -125,6 +126,16 @@ TopPopup {
                         model: notificationService ? notificationService.historyList : null
                         spacing: Constants.sizeXs
 
+                        add: Transition {
+                            NumberAnimation {
+                                property: "opacity"
+                                from: 0
+                                to: 1
+                                duration: root.visible ? Constants.animSlow : 0
+                            }
+
+                        }
+
                         remove: Transition {
                             NumberAnimation {
                                 property: "x"
@@ -133,20 +144,35 @@ TopPopup {
                                 easing.type: Easing.InExpo
                             }
 
+                            NumberAnimation {
+                                property: "opacity"
+                                to: 0
+                                duration: Constants.animSlow
+                            }
+
                         }
 
-                        displaced: Transition {
+                        removeDisplaced: Transition {
                             SequentialAnimation {
                                 PauseAnimation {
                                     duration: Constants.animSlow
                                 }
 
                                 NumberAnimation {
-                                    properties: "x,y"
+                                    properties: "y"
                                     duration: Constants.animSlow
                                     easing.type: Easing.OutExpo
                                 }
 
+                            }
+
+                        }
+
+                        addDisplaced: Transition {
+                            NumberAnimation {
+                                properties: "y"
+                                duration: root.visible ? Constants.animSlow : 0
+                                easing.type: Easing.OutExpo
                             }
 
                         }
@@ -157,45 +183,68 @@ TopPopup {
                             property bool expanded: false
 
                             width: ListView.view.width
-                            height: delegateLayout.implicitHeight + Constants.sizeLg * 2
-                            color: Colors.bgSecondary
-                            radius: Constants.sizeXs
+                            height: delegateLayout.implicitHeight + Constants.sizeSm * 2
+                            color: Colors.bg
+                            radius: 12
                             border.width: 1
-                            border.color: Colors.muted
+                            border.color: delegateMouseArea.containsMouse ? Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.4) : Colors.border
+
+                            MouseArea {
+                                id: delegateMouseArea
+
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                acceptedButtons: Qt.NoButton
+                            }
 
                             RowLayout {
                                 id: delegateLayout
 
                                 anchors.fill: parent
-                                anchors.leftMargin: Constants.sizeSm
-                                anchors.rightMargin: Constants.sizeSm
-                                anchors.topMargin: Constants.sizeSm
-                                anchors.bottomMargin: Constants.sizeSm
+                                anchors.margins: Constants.sizeSm
                                 spacing: Constants.sizeSm
 
-                                Image {
-                                    id: notifImage
-
+                                Rectangle {
                                     Layout.alignment: Qt.AlignTop
                                     Layout.topMargin: 4
                                     Layout.preferredWidth: 40
                                     Layout.preferredHeight: 40
-                                    source: {
-                                        if (model.image)
-                                            return model.image;
+                                    color: "transparent"
 
-                                        if (model.icon) {
-                                            const ico = model.icon.toString();
-                                            if (ico.startsWith("/") || ico.startsWith("file://") || ico.startsWith("image://"))
-                                                return ico;
+                                    Image {
+                                        id: notifImage
 
-                                            return "image://icon/" + ico + "?fallback=dialog-information";
+                                        anchors.fill: parent
+                                        source: {
+                                            if (model.image)
+                                                return model.image;
+
+                                            if (model.icon) {
+                                                const ico = model.icon.toString();
+                                                if (ico.startsWith("/") || ico.startsWith("file://") || ico.startsWith("image://"))
+                                                    return ico;
+
+                                                return "image://icon/" + ico + "?fallback=dialog-information";
+                                            }
+                                            return Constants.fallbackIcon;
                                         }
-                                        return "";
+                                        visible: false
+                                        fillMode: Image.PreserveAspectCrop
                                     }
-                                    visible: source.toString() !== ""
-                                    fillMode: Image.PreserveAspectCrop
-                                    opacity: 1
+
+                                    OpacityMask {
+                                        anchors.fill: parent
+                                        source: notifImage
+                                        visible: notifImage.source.toString() !== ""
+
+                                        maskSource: Rectangle {
+                                            width: notifImage.width
+                                            height: notifImage.height
+                                            radius: 8
+                                        }
+
+                                    }
+
                                 }
 
                                 ColumnLayout {
@@ -209,6 +258,7 @@ TopPopup {
 
                                         ThemedText {
                                             text: model.summary
+                                            color: Colors.cyan
                                             font.pixelSize: Constants.sizeSm
                                             font.weight: Font.Medium
                                             elide: Text.ElideRight
@@ -258,7 +308,8 @@ TopPopup {
                                         id: bodyText
 
                                         text: model.body
-                                        color: Colors.muted
+                                        color: Colors.fg
+                                        opacity: 0.7
                                         font.pixelSize: Constants.sizeSm - 2
                                         wrapMode: Text.Wrap
                                         Layout.fillWidth: true

@@ -7,7 +7,7 @@ Rectangle {
     id: root
 
     property bool expanded: false
-    property bool enabled: false
+    property bool isActive: false
     property var wifiList: []
     property bool timedOut: false
 

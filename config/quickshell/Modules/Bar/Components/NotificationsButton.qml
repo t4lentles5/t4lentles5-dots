@@ -18,7 +18,7 @@ BarButton {
         width: 6
         height: 6
         radius: 3
-        color: Colors.red
+        color: (notificationService && notificationService.dndEnabled) ? Colors.muted : Colors.red
         visible: notificationService && notificationService.unreadCount > 0
     }
 

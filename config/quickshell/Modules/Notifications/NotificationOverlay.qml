@@ -61,9 +61,11 @@ PanelWindow {
                 }
 
                 width: notificationContainer.width
-                height: layout.implicitHeight + Constants.sizeLg * 2
+                height: layout.implicitHeight + Constants.sizeLg * 2 + 4
                 color: Colors.bg
-                radius: Constants.sizeXs
+                radius: 12
+                border.color: mainMouseArea.containsMouse ? Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.4) : Colors.border
+                border.width: 1
                 layer.enabled: true
                 opacity: 1
                 Component.onCompleted: {
@@ -111,31 +113,56 @@ PanelWindow {
                 RowLayout {
                     id: layout
 
-                    anchors.fill: parent
-                    anchors.margins: Constants.sizeLg
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.topMargin: Constants.sizeLg
+                    anchors.leftMargin: Constants.sizeLg
+                    anchors.rightMargin: Constants.sizeLg
                     spacing: Constants.sizeLg
 
-                    Image {
+                    Rectangle {
                         Layout.alignment: Qt.AlignTop
                         Layout.topMargin: 4
                         Layout.preferredWidth: 48
                         Layout.preferredHeight: 48
-                        source: {
-                            if (model.image)
-                                return model.image;
+                        color: "transparent"
 
-                            if (model.icon) {
-                                let iconStr = model.icon.toString();
-                                if (iconStr.startsWith("/") || iconStr.startsWith("file://") || iconStr.startsWith("image://"))
-                                    return iconStr;
+                        Image {
+                            id: notifImage
 
-                                return "image://icon/" + iconStr + "?fallback=dialog-information";
+                            anchors.fill: parent
+                            source: {
+                                if (model.image)
+                                    return model.image;
+
+                                if (model.icon) {
+                                    let iconStr = model.icon.toString();
+                                    if (iconStr.startsWith("/") || iconStr.startsWith("file://") || iconStr.startsWith("image://"))
+                                        return iconStr;
+
+                                    return "image://icon/" + iconStr + "?fallback=dialog-information";
+                                }
+                                return Constants.fallbackIcon;
                             }
-                            return "";
+                            sourceSize: Qt.size(48, 48)
+                            visible: false
+                            fillMode: Image.PreserveAspectCrop
                         }
-                        sourceSize: Qt.size(48, 48)
-                        visible: source.toString() !== ""
-                        fillMode: Image.PreserveAspectCrop
+
+                        OpacityMask {
+                            anchors.fill: parent
+                            source: notifImage
+                            visible: notifImage.source.toString() !== ""
+
+                            maskSource: Rectangle {
+                                width: notifImage.width
+                                height: notifImage.height
+                                radius: 8
+                            }
+
+                        }
+
                     }
 
                     ColumnLayout {
@@ -150,6 +177,7 @@ PanelWindow {
                             ThemedText {
                                 Layout.fillWidth: true
                                 text: model.summary
+                                color: Colors.cyan
                                 font.pixelSize: Constants.sizeMd
                                 font.bold: true
                                 wrapMode: Text.Wrap
@@ -161,8 +189,8 @@ PanelWindow {
                                 Layout.fillWidth: true
                                 text: model.body
                                 wrapMode: Text.Wrap
-                                opacity: 0.8
-                                maximumLineCount: toastRect.expanded ? 100 : 3
+                                opacity: 0.7
+                                maximumLineCount: toastRect.expanded ? 100 : 2
                                 elide: Text.ElideRight
                             }
 
@@ -177,7 +205,9 @@ PanelWindow {
                             Rectangle {
                                 Layout.preferredWidth: 80
                                 Layout.preferredHeight: 28
-                                color: acceptMouse.containsMouse ? Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.1) : Colors.bgSecondary
+                                color: acceptMouse.containsMouse ? Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.15) : Colors.bgSecondary
+                                border.color: acceptMouse.containsMouse ? Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.4) : Colors.border
+                                border.width: 1
                                 radius: Constants.sizeXs
 
                                 ThemedText {
@@ -207,7 +237,9 @@ PanelWindow {
                             Rectangle {
                                 Layout.preferredWidth: 80
                                 Layout.preferredHeight: 28
-                                color: cancelMouse.containsMouse ? Qt.rgba(Colors.red.r, Colors.red.g, Colors.red.b, 0.1) : Colors.bgSecondary
+                                color: cancelMouse.containsMouse ? Qt.rgba(Colors.red.r, Colors.red.g, Colors.red.b, 0.15) : Colors.bgSecondary
+                                border.color: cancelMouse.containsMouse ? Qt.rgba(Colors.red.r, Colors.red.g, Colors.red.b, 0.4) : Colors.border
+                                border.width: 1
                                 radius: Constants.sizeXs
 
                                 ThemedText {
@@ -260,15 +292,21 @@ PanelWindow {
                     id: progressTrack
 
                     anchors.bottom: parent.bottom
-                    width: parent.width
-                    height: 2
-                    color: Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.1)
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottomMargin: 0
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 12
+                    height: 4
+                    radius: 2
+                    color: Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.15)
                     visible: true
 
                     Rectangle {
                         id: progressBar
 
                         height: parent.height
+                        radius: 2
                         color: Colors.purple
                         width: parent.width
 

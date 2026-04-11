@@ -32,15 +32,15 @@ BarButton {
             let body = "";
             let icon = "";
             if (batteryStatus === "Charging") {
-                summary = "󰂄 Battery";
+                summary = "Battery";
                 body = "Charger connected";
                 icon = Constants.iconPath + "battery-good-charging.svg";
             } else if (batteryStatus === "Discharging") {
-                summary = "󰂃 Battery";
+                summary = "Battery";
                 body = "Charger disconnected";
                 icon = Constants.iconPath + "battery-good.svg";
             } else if (batteryStatus === "Full") {
-                summary = "󰁹 Battery";
+                summary = "Battery";
                 body = "Battery fully charged";
                 icon = Constants.iconPath + "battery-full.svg";
             }
@@ -63,7 +63,7 @@ BarButton {
             else if (batteryLevel <= 20 && _prevLevel > 20)
                 threshold = 20;
             if (threshold > 0 && notificationService)
-                notificationService.notify("󰂃 Low Battery", "Battery level: " + batteryLevel + "%", Constants.iconPath + "battery-caution.svg");
+                notificationService.notify("Low Battery", "Battery level: " + batteryLevel + "%", Constants.iconPath + "battery-caution.svg");
 
         }
         _prevLevel = batteryLevel;
@@ -84,6 +84,24 @@ BarButton {
                 if (data && data.trim() !== "") {
                     root.batPath = "/sys/class/power_supply/" + data.trim();
                     updateTimer.start();
+                    udevMonitor.running = true;
+                }
+            }
+        }
+
+    }
+
+    Process {
+        id: udevMonitor
+
+        running: false
+        command: ["stdbuf", "-oL", "udevadm", "monitor", "-k", "-s", "power_supply"]
+
+        stdout: SplitParser {
+            onRead: (data) => {
+                if (data && root.batPath !== "") {
+                    batLevelProc.running = true;
+                    batStatusProc.running = true;
                 }
             }
         }
@@ -93,7 +111,7 @@ BarButton {
     Timer {
         id: updateTimer
 
-        interval: 5000
+        interval: 10000
         running: false
         repeat: true
         triggeredOnStart: true

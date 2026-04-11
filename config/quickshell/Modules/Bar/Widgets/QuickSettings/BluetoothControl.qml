@@ -10,18 +10,18 @@ RowLayout {
     id: root
 
     property bool expanded: false
-    property bool enabled: false
+    property bool isActive: false
     property var btList: []
     property var _tempBtList: []
 
     function toggle() {
-        btSetProc.command = ["bluetoothctl", "power", root.enabled ? "off" : "on"];
+        btSetProc.command = ["bluetoothctl", "power", root.isActive ? "off" : "on"];
         btSetProc.running = true;
-        root.enabled = !root.enabled;
+        root.isActive = !root.isActive;
     }
 
     function scan() {
-        if (root.expanded && root.enabled) {
+        if (root.expanded && root.isActive) {
             if (!btScanProc.running)
                 btScanProc.running = true;
 
@@ -34,21 +34,21 @@ RowLayout {
     }
 
     onExpandedChanged: {
-        if (expanded && enabled) {
+        if (expanded && isActive) {
             btDiscoveryProc.running = true;
             scan();
         } else {
             btDiscoveryProc.running = false;
         }
     }
-    onEnabledChanged: {
-        if (expanded && enabled) {
+    onIsActiveChanged: {
+        if (expanded && isActive) {
             btDiscoveryProc.running = true;
             scan();
         } else {
             btDiscoveryProc.running = false;
         }
-        if (!enabled)
+        if (!isActive)
             expanded = false;
 
     }
@@ -78,9 +78,9 @@ RowLayout {
 
                 let cleanData = data.replace(/\u001b\[[0-9;]*m/g, "");
                 if (cleanData.includes("Powered: yes"))
-                    root.enabled = true;
+                    root.isActive = true;
                 else if (cleanData.includes("Powered: no"))
-                    root.enabled = false;
+                    root.isActive = false;
             }
         }
 
@@ -166,10 +166,10 @@ RowLayout {
             IconButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                icon: root.enabled ? "󰂯" : "󰂲"
+                icon: root.isActive ? "󰂯" : "󰂲"
                 iconSize: Constants.sizeXl
-                iconColor: root.enabled ? Colors.blue : Colors.muted
-                hoverColor: root.enabled ? Colors.blue : Colors.muted
+                iconColor: root.isActive ? Colors.blue : Colors.muted
+                hoverColor: root.isActive ? Colors.blue : Colors.muted
                 bgColor: "transparent"
                 onClicked: root.toggle()
             }
@@ -181,17 +181,17 @@ RowLayout {
                 Layout.bottomMargin: Constants.sizeXs
                 color: Colors.muted
                 opacity: 0.3
-                visible: root.enabled
+                visible: root.isActive
             }
 
             IconButton {
                 icon: root.expanded ? "" : ""
                 iconSize: Constants.sizeMd
                 hoverColor: Colors.purple
-                visible: root.enabled
+                visible: root.isActive
                 bgColor: "transparent"
                 onClicked: {
-                    if (root.enabled)
+                    if (root.isActive)
                         root.expanded = !root.expanded;
 
                 }

@@ -12,7 +12,8 @@ PanelWindow {
     property string popupId: ""
     property bool isOpen: false
     default property alias content: innerLayout.data
-    property int animationDuration: 500
+    property int animationDuration: 450
+    property int fadeDuration: 280
     property color backgroundColor: Colors.bg
     property int preferredWidth: 600
     property int preferredHeight: 500
@@ -123,18 +124,18 @@ PanelWindow {
                 enabled: root.height > 0
 
                 NumberAnimation {
-                    duration: root.isOpen ? root.animationDuration : 250
-                    easing.type: root.isOpen ? Easing.OutBack : Easing.InOutQuad
-                    easing.overshoot: 0.4
+                    duration: root.animationDuration
+                    easing.type: Easing.Bezier
+                    easing.bezierCurve: root.isOpen ? [0.13, 0.99, 0.29, 1.05, 1, 1] : [0.25, 0.1, 0.25, 1, 1, 1]
                 }
 
             }
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: 300
+                    duration: root.fadeDuration
                     easing.type: Easing.Bezier
-                    easing.bezierCurve: [0.25, 0.1, 0.25, 1]
+                    easing.bezierCurve: [0.25, 0.1, 0.25, 1, 1, 1]
                 }
 
             }

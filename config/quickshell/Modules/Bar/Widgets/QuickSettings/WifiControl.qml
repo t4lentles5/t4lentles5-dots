@@ -10,14 +10,14 @@ RowLayout {
     id: root
 
     property bool expanded: false
-    property bool enabled: false
+    property bool isActive: false
     property var wifiList: []
     property var _tempWifiList: []
 
     function toggle() {
-        wifiSetProc.command = ["nmcli", "radio", "wifi", root.enabled ? "off" : "on"];
+        wifiSetProc.command = ["nmcli", "radio", "wifi", root.isActive ? "off" : "on"];
         wifiSetProc.running = true;
-        root.enabled = !root.enabled;
+        root.isActive = !root.isActive;
     }
 
     function scan() {
@@ -31,8 +31,8 @@ RowLayout {
         wifiConnectProc.running = true;
     }
 
-    onEnabledChanged: {
-        if (!enabled)
+    onIsActiveChanged: {
+        if (!isActive)
             expanded = false;
 
     }
@@ -58,7 +58,7 @@ RowLayout {
         stdout: SplitParser {
             onRead: (data) => {
                 if (data)
-                    root.enabled = (data.trim() === "enabled");
+                    root.isActive = (data.trim() === "enabled");
 
             }
         }
@@ -143,10 +143,10 @@ RowLayout {
             IconButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                icon: root.enabled ? "󰤨" : "󰤭"
+                icon: root.isActive ? "󰤨" : "󰤭"
                 iconSize: Constants.sizeXl
-                iconColor: root.enabled ? Colors.purple : Colors.muted
-                hoverColor: root.enabled ? Colors.purple : Colors.muted
+                iconColor: root.isActive ? Colors.purple : Colors.muted
+                hoverColor: root.isActive ? Colors.purple : Colors.muted
                 bgColor: "transparent"
                 onClicked: root.toggle()
             }
@@ -158,17 +158,17 @@ RowLayout {
                 Layout.bottomMargin: Constants.sizeXs
                 color: Colors.muted
                 opacity: 0.3
-                visible: root.enabled
+                visible: root.isActive
             }
 
             IconButton {
                 icon: root.expanded ? "" : ""
                 iconSize: Constants.sizeMd
                 hoverColor: Colors.purple
-                visible: root.enabled
+                visible: root.isActive
                 bgColor: "transparent"
                 onClicked: {
-                    if (root.enabled)
+                    if (root.isActive)
                         root.expanded = !root.expanded;
 
                 }

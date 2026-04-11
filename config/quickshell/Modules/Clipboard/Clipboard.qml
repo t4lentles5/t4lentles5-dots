@@ -102,6 +102,7 @@ CenterWindow {
     preferredHeight: 480
     preferredWidth: 600
     onPopupOpened: {
+        clipboardView.currentIndex = -1;
         focusTimer.start();
         searchField.text = "";
         loadClipboardProc.running = true;
@@ -337,6 +338,28 @@ CenterWindow {
                     }
                 }
 
+                add: Transition {
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: root.isOpen ? Constants.animNormal : 0
+                        easing.type: Easing.OutQuint
+                    }
+
+                }
+
+                populate: Transition {
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: root.isOpen ? Constants.animNormal : 0
+                        easing.type: Easing.OutQuint
+                    }
+
+                }
+
                 remove: Transition {
                     NumberAnimation {
                         property: "x"
@@ -345,16 +368,22 @@ CenterWindow {
                         easing.type: Easing.InExpo
                     }
 
+                    NumberAnimation {
+                        property: "opacity"
+                        to: 0
+                        duration: Constants.animSlow
+                    }
+
                 }
 
-                displaced: Transition {
+                removeDisplaced: Transition {
                     SequentialAnimation {
                         PauseAnimation {
                             duration: Constants.animSlow
                         }
 
                         NumberAnimation {
-                            properties: "x,y"
+                            properties: "y"
                             duration: Constants.animSlow
                             easing.type: Easing.OutExpo
                         }
@@ -363,24 +392,11 @@ CenterWindow {
 
                 }
 
-                add: Transition {
+                addDisplaced: Transition {
                     NumberAnimation {
-                        properties: "opacity"
-                        from: 0
-                        to: 1
-                        duration: Constants.animNormal
-                        easing.type: Easing.OutQuint
-                    }
-
-                }
-
-                populate: Transition {
-                    NumberAnimation {
-                        properties: "opacity"
-                        from: 0
-                        to: 1
-                        duration: Constants.animNormal
-                        easing.type: Easing.OutQuint
+                        properties: "y"
+                        duration: root.isOpen ? Constants.animSlow : 0
+                        easing.type: Easing.OutExpo
                     }
 
                 }

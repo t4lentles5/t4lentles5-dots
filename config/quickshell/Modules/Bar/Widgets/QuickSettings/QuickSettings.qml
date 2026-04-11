@@ -13,7 +13,6 @@ TopPopup {
         wifiControl.expanded = false;
         btControl.expanded = false;
     }
-
     implicitWidth: mainCol.implicitWidth + Constants.sizeLg * 2
     implicitHeight: mainCol.implicitHeight + Constants.sizeLg * 2
 
@@ -79,7 +78,7 @@ TopPopup {
             WifiList {
                 Layout.fillWidth: true
                 expanded: wifiControl.expanded
-                enabled: wifiControl.enabled
+                isActive: wifiControl.isActive
                 wifiList: wifiControl.wifiList
                 onConnect: (ssid) => {
                     return wifiControl.connect(ssid);
@@ -89,7 +88,7 @@ TopPopup {
             BluetoothList {
                 Layout.fillWidth: true
                 expanded: btControl.expanded
-                enabled: btControl.enabled
+                isActive: btControl.isActive
                 btList: btControl.btList
                 onConnect: (mac) => {
                     return btControl.connect(mac);
