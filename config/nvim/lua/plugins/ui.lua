@@ -4,7 +4,7 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme = "tokyonight",
+        theme = "auto",
         section_separators = { left = "", right = "" },
         component_separators = { left = "", right = "" },
         globalstatus = true,
@@ -143,7 +143,17 @@ return {
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
         pattern = {
-          "help", "alpha", "dashboard", "neo-tree", "Trouble", "trouble", "lazy", "mason", "notify", "toggleterm", "lazyterm",
+          "help",
+          "alpha",
+          "dashboard",
+          "neo-tree",
+          "Trouble",
+          "trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
         },
         callback = function()
           vim.b.miniindentscope_disable = true
@@ -214,7 +224,7 @@ return {
       dashboard.section.buttons.val = {
         dashboard.button("f", "  Find file", ":Telescope find_files <CR>"),
         dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
-        dashboard.button("r", "  Recent files", ":Telescope oldfiles <CR>"),
+        dashboard.button("r", "  Recent files", ":Telescope oldfiles <CR>"),
         dashboard.button("g", "  Find text", ":Telescope live_grep <CR>"),
         dashboard.button("c", "  Config", ":e $MYVIMRC <CR>"),
         dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),

@@ -6,10 +6,10 @@ Rectangle {
 
     property string icon: ""
     property int iconSize: Constants.sizeLg
-    property color bgColor: Colors.bgSecondary
-    property color iconColor: Colors.fg
-    property color activeColor: Colors.purple
-    property color hoverColor: Colors.purple
+    property color bgColor: Theme.bgSecondary
+    property color iconColor: Theme.fg
+    property color activeColor: Theme.purple
+    property color hoverColor: Theme.purple
     property bool isActive: false
     property bool useText: true
     property real hoverScale: 1.2

@@ -15,5 +15,6 @@ QtObject {
     property int animFast: 150
     property int animNormal: 250
     property int animSlow: 350
+    property int wallpaperTransitionDelay: 1500
     property string fallbackIcon: iconActionsPath + "notifications.svg"
 }

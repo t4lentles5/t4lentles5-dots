@@ -184,7 +184,7 @@ TopPopup {
         Rectangle {
             Layout.preferredWidth: headerContent.implicitWidth + (Constants.sizeLg * 2)
             Layout.preferredHeight: headerContent.implicitHeight + (Constants.sizeLg * 2)
-            color: Colors.bgSecondary
+            color: Theme.bgSecondary
             radius: Constants.sizeXs
             Layout.fillWidth: true
 
@@ -213,7 +213,7 @@ TopPopup {
 
                             ThemedText {
                                 text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
-                                color: Colors.purple
+                                color: Theme.purple
                                 font.pixelSize: Constants.sizeSm
                                 font.bold: true
                                 font.capitalization: Font.Capitalize
@@ -221,7 +221,7 @@ TopPopup {
 
                             ThemedText {
                                 text: root.currentYear
-                                color: Colors.muted
+                                color: Theme.muted
                                 font.pixelSize: Constants.sizeSm
                                 font.bold: true
                             }
@@ -250,7 +250,7 @@ TopPopup {
 
                         IconButton {
                             icon: "󰃭"
-                            iconColor: Colors.purple
+                            iconColor: Theme.purple
                             onClicked: root.jumpToToday()
                         }
 
@@ -272,7 +272,7 @@ TopPopup {
 
             Layout.preferredWidth: gridContainer.implicitWidth + Constants.sizeLg * 2
             Layout.preferredHeight: gridContainer.implicitHeight + Constants.sizeLg * 2
-            color: Colors.bgSecondary
+            color: Theme.bgSecondary
             radius: Constants.sizeXs
 
             ColumnLayout {
@@ -292,7 +292,7 @@ TopPopup {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                             text: modelData
-                            color: index === 0 || index === 6 ? Colors.red : Colors.cyan
+                            color: index === 0 || index === 6 ? Theme.red : Theme.cyan
                             font.pixelSize: Constants.sizeSm
                             font.bold: true
                         }
@@ -338,12 +338,12 @@ TopPopup {
                             Layout.preferredWidth: Constants.sizeSm * 2
                             Layout.preferredHeight: Constants.sizeSm * 2
                             radius: Constants.sizeSm
-                            color: isToday ? Colors.purple : (isCurrentMonth && dayHover.containsMouse ? Colors.bgSecondary : "transparent")
+                            color: isToday ? Theme.purple : (isCurrentMonth && dayHover.containsMouse ? Theme.bgSecondary : "transparent")
 
                             ThemedText {
                                 anchors.centerIn: parent
                                 text: isCurrentMonth ? dayNum : ""
-                                color: isToday ? Colors.bg : (isCurrentMonth ? Colors.fg : "transparent")
+                                color: isToday ? Theme.bg : (isCurrentMonth ? Theme.fg : "transparent")
                                 font.pixelSize: Constants.sizeSm
                                 font.bold: isToday
                             }
@@ -383,7 +383,7 @@ TopPopup {
         RowLayout {
             ThemedText {
                 text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
-                color: Colors.cyan
+                color: Theme.cyan
                 font.pixelSize: Constants.sizeSm
                 font.bold: true
                 font.capitalization: Font.Capitalize
@@ -394,12 +394,12 @@ TopPopup {
                 width: 6
                 height: 6
                 radius: 3
-                color: Colors.green
+                color: Theme.green
             }
 
             ThemedText {
                 text: "Today"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: Constants.sizeSm
             }
 

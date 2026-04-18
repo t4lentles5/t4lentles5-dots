@@ -62,9 +62,9 @@ PanelWindow {
 
                 width: notificationContainer.width
                 height: layout.implicitHeight + Constants.sizeLg * 2 + 4
-                color: Colors.bg
-                radius: 12
-                border.color: mainMouseArea.containsMouse ? Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.4) : Colors.border
+                color: Theme.bg
+                radius: Constants.sizeSm
+                border.color: mainMouseArea.containsMouse ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.4) : Theme.border
                 border.width: 1
                 layer.enabled: true
                 opacity: 1
@@ -107,7 +107,7 @@ PanelWindow {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: toastRect.closeNotification()
-                    onExited: toastRect.color = Colors.bg
+                    onExited: toastRect.color = Theme.bg
                 }
 
                 RowLayout {
@@ -177,7 +177,7 @@ PanelWindow {
                             ThemedText {
                                 Layout.fillWidth: true
                                 text: model.summary
-                                color: Colors.cyan
+                                color: Theme.cyan
                                 font.pixelSize: Constants.sizeMd
                                 font.bold: true
                                 wrapMode: Text.Wrap
@@ -205,15 +205,15 @@ PanelWindow {
                             Rectangle {
                                 Layout.preferredWidth: 80
                                 Layout.preferredHeight: 28
-                                color: acceptMouse.containsMouse ? Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.15) : Colors.bgSecondary
-                                border.color: acceptMouse.containsMouse ? Qt.rgba(Colors.green.r, Colors.green.g, Colors.green.b, 0.4) : Colors.border
+                                color: acceptMouse.containsMouse ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : Theme.bgSecondary
+                                border.color: acceptMouse.containsMouse ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.4) : Theme.border
                                 border.width: 1
                                 radius: Constants.sizeXs
 
                                 ThemedText {
                                     anchors.centerIn: parent
                                     text: "Accept"
-                                    color: Colors.green
+                                    color: Theme.green
                                     font.bold: true
                                     font.pixelSize: Constants.sizeSm
                                 }
@@ -237,15 +237,15 @@ PanelWindow {
                             Rectangle {
                                 Layout.preferredWidth: 80
                                 Layout.preferredHeight: 28
-                                color: cancelMouse.containsMouse ? Qt.rgba(Colors.red.r, Colors.red.g, Colors.red.b, 0.15) : Colors.bgSecondary
-                                border.color: cancelMouse.containsMouse ? Qt.rgba(Colors.red.r, Colors.red.g, Colors.red.b, 0.4) : Colors.border
+                                color: cancelMouse.containsMouse ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15) : Theme.bgSecondary
+                                border.color: cancelMouse.containsMouse ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.4) : Theme.border
                                 border.width: 1
                                 radius: Constants.sizeXs
 
                                 ThemedText {
                                     anchors.centerIn: parent
                                     text: "Cancel"
-                                    color: Colors.red
+                                    color: Theme.red
                                     font.bold: true
                                     font.pixelSize: Constants.sizeSm
                                 }
@@ -281,8 +281,8 @@ PanelWindow {
                     icon: toastRect.expanded ? "" : ""
                     iconSize: Constants.sizeMd
                     visible: bodyText.truncated || toastRect.expanded
-                    hoverColor: Colors.fg
-                    iconColor: Colors.muted
+                    hoverColor: Theme.fg
+                    iconColor: Theme.muted
                     onClicked: {
                         toastRect.expanded = !toastRect.expanded;
                     }
@@ -295,11 +295,11 @@ PanelWindow {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottomMargin: 0
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
+                    anchors.leftMargin: Constants.sizeSm
+                    anchors.rightMargin: Constants.sizeSm
                     height: 4
                     radius: 2
-                    color: Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.15)
+                    color: Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.15)
                     visible: true
 
                     Rectangle {
@@ -307,7 +307,7 @@ PanelWindow {
 
                         height: parent.height
                         radius: 2
-                        color: Colors.purple
+                        color: Theme.purple
                         width: parent.width
 
                         NumberAnimation on width {

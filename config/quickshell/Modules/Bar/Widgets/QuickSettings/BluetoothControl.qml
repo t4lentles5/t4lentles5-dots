@@ -159,7 +159,7 @@ RowLayout {
 
             anchors.fill: parent
             radius: Constants.sizeLg
-            color: Colors.bgSecondary
+            color: Theme.bgSecondary
         }
 
         RowLayout {
@@ -174,8 +174,8 @@ RowLayout {
                 Layout.fillHeight: true
                 icon: root.isActive ? "󰂯" : "󰂲"
                 iconSize: Constants.sizeXl
-                iconColor: root.isActive ? Colors.blue : Colors.muted
-                hoverColor: root.isActive ? Colors.blue : Colors.muted
+                iconColor: root.isActive ? Theme.blue : Theme.muted
+                hoverColor: root.isActive ? Theme.blue : Theme.muted
                 bgColor: "transparent"
                 onClicked: root.toggle()
             }
@@ -185,7 +185,7 @@ RowLayout {
                 Layout.fillHeight: true
                 Layout.topMargin: Constants.sizeXs
                 Layout.bottomMargin: Constants.sizeXs
-                color: Colors.muted
+                color: Theme.muted
                 opacity: 0.3
                 visible: root.isActive
             }
@@ -193,7 +193,7 @@ RowLayout {
             IconButton {
                 icon: root.expanded ? "" : ""
                 iconSize: Constants.sizeMd
-                hoverColor: Colors.purple
+                hoverColor: Theme.purple
                 visible: root.isActive
                 bgColor: "transparent"
                 onClicked: {

@@ -40,7 +40,7 @@ Item {
 
                     Layout.fillWidth: true
                     Layout.preferredHeight: modelData.isSeparator ? 1 : 32
-                    color: itemMouseArea.containsMouse ? Colors.bgSecondary : "transparent"
+                    color: itemMouseArea.containsMouse ? Theme.bgSecondary : "transparent"
                     radius: Constants.sizeXs
                     visible: (modelData.text !== "" || modelData.isSeparator)
 
@@ -59,21 +59,21 @@ Item {
                         ThemedText {
                             Layout.fillWidth: true
                             text: modelData.text
-                            color: modelData.enabled ? Colors.fg : Colors.muted
+                            color: modelData.enabled ? Theme.fg : Theme.muted
                             font.pixelSize: Constants.sizeSm
                         }
 
                         ThemedText {
                             text: ""
                             visible: modelData.checkState === Qt.Checked
-                            color: Colors.green
+                            color: Theme.green
                             font.pixelSize: Constants.sizeXs
                         }
 
                         ThemedText {
                             text: "󰅂"
                             visible: modelData.hasChildren
-                            color: Colors.muted
+                            color: Theme.muted
                             font.pixelSize: Constants.sizeXs
                         }
 
@@ -81,7 +81,7 @@ Item {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: Colors.border
+                        color: Theme.border
                         visible: modelData.isSeparator
                     }
 

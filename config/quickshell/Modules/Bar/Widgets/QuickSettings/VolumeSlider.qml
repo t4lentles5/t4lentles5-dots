@@ -27,7 +27,7 @@ RowLayout {
 
             return "󰕾";
         }
-        color: root.muted ? Colors.border : Colors.blue
+        color: root.muted ? Theme.border : Theme.blue
         font.pixelSize: Constants.sizeMd
         Layout.preferredWidth: Constants.sizeXl
         horizontalAlignment: Text.AlignHCenter
@@ -60,12 +60,12 @@ RowLayout {
             width: volSlider.availableWidth
             height: implicitHeight
             radius: 2
-            color: Colors.border
+            color: Theme.border
 
             Rectangle {
                 width: Math.max(height, volSlider.visualPosition * parent.width)
                 height: parent.height
-                color: root.muted ? Colors.border : Colors.blue
+                color: root.muted ? Theme.border : Theme.blue
                 radius: 2
 
                 Behavior on opacity {
@@ -85,7 +85,7 @@ RowLayout {
             implicitWidth: Constants.sizeSm
             implicitHeight: Constants.sizeSm
             radius: 6
-            color: root.muted ? Colors.border : Colors.blue
+            color: root.muted ? Theme.border : Theme.blue
             border.color: Qt.darker(color, 1.2)
             border.width: 1
 
@@ -109,7 +109,7 @@ RowLayout {
 
     ThemedText {
         text: root.muted ? "muted" : root.volume + "%"
-        color: root.muted ? Colors.border : Colors.fg
+        color: root.muted ? Theme.border : Theme.fg
         font.pixelSize: Constants.sizeSm
         Layout.preferredWidth: 28
         horizontalAlignment: Text.AlignRight

@@ -15,7 +15,7 @@ PopupWindow {
     default property alias content: innerLayout.data
     property int preferredHeight
     property int animationDuration: 300
-    property color backgroundColor: Colors.bg
+    property color backgroundColor: Theme.bg
     property bool animateHeight: false
     property bool _windowVisible: false
     readonly property int verticalOffset: Constants.sizeLg

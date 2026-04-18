@@ -22,7 +22,7 @@ Rectangle {
         return "Good Evening,";
     }
 
-    color: Colors.bgSecondary
+    color: Theme.bgSecondary
     radius: Constants.sizeXs
     implicitWidth: mainLayout.implicitWidth + (Constants.sizeLg * 2)
     implicitHeight: mainLayout.implicitHeight + (Constants.sizeLg * 2)
@@ -76,7 +76,7 @@ Rectangle {
             Rectangle {
                 anchors.fill: parent
                 radius: width / 2
-                color: Colors.bgSecondary
+                color: Theme.bgSecondary
             }
 
             Image {
@@ -114,7 +114,7 @@ Rectangle {
                 radius: width / 2
                 color: "transparent"
                 border.width: 2
-                border.color: Colors.purple
+                border.color: Theme.purple
                 opacity: 0.8
                 antialiasing: true
             }
@@ -128,7 +128,7 @@ Rectangle {
             ThemedText {
                 text: root.greeting
                 font.pixelSize: Constants.sizeSm
-                color: Colors.muted
+                color: Theme.muted
                 Layout.fillWidth: true
             }
 
@@ -136,7 +136,7 @@ Rectangle {
                 text: root.userName.charAt(0).toUpperCase() + root.userName.slice(1)
                 font.pixelSize: Constants.sizeLg
                 font.weight: Font.Bold
-                color: Colors.purple
+                color: Theme.purple
                 elide: Text.ElideRight
                 Layout.fillWidth: true
             }
@@ -145,13 +145,13 @@ Rectangle {
                 ThemedText {
                     text: "󰣇"
                     font.pixelSize: Constants.sizeMd
-                    color: Colors.blueArch
+                    color: Theme.blueArch
                 }
 
                 ThemedText {
                     text: "Arch Linux"
                     font.pixelSize: Constants.sizeSm
-                    color: Colors.fg
+                    color: Theme.fg
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -164,13 +164,13 @@ Rectangle {
                 ThemedText {
                     text: "󰅐"
                     font.pixelSize: Constants.sizeMd
-                    color: Colors.yellow
+                    color: Theme.yellow
                 }
 
                 ThemedText {
                     text: root.uptime
                     font.pixelSize: Constants.sizeSm
-                    color: Colors.fg
+                    color: Theme.fg
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }

@@ -14,7 +14,7 @@ PanelWindow {
     default property alias content: innerLayout.data
     property int animationDuration: 450
     property int fadeDuration: 280
-    property color backgroundColor: Colors.bg
+    property color backgroundColor: Theme.bg
     property int preferredWidth: 600
     property int preferredHeight: 500
     property bool _windowVisible: false
@@ -108,7 +108,7 @@ PanelWindow {
                 color: root.backgroundColor
                 radius: Constants.sizeLg
                 border.width: 1
-                border.color: Colors.border
+                border.color: Theme.border
                 clip: true
             }
 

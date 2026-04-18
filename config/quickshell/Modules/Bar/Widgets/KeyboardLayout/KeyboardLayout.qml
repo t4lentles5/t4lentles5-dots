@@ -34,13 +34,13 @@ TopPopup {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
-                color: hoverHandler.hovered ? Colors.bgSecondary : "transparent"
+                color: hoverHandler.hovered ? Theme.bgSecondary : "transparent"
                 radius: Constants.sizeXs
 
                 ThemedText {
                     anchors.centerIn: parent
                     text: modelData.name
-                    color: hoverHandler.hovered ? Colors.purple : Colors.fg
+                    color: hoverHandler.hovered ? Theme.purple : Theme.fg
                 }
 
                 HoverHandler {

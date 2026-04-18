@@ -10,9 +10,9 @@ IconButton {
 
     icon: activeState ? "󰖔" : "󰖙"
     isActive: activeState
-    activeColor: Colors.yellow
-    iconColor: Colors.yellow
-    hoverColor: Colors.yellow
+    activeColor: Theme.yellow
+    iconColor: Theme.yellow
+    hoverColor: Theme.yellow
     iconSize: Constants.sizeXl
     onClicked: {
         activeState = !activeState;

@@ -19,7 +19,7 @@ Rectangle {
     visible: opacity > 0
     clip: true
     radius: Constants.sizeXs
-    color: Colors.bgSecondary
+    color: Theme.bgSecondary
 
     Timer {
         id: scanTimeout
@@ -48,7 +48,7 @@ Rectangle {
             ThemedText {
                 anchors.centerIn: parent
                 text: "󰑐"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: Constants.sizeMd
             }
 
@@ -65,7 +65,7 @@ Rectangle {
         ThemedText {
             Layout.alignment: Qt.AlignHCenter
             text: root.timedOut ? "No networks found" : "Scanning..."
-            color: Colors.muted
+            color: Theme.muted
             font.pixelSize: Constants.sizeSm
         }
 
@@ -87,7 +87,7 @@ Rectangle {
             text: "Networks"
             font.pixelSize: Constants.sizeSm
             font.letterSpacing: 1
-            color: Colors.muted
+            color: Theme.muted
         }
 
         Repeater {
@@ -105,7 +105,7 @@ Rectangle {
                         width: 4
                         height: 4
                         radius: 2
-                        color: Colors.purple
+                        color: Theme.purple
                         opacity: modelData.active ? 0.8 : 0
                         Layout.alignment: Qt.AlignVCenter
 
@@ -120,7 +120,7 @@ Rectangle {
 
                     ThemedText {
                         text: modelData.ssid
-                        color: modelData.active ? Colors.purple : Colors.fg
+                        color: modelData.active ? Theme.purple : Theme.fg
                         font.pixelSize: Constants.sizeSm
                         font.weight: modelData.active ? Font.Medium : Font.Normal
                         opacity: hoverHandlerW.hovered ? 1 : (modelData.active ? 0.9 : 0.65)
@@ -138,7 +138,7 @@ Rectangle {
 
                     ThemedText {
                         text: modelData.signal + "%"
-                        color: Colors.muted
+                        color: Theme.muted
                         font.pixelSize: 9
                         opacity: 0.4
                     }

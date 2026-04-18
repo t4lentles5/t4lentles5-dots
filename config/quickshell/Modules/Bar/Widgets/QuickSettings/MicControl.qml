@@ -10,9 +10,9 @@ IconButton {
 
     icon: muted ? "󰍭" : "󰍬"
     isActive: muted
-    activeColor: Colors.muted
-    iconColor: Colors.blue
-    hoverColor: Colors.blue
+    activeColor: Theme.muted
+    iconColor: Theme.blue
+    hoverColor: Theme.blue
     iconSize: Constants.sizeXl
     Component.onCompleted: micCheckProc.running = true
     onClicked: {

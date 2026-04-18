@@ -14,14 +14,14 @@ Windows = " "
 Arch = "󰣇 "
 
 [username]
-style_user = "fg:black bold bg:purple bold"
-style_root = "black bold"
+style_user = "fg:#ffffff bold bg:purple bold"
+style_root = "#ffffff bold"
 format = "[](bold fg:purple)[$user]($style)[ ](bold fg:purple)"
 disabled = false
 show_always = true
 
 [directory]
-style = "bg:purple fg:black"
+style = "bg:purple fg:#ffffff"
 format = '󰜥 [](bold fg:purple)[󰉋 $path]($style)[](bold fg:purple)'
 
 [character]
@@ -33,4 +33,4 @@ style = "bg: cyan"
 symbol = "󰘬"
 truncation_length = 13
 truncation_symbol = ""
-format = "[](bold fg:purple)[$symbol $branch(:$remote_branch)](fg:black bg:purple)[ ](bold fg:purple)"
+format = "[](bold fg:purple)[$symbol $branch(:$remote_branch)](fg:#ffffff bg:purple)[ ](bold fg:purple)"

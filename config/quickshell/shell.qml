@@ -1,6 +1,7 @@
 import Quickshell
 import qs.Modules.Bar
 import qs.Modules.Clipboard
+import qs.Modules.ColorSchemeSelector
 import qs.Modules.KeybindsCheatSheet
 import qs.Modules.Launcher
 import qs.Modules.Notifications
@@ -30,6 +31,9 @@ ShellRoot {
     }
 
     KeybindsCheatSheet {
+    }
+
+    ColorSchemeSelector {
     }
 
     NotificationOverlay {

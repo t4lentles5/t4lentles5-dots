@@ -44,9 +44,9 @@ dependencies=(
   pipewire pipewire-alsa pipewire-audio pipewire-pulse python-gobject python-pygments
   python-pip ranger rfkill ripgrep starship ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
   tumbler unzip upower wireplumber wl-clipboard wlsunset
-  xclip xdg-desktop-portal-gtk zsh zsh-autosuggestions zsh-history-substring-search 
+  xclip xdg-desktop-portal-gtk zsh zsh-autosuggestions zsh-history-substring-search
   zsh-syntax-highlighting brightnessctl blueman bluez bluez-utils grim slurp cliphist
-  fastfetch neovim curl unrar socat qt6-imageformats mpv fnm polkit-gnome ntfs-3g 
+  fastfetch neovim curl unrar socat qt6-imageformats mpv fnm polkit-gnome ntfs-3g
   gnome-keyring libsecret awww playerctl
 )
 
@@ -59,6 +59,7 @@ log "Installing AUR dependencies..."
 aur_dependencies=(
   bibata-cursor-theme-bin
   catppuccin-gtk-theme-mocha
+  catppuccin-gtk-theme-latte
   fzf-tab-git
   quickshell
   sddm-theme-tokyo-night-git

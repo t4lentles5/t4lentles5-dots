@@ -107,7 +107,7 @@ CenterWindow {
 
         ThemedText {
             text: "󰌌"
-            color: Colors.purple
+            color: Theme.purple
             font.pixelSize: Constants.sizeXl
         }
 
@@ -179,7 +179,7 @@ CenterWindow {
         Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: 1
-            color: Colors.bgSecondary
+            color: Theme.bgSecondary
         }
 
         Flickable {
@@ -247,12 +247,12 @@ CenterWindow {
             width: 3
             height: 16
             radius: 2
-            color: Colors.purple
+            color: Theme.purple
         }
 
         ThemedText {
             text: label
-            color: Colors.purple
+            color: Theme.purple
             font.pixelSize: Constants.sizeSm
             font.bold: true
             font.capitalization: Font.AllUppercase
@@ -289,7 +289,7 @@ CenterWindow {
                         width: Math.max(capText.implicitWidth + 14, 28)
                         height: 26
                         radius: 5
-                        color: Colors.bgSecondary
+                        color: Theme.bgSecondary
                         anchors.verticalCenter: parent.verticalCenter
 
                         ThemedText {
@@ -298,7 +298,7 @@ CenterWindow {
                             anchors.centerIn: parent
                             anchors.verticalCenterOffset: -1
                             text: modelData.isKey ? modelData.text : ""
-                            color: Colors.yellow
+                            color: Theme.yellow
                             font.pixelSize: Constants.sizeSm
                             font.bold: true
                         }
@@ -310,7 +310,7 @@ CenterWindow {
 
                         visible: !modelData.isKey
                         text: !modelData.isKey ? modelData.text : ""
-                        color: Colors.muted
+                        color: Theme.muted
                         font.pixelSize: Constants.sizeSm
                         font.bold: true
                         anchors.verticalCenter: parent.verticalCenter

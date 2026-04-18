@@ -66,7 +66,7 @@ RowLayout {
 
             return "󰃠";
         }
-        color: Colors.yellow
+        color: Theme.yellow
         font.pixelSize: Constants.sizeMd
         Layout.preferredWidth: Constants.sizeXl
         horizontalAlignment: Text.AlignHCenter
@@ -91,12 +91,12 @@ RowLayout {
             width: brightSlider.availableWidth
             height: implicitHeight
             radius: 2
-            color: Colors.border
+            color: Theme.border
 
             Rectangle {
                 width: Math.max(height, brightSlider.visualPosition * parent.width)
                 height: parent.height
-                color: Colors.yellow
+                color: Theme.yellow
                 radius: 2
             }
 
@@ -108,7 +108,7 @@ RowLayout {
             implicitWidth: Constants.sizeSm
             implicitHeight: Constants.sizeSm
             radius: 6
-            color: Colors.yellow
+            color: Theme.yellow
             border.color: Qt.darker(color, 1.2)
             border.width: 1
 

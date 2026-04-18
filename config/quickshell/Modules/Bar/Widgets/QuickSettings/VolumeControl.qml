@@ -27,8 +27,8 @@ IconButton {
 
     iconSize: Constants.sizeXl
     icon: muted ? "󰝟" : "󰕾"
-    iconColor: muted ? Colors.muted : Colors.cyan
-    hoverColor: muted ? Colors.muted : Colors.cyan
+    iconColor: muted ? Theme.muted : Theme.cyan
+    hoverColor: muted ? Theme.muted : Theme.cyan
     onClicked: root.toggleMute()
 
     Process {

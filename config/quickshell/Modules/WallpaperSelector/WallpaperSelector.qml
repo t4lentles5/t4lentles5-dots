@@ -11,15 +11,29 @@ CenterWindow {
     id: root
 
     property string searchText: ""
+    property int currentTab: 0
 
     function filterWallpapers(query) {
         filteredModel.clear();
         query = query.toLowerCase();
         for (let i = 0; i < wallModel.count; i++) {
             let wall = wallModel.get(i);
-            if (wall.name.toLowerCase().includes(query))
+            let matchesTab = false;
+            if (currentTab === 0 && wall.type === "Dark")
+                matchesTab = true;
+            else if (currentTab === 1 && wall.type === "Light")
+                matchesTab = true;
+            if (matchesTab && wall.name.toLowerCase().includes(query))
                 filteredModel.append(wall);
 
+        }
+        if (WallpaperManager.currentWallpaper) {
+            for (let j = 0; j < filteredModel.count; j++) {
+                if (filteredModel.get(j).name === WallpaperManager.currentWallpaper) {
+                    wallView.currentIndex = j;
+                    return ;
+                }
+            }
         }
         if (filteredModel.count > 0)
             wallView.currentIndex = 0;
@@ -27,12 +41,13 @@ CenterWindow {
             wallView.currentIndex = -1;
     }
 
-    function setWallpaper(targetPath) {
+    function setWallpaper(targetPath, wType) {
         if (!targetPath)
             return ;
 
-        wallpaperProc.command = ["awww", "img", targetPath, "--transition-type", "grow", "--transition-pos", "0.5,0.5", "--transition-step", "120"];
-        wallpaperProc.startDetached();
+        let parts = targetPath.split('/');
+        let wallName = parts[parts.length - 1];
+        WallpaperManager.applyWallpaperWithSync(wallName, targetPath, wType);
         root.isOpen = false;
     }
 
@@ -40,6 +55,8 @@ CenterWindow {
     preferredHeight: 550
     preferredWidth: 800
     onPopupOpened: {
+        let brightness = Theme.bg.r * 0.299 + Theme.bg.g * 0.587 + Theme.bg.b * 0.114;
+        currentTab = (brightness <= 0.5) ? 0 : 1;
         focusTimer.start();
         searchField.text = "";
         loadWallpapersProc.lines = [];
@@ -67,7 +84,7 @@ CenterWindow {
 
         property var lines: []
 
-        command: ["sh", "-c", "find ~/Pictures/Wallpapers -maxdepth 1 -type f | grep -iE '\\.(jpg|jpeg|png|webp|gif)$'"]
+        command: ["bash", "-c", "find ~/Pictures/Wallpapers -type f 2>/dev/null | grep -iE '\\.(jpg|jpeg|png|webp|gif)$'"]
         onExited: function(exitCode) {
             wallModel.clear();
             let sortedLines = lines.sort(function(a, b) {
@@ -77,7 +94,7 @@ CenterWindow {
                 wallModel.append(sortedLines[i]);
             }
             lines = [];
-            filterWallpapers("");
+            filterWallpapers(searchField.text);
         }
 
         stdout: SplitParser {
@@ -88,10 +105,15 @@ CenterWindow {
                     if (rawPath !== "") {
                         let parts = rawPath.split('/');
                         let fileName = parts[parts.length - 1];
+                        let wType = "Dark";
+                        if (rawPath.includes("/Light/"))
+                            wType = "Light";
+
                         loadWallpapersProc.lines.push({
                             "filePath": "file://" + rawPath,
                             "rawPath": rawPath,
-                            "name": fileName
+                            "name": fileName,
+                            "type": wType
                         });
                     }
                 }
@@ -100,14 +122,10 @@ CenterWindow {
 
     }
 
-    Process {
-        id: wallpaperProc
-    }
-
     Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 40
-        color: Colors.bgSecondary
+        color: Theme.bgSecondary
         radius: Constants.sizeXl
 
         RowLayout {
@@ -125,15 +143,19 @@ CenterWindow {
                 id: searchField
 
                 Layout.fillWidth: true
-                placeholderText: "Search wallpapers..."
-                placeholderTextColor: Colors.muted
-                color: Colors.fg
+                placeholderText: currentTab === 0 ? "Search Dark wallpapers... (Tab to switch)" : "Search Light wallpapers... (Tab to switch)"
+                placeholderTextColor: Theme.muted
+                color: Theme.fg
                 font.pixelSize: Constants.sizeMd
                 font.family: Constants.fontFamily
                 background: null
                 onTextChanged: root.filterWallpapers(text)
                 Keys.onPressed: function(event) {
-                    if (event.key === Qt.Key_Right) {
+                    if (event.key === Qt.Key_Tab) {
+                        currentTab = currentTab === 0 ? 1 : 0;
+                        filterWallpapers(searchField.text);
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_Right) {
                         if (wallView.count > 0) {
                             wallView.currentIndex = Math.min(wallView.currentIndex + 1, wallView.count - 1);
                             event.accepted = true;
@@ -159,7 +181,7 @@ CenterWindow {
                         let idx = wallView.currentIndex >= 0 ? wallView.currentIndex : 0;
                         if (filteredModel.count > idx) {
                             let wall = filteredModel.get(idx);
-                            setWallpaper(wall.rawPath);
+                            setWallpaper(wall.rawPath, wall.type);
                             event.accepted = true;
                         }
                     }
@@ -180,14 +202,14 @@ CenterWindow {
 
             ThemedText {
                 text: "󰸉"
-                color: Colors.bgSecondary
+                color: Theme.bgSecondary
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
 
             ThemedText {
                 text: "No wallpapers found in ~/Pictures/Wallpapers"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: Constants.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -200,14 +222,14 @@ CenterWindow {
 
             ThemedText {
                 text: "󰩉"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
 
             ThemedText {
                 text: "No matches found"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: Constants.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -248,7 +270,7 @@ CenterWindow {
                     anchors.margins: Constants.sizeXs
                     radius: Constants.sizeXs
                     color: "transparent"
-                    border.color: Colors.purple
+                    border.color: Theme.purple
                     border.width: 2
                     scale: 1.05
 
@@ -288,7 +310,7 @@ CenterWindow {
                     anchors.fill: parent
                     anchors.margins: Constants.sizeXs
                     radius: Constants.sizeXs
-                    color: Colors.bgSecondary
+                    color: Theme.bgSecondary
                     scale: isCurrent || hoverHandler.hovered ? 1.05 : 1
 
                     Rectangle {
@@ -326,7 +348,7 @@ CenterWindow {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         height: nameText.contentHeight + Constants.sizeXs
-                        color: Colors.bgSecondary
+                        color: Theme.bgSecondary
                         radius: Constants.sizeXs
 
                         ThemedText {
@@ -359,7 +381,7 @@ CenterWindow {
                 TapHandler {
                     onTapped: {
                         wallView.currentIndex = index;
-                        setWallpaper(model.rawPath);
+                        setWallpaper(model.rawPath, model.type);
                     }
                 }
 

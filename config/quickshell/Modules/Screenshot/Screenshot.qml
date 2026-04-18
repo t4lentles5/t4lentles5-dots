@@ -88,7 +88,7 @@ CenterWindow {
 
             ThemedText {
                 text: "󰄄"
-                color: Colors.purple
+                color: Theme.purple
                 font.pixelSize: Constants.sizeXl
             }
 
@@ -144,7 +144,7 @@ CenterWindow {
                 Rectangle {
                     anchors.fill: parent
                     radius: Constants.sizeXs
-                    color: Colors.bgSecondary
+                    color: Theme.bgSecondary
 
                     Rectangle {
                         anchors.left: parent.left
@@ -155,7 +155,7 @@ CenterWindow {
                         anchors.bottomMargin: 8
                         width: 3
                         radius: 2
-                        color: Colors.purple
+                        color: Theme.purple
                     }
 
                 }
@@ -172,7 +172,7 @@ CenterWindow {
                 Rectangle {
                     anchors.fill: parent
                     radius: Constants.sizeXs
-                    color: Colors.bgSecondary
+                    color: Theme.bgSecondary
                     opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                     Behavior on opacity {
@@ -192,7 +192,7 @@ CenterWindow {
 
                     ThemedText {
                         text: model.iconSource
-                        color: isCurrent ? Colors.purple : Colors.fg
+                        color: isCurrent ? Theme.purple : Theme.fg
                         font.pixelSize: Constants.sizeLg
 
                         Behavior on color {
@@ -206,7 +206,7 @@ CenterWindow {
 
                     ThemedText {
                         text: model.label
-                        color: isCurrent ? Colors.purple : Colors.fg
+                        color: isCurrent ? Theme.purple : Theme.fg
                         font.bold: isCurrent
                         font.pixelSize: Constants.sizeMd
                         Layout.fillWidth: true

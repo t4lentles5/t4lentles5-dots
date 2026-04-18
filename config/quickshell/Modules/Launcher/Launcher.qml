@@ -148,7 +148,7 @@ CenterWindow {
     Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 40
-        color: Colors.bgSecondary
+        color: Theme.bgSecondary
         radius: Constants.sizeXl
 
         RowLayout {
@@ -167,8 +167,8 @@ CenterWindow {
 
                 Layout.fillWidth: true
                 placeholderText: "Search applications..."
-                placeholderTextColor: Colors.muted
-                color: Colors.fg
+                placeholderTextColor: Theme.muted
+                color: Theme.fg
                 font.pixelSize: Constants.sizeMd
                 font.family: Constants.fontFamily
                 background: null
@@ -192,14 +192,14 @@ CenterWindow {
 
             ThemedText {
                 text: "󰩉"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: 72
                 Layout.alignment: Qt.AlignHCenter
             }
 
             ThemedText {
                 text: "No applications found"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: Constants.sizeMd
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -232,7 +232,7 @@ CenterWindow {
                 Rectangle {
                     anchors.fill: parent
                     radius: Constants.sizeXs
-                    color: Colors.bgSecondary
+                    color: Theme.bgSecondary
 
                     Rectangle {
                         anchors.left: parent.left
@@ -243,7 +243,7 @@ CenterWindow {
                         anchors.bottomMargin: 8
                         width: 3
                         radius: 2
-                        color: Colors.purple
+                        color: Theme.purple
                     }
 
                 }
@@ -287,7 +287,7 @@ CenterWindow {
 
                 }
                 width: appsView.width
-                height: 44 + (isExpanded ? actionsColumn.implicitHeight : 0)
+                height: 44 + (isExpanded ? actionsColumn.implicitHeight + Constants.sizeXs : 0)
                 z: 2
                 clip: true
 
@@ -300,7 +300,7 @@ CenterWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Constants.sizeXs
-                        color: Colors.bgSecondary
+                        color: Theme.bgSecondary
                         opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                         Behavior on opacity {
@@ -328,7 +328,7 @@ CenterWindow {
                                 anchors.centerIn: parent
                                 visible: parent.status !== Image.Ready || !parent.source
                                 text: ""
-                                color: isCurrent ? Colors.purple : Colors.muted
+                                color: isCurrent ? Theme.purple : Theme.muted
                                 font.pixelSize: Constants.sizeLg
                             }
 
@@ -336,7 +336,7 @@ CenterWindow {
 
                         ThemedText {
                             text: modelData.name
-                            color: isCurrent ? Colors.purple : Colors.fg
+                            color: isCurrent ? Theme.purple : Theme.fg
                             font.bold: isCurrent
                             font.pixelSize: Constants.sizeMd
                             Layout.fillWidth: true
@@ -394,9 +394,9 @@ CenterWindow {
                         icon: ""
                         iconSize: Constants.sizeMd
                         visible: delegateRoot.hasActions
-                        iconColor: Colors.muted
-                        hoverColor: Colors.fg
-                        activeColor: Colors.fg
+                        iconColor: Theme.muted
+                        hoverColor: Theme.fg
+                        activeColor: Theme.fg
                         isActive: delegateRoot.isExpanded
                         anchors.right: parent.right
                         anchors.rightMargin: Constants.sizeLg
@@ -424,12 +424,55 @@ CenterWindow {
 
                 }
 
+                Item {
+                    id: connectorLines
+
+                    y: 44 + Constants.sizeXs / 2
+                    width: parent.width
+                    height: actionsColumn.implicitHeight
+                    opacity: delegateRoot.isExpanded ? 1 : 0
+                    visible: opacity > 0
+
+                    Rectangle {
+                        x: Constants.sizeLg + 11
+                        y: -Constants.sizeXs / 2
+                        width: 2
+                        height: parent.height - 12
+                        color: Theme.muted
+                        opacity: 0.3
+                        radius: 1
+                    }
+
+                    Repeater {
+                        model: modelData.actions || []
+
+                        Rectangle {
+                            x: Constants.sizeLg + 11
+                            y: index * (34 + actionsColumn.spacing) + 16
+                            width: 16
+                            height: 2
+                            color: Theme.muted
+                            opacity: 0.3
+                            radius: 1
+                        }
+
+                    }
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Constants.animNormal
+                        }
+
+                    }
+
+                }
+
                 ColumnLayout {
                     id: actionsColumn
 
-                    y: 44
+                    y: 44 + Constants.sizeXs / 2
                     width: parent.width
-                    spacing: 0
+                    spacing: 4
                     opacity: delegateRoot.isExpanded ? 1 : 0
                     visible: opacity > 0
 
@@ -439,19 +482,71 @@ CenterWindow {
                         delegate: Rectangle {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 34
-                            color: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? Colors.bgSecondary : "transparent"
+                            Layout.leftMargin: Constants.sizeLg + 32
+                            Layout.rightMargin: Constants.sizeLg
+                            color: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? Theme.bgSecondary : Qt.rgba(Theme.bgSecondary.r, Theme.bgSecondary.g, Theme.bgSecondary.b, 0)
                             radius: Constants.sizeXs
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: Constants.sizeLg * 2 + 24
+                                anchors.leftMargin: Constants.sizeMd
                                 anchors.rightMargin: Constants.sizeLg
+                                spacing: Constants.sizeXs
+
+                                Item {
+                                    Layout.preferredWidth: 8
+                                    Layout.preferredHeight: 8
+                                    Layout.alignment: Qt.AlignVCenter
+
+                                    Rectangle {
+                                        anchors.centerIn: parent
+                                        width: 6
+                                        height: 6
+                                        radius: 3
+                                        color: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? Theme.purple : Theme.muted
+                                        opacity: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? 1 : 0.5
+                                        scale: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? 1.5 : 1
+
+                                        Behavior on color {
+                                            ColorAnimation {
+                                                duration: Constants.animFast
+                                            }
+
+                                        }
+
+                                        Behavior on scale {
+                                            NumberAnimation {
+                                                duration: Constants.animFast
+                                                easing.type: Easing.OutBack
+                                            }
+
+                                        }
+
+                                        Behavior on opacity {
+                                            NumberAnimation {
+                                                duration: Constants.animFast
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
 
                                 ThemedText {
                                     Layout.fillWidth: true
                                     text: modelData.name
-                                    color: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? Colors.purple : Colors.fg
+                                    color: ((delegateRoot.isExpanded && delegateRoot.currentActionIndex === index) || actionMouseArea.containsMouse) ? Theme.purple : Theme.fg
                                     font.pixelSize: Constants.sizeMd
+                                    Layout.alignment: Qt.AlignVCenter
+
+                                    Behavior on color {
+                                        ColorAnimation {
+                                            duration: Constants.animFast
+                                        }
+
+                                    }
+
                                 }
 
                             }
@@ -463,6 +558,13 @@ CenterWindow {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: launchApp(modelData.exec, false)
+                            }
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Constants.animFast
+                                }
+
                             }
 
                         }

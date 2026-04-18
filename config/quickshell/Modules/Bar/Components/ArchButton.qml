@@ -2,6 +2,6 @@ import qs.Core
 
 BarButton {
     text: "󰣇"
-    textColor: Colors.blueArch
+    textColor: Theme.blueArch
     fontSize: Constants.sizeLg
 }

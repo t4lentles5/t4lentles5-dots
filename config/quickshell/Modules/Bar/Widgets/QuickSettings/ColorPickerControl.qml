@@ -9,8 +9,8 @@ IconButton {
     signal requestClose()
 
     icon: "󰈋"
-    iconColor: Colors.red
-    hoverColor: Colors.red
+    iconColor: Theme.red
+    hoverColor: Theme.red
     iconSize: Constants.sizeXl
     onClicked: {
         root.requestClose();

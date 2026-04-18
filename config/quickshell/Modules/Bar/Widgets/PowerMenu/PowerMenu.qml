@@ -13,31 +13,31 @@ TopPopup {
         "id": "lock",
         "icon": "󰍁",
         "command": ["sh", "-c", "sleep 0.3; hyprlock"],
-        "color": Colors.green,
+        "color": Theme.green,
         "confirm": false
     }, {
         "id": "suspend",
         "icon": "",
         "command": ["sh", "-c", "mpc -q pause; amixer set Master mute; systemctl suspend"],
-        "color": Colors.blue,
+        "color": Theme.blue,
         "confirm": true
     }, {
         "id": "logout",
         "icon": "󰗽",
         "command": ["hyprctl", "dispatch", "exit"],
-        "color": Colors.purple,
+        "color": Theme.purple,
         "confirm": true
     }, {
         "id": "reboot",
         "icon": "󰜉",
         "command": ["systemctl", "reboot"],
-        "color": Colors.yellow,
+        "color": Theme.yellow,
         "confirm": true
     }, {
         "id": "shutdown",
         "icon": "",
         "command": ["systemctl", "poweroff"],
-        "color": Colors.red,
+        "color": Theme.red,
         "confirm": true
     }]
 
@@ -94,7 +94,7 @@ TopPopup {
                     ThemedText {
                         text: modelData.icon
                         font.pixelSize: Constants.sizeXl
-                        color: isHovered ? modelData.color : Colors.fg
+                        color: isHovered ? modelData.color : Theme.fg
                         scale: isHovered ? 1.1 : 1
 
                         Behavior on color {
@@ -118,7 +118,7 @@ TopPopup {
                         text: modelData.id.charAt(0).toUpperCase() + modelData.id.slice(1)
                         font.pixelSize: Constants.sizeMd
                         font.weight: Font.Medium
-                        color: Colors.fg
+                        color: Theme.fg
                         Layout.fillWidth: true
 
                         Behavior on color {

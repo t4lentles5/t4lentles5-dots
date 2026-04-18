@@ -80,8 +80,8 @@ Rectangle {
         }
 
         background: Rectangle {
-            color: Colors.bg
-            border.color: Colors.border
+            color: Theme.bg
+            border.color: Theme.border
             radius: Constants.sizeXs
         }
 

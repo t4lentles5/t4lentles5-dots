@@ -15,12 +15,12 @@ BarButton {
     property int _prevLevel: -1
     property color activeColor: {
         if (root.batteryStatus === "Charging")
-            return Colors.green;
+            return Theme.green;
 
         if (root.batteryLevel < 20)
-            return Colors.red;
+            return Theme.red;
 
-        return Colors.yellow;
+        return Theme.yellow;
     }
 
     onBatteryStatusChanged: {

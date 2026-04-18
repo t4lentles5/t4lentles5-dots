@@ -35,7 +35,7 @@ PanelWindow {
 
     Rectangle {
         anchors.fill: parent
-        color: Colors.bg
+        color: Theme.bg
         radius: 22
 
         RowLayout {

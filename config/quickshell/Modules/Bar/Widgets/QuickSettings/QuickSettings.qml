@@ -98,7 +98,7 @@ TopPopup {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: sliderCol.implicitHeight + (Constants.sizeLg * 2)
-                color: Colors.bgSecondary
+                color: Theme.bgSecondary
                 radius: Constants.sizeXs
 
                 ColumnLayout {

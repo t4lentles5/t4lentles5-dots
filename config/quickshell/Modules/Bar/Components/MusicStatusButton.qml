@@ -75,7 +75,7 @@ BarButton {
     }
 
     Component.onCompleted: updateText()
-    textColor: Colors.green
+    textColor: Theme.green
     mouseArea.acceptedButtons: Qt.LeftButton | Qt.RightButton
     mouseArea.onClicked: (mouse) => {
         if (mouse.button === Qt.RightButton) {

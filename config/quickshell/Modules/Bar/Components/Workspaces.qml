@@ -32,7 +32,7 @@ BarButton {
                 Layout.preferredWidth: isActive ? 28 : (hasWindows ? 10 : 8)
                 Layout.preferredHeight: isActive ? 10 : (hasWindows ? 10 : 8)
                 radius: isActive ? 5 : (hasWindows ? 5 : 4)
-                color: isActive ? Colors.yellow : (hasWindows ? Colors.cyan : (mouseArea.containsMouse ? Colors.fg : Colors.muted))
+                color: isActive ? Theme.yellow : (hasWindows ? Theme.cyan : (mouseArea.containsMouse ? Theme.fg : Theme.muted))
 
                 MouseArea {
                     id: mouseArea

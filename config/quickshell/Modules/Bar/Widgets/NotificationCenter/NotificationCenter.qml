@@ -58,14 +58,14 @@ TopPopup {
                 text: "NOTIFICATIONS"
                 font.pixelSize: Constants.sizeMd
                 font.letterSpacing: 2
-                color: Colors.cyan
+                color: Theme.cyan
                 Layout.fillWidth: true
             }
 
             IconButton {
                 icon: (notificationService && notificationService.dndEnabled) ? "󰂛" : "󰂚"
-                iconColor: (notificationService && notificationService.dndEnabled) ? Colors.muted : Colors.blue
-                hoverColor: (notificationService && notificationService.dndEnabled) ? Colors.muted : Colors.blue
+                iconColor: (notificationService && notificationService.dndEnabled) ? Theme.muted : Theme.blue
+                hoverColor: (notificationService && notificationService.dndEnabled) ? Theme.muted : Theme.blue
                 iconSize: Constants.sizeMd
                 onClicked: {
                     if (notificationService)
@@ -76,8 +76,8 @@ TopPopup {
 
             IconButton {
                 icon: "󰃢"
-                iconColor: Colors.red
-                hoverColor: Colors.red
+                iconColor: Theme.red
+                hoverColor: Theme.red
                 iconSize: Constants.sizeMd
                 visible: historyView.count > 0
                 onClicked: {
@@ -100,7 +100,7 @@ TopPopup {
                 ThemedText {
                     anchors.centerIn: parent
                     text: "No notifications"
-                    color: Colors.muted
+                    color: Theme.muted
                     font.pixelSize: Constants.sizeSm
                     opacity: historyView.count === 0 ? 1 : 0
                     visible: opacity > 0
@@ -184,10 +184,10 @@ TopPopup {
 
                             width: ListView.view.width
                             height: delegateLayout.implicitHeight + Constants.sizeSm * 2
-                            color: Colors.bg
-                            radius: 12
+                            color: Theme.bgSecondary
+                            radius: Constants.sizeSm
                             border.width: 1
-                            border.color: delegateMouseArea.containsMouse ? Qt.rgba(Colors.purple.r, Colors.purple.g, Colors.purple.b, 0.4) : Colors.border
+                            border.color: delegateMouseArea.containsMouse ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.4) : Theme.border
 
                             MouseArea {
                                 id: delegateMouseArea
@@ -258,7 +258,7 @@ TopPopup {
 
                                         ThemedText {
                                             text: model.summary
-                                            color: Colors.cyan
+                                            color: Theme.cyan
                                             font.pixelSize: Constants.sizeSm
                                             font.weight: Font.Medium
                                             elide: Text.ElideRight
@@ -275,14 +275,14 @@ TopPopup {
                                                 let d = new Date(n < 1e+10 ? n * 1000 : n);
                                                 return root.timeAgo(d, root.currentTime);
                                             }
-                                            color: Colors.muted
+                                            color: Theme.muted
                                             font.pixelSize: Constants.sizeSm - 2
                                         }
 
                                         IconButton {
                                             icon: delegateRoot.expanded ? "" : ""
-                                            iconColor: Colors.blue
-                                            hoverColor: Colors.blue
+                                            iconColor: Theme.blue
+                                            hoverColor: Theme.blue
                                             iconSize: Constants.sizeSm - 2
                                             visible: bodyText.truncated || delegateRoot.expanded
                                             onClicked: {
@@ -292,8 +292,8 @@ TopPopup {
 
                                         IconButton {
                                             icon: ""
-                                            iconColor: Colors.red
-                                            hoverColor: Colors.red
+                                            iconColor: Theme.red
+                                            hoverColor: Theme.red
                                             iconSize: Constants.sizeSm - 2
                                             onClicked: {
                                                 if (notificationService)
@@ -308,7 +308,7 @@ TopPopup {
                                         id: bodyText
 
                                         text: model.body
-                                        color: Colors.fg
+                                        color: Theme.fg
                                         opacity: 0.7
                                         font.pixelSize: Constants.sizeSm - 2
                                         wrapMode: Text.Wrap

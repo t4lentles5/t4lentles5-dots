@@ -12,7 +12,6 @@ TopPopup {
     property var managedPlayers: []
     property var activePlayer: null
     property real position: 0
-    property bool isSliderPressed: false
     property string currentTrackId: ""
 
     function updatePlayer() {
@@ -63,23 +62,6 @@ TopPopup {
 
     implicitWidth: 360
 
-    Timer {
-        interval: 100
-        running: {
-            if (!root.activePlayer)
-                return false;
-
-            let s = root.activePlayer.playbackState;
-            return s === 1 || s === Mpris.Playing || String(s).toLowerCase().includes("playing");
-        }
-        repeat: true
-        onTriggered: {
-            if (root.activePlayer && !root.isSliderPressed)
-                root.position += 0.1;
-
-        }
-    }
-
     Instantiator {
         model: Mpris.players
 
@@ -113,9 +95,9 @@ TopPopup {
 
                 anchors.fill: parent
                 radius: Constants.sizeXs
-                color: Colors.bgSecondary
+                color: Theme.bgSecondary
                 border.width: 1
-                border.color: Colors.border
+                border.color: Theme.border
             }
 
             Image {
@@ -157,7 +139,7 @@ TopPopup {
             ThemedText {
                 anchors.centerIn: parent
                 text: ""
-                color: Colors.purple
+                color: Theme.purple
                 font.pixelSize: 28
                 visible: albumArt.status !== Image.Ready
             }
@@ -183,7 +165,7 @@ TopPopup {
 
                 ThemedText {
                     text: root.activePlayer ? (root.activePlayer.trackArtist || "Unknown Artist") : ""
-                    color: Colors.purple
+                    color: Theme.purple
                     font.pixelSize: Constants.sizeSm
                     font.weight: Font.Medium
                     elide: Text.ElideRight
@@ -199,8 +181,8 @@ TopPopup {
                 IconButton {
                     icon: "󰒮"
                     iconSize: Constants.sizeXl
-                    iconColor: (root.activePlayer && root.activePlayer.canGoPrevious) ? Colors.fg : Colors.muted
-                    hoverColor: Colors.fg
+                    iconColor: (root.activePlayer && root.activePlayer.canGoPrevious) ? Theme.fg : Theme.muted
+                    hoverColor: Theme.fg
                     onClicked: {
                         if (root.activePlayer)
                             root.activePlayer.previous();
@@ -215,9 +197,9 @@ TopPopup {
 
                     icon: (root.activePlayer && playButton.isPlaying) ? "󰏤" : "󰐊"
                     iconSize: Constants.sizeXl
-                    iconColor: Colors.bg
-                    hoverColor: Colors.bg
-                    bgColor: Colors.purple
+                    iconColor: Theme.bg
+                    hoverColor: Theme.bg
+                    bgColor: Theme.purple
                     onClicked: {
                         if (root.activePlayer)
                             root.activePlayer.togglePlaying();
@@ -228,8 +210,8 @@ TopPopup {
                 IconButton {
                     icon: "󰒭"
                     iconSize: Constants.sizeXl
-                    iconColor: (root.activePlayer && root.activePlayer.canGoNext) ? Colors.fg : Colors.muted
-                    hoverColor: Colors.fg
+                    iconColor: (root.activePlayer && root.activePlayer.canGoNext) ? Theme.fg : Theme.muted
+                    hoverColor: Theme.fg
                     onClicked: {
                         if (root.activePlayer)
                             root.activePlayer.next();

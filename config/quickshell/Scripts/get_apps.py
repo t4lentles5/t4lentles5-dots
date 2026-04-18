@@ -40,20 +40,25 @@ def get_apps():
 
                     actions = []
                     if "Actions" in entry:
-                        action_keys = entry.get("Actions", "").strip(';').split(';')
+                        action_keys = entry.get("Actions", "").strip(";").split(";")
                         for ak in action_keys:
                             ak = ak.strip()
-                            if not ak: continue
+                            if not ak:
+                                continue
                             action_group = f"Desktop Action {ak}"
                             if action_group in config:
                                 a_entry = config[action_group]
                                 a_name = a_entry.get("Name", "")
                                 a_exec = a_entry.get("Exec", "")
                                 if a_name and a_exec:
-                                    actions.append({
-                                        "name": a_name,
-                                        "exec": a_exec.split(" %")[0].replace('"', '')
-                                    })
+                                    actions.append(
+                                        {
+                                            "name": a_name,
+                                            "exec": a_exec.split(" %")[0].replace(
+                                                '"', ""
+                                            ),
+                                        }
+                                    )
 
                     if name and executable and executable not in seen_execs:
                         apps.append(

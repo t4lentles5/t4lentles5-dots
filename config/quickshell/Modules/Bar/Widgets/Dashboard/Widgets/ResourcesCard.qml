@@ -14,7 +14,7 @@ Rectangle {
     property int lastCpuTotal: 0
     property bool hasGpu: false
 
-    color: Colors.bgSecondary
+    color: Theme.bgSecondary
     radius: Constants.sizeXs
     implicitWidth: mainLayout.implicitWidth + (Constants.sizeLg * 2)
     implicitHeight: mainLayout.implicitHeight + (Constants.sizeLg * 2)
@@ -124,26 +124,26 @@ Rectangle {
         CircularGauge {
             label: " CPU"
             value: root.cpuUsage
-            accentColor: Colors.cyan
+            accentColor: Theme.cyan
         }
 
         CircularGauge {
             label: " RAM"
             value: root.memUsage
-            accentColor: Colors.purple
+            accentColor: Theme.purple
         }
 
         CircularGauge {
             label: "󰢮 GPU"
             value: root.gpuUsage
-            accentColor: Colors.yellow
+            accentColor: Theme.yellow
             visible: root.hasGpu
         }
 
         CircularGauge {
             label: "󰋊 DISK"
             value: root.diskUsage
-            accentColor: Colors.yellow
+            accentColor: Theme.yellow
         }
 
     }
@@ -151,7 +151,7 @@ Rectangle {
     component CircularGauge: Item {
         property string label: ""
         property int value: 0
-        property color accentColor: Colors.muted
+        property color accentColor: Theme.muted
 
         onValueChanged: canvas.requestPaint()
         implicitWidth: 140
@@ -171,7 +171,7 @@ Rectangle {
                 var startAngle = 0.75 * Math.PI;
                 var spanAngle = 1.5 * Math.PI;
                 ctx.beginPath();
-                ctx.strokeStyle = Colors.border;
+                ctx.strokeStyle = Theme.border;
                 ctx.lineWidth = 5;
                 ctx.lineCap = "round";
                 ctx.arc(cx, cy, r, startAngle, startAngle + spanAngle);
@@ -196,7 +196,7 @@ Rectangle {
             text: value + "%"
             font.pixelSize: Constants.sizeLg
             font.weight: Font.Medium
-            color: value > 0 ? accentColor : Colors.muted
+            color: value > 0 ? accentColor : Theme.muted
         }
 
         ThemedText {
@@ -204,7 +204,7 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: Constants.sizeSm
             text: label
-            color: Colors.muted
+            color: Theme.muted
             font.pixelSize: Constants.sizeSm
             font.letterSpacing: 2
         }

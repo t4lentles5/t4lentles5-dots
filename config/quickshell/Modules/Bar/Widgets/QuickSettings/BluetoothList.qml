@@ -19,7 +19,7 @@ Rectangle {
     visible: opacity > 0
     clip: true
     radius: Constants.sizeXs
-    color: Colors.bgSecondary
+    color: Theme.bgSecondary
 
     Timer {
         id: scanTimeout
@@ -48,7 +48,7 @@ Rectangle {
             ThemedText {
                 anchors.centerIn: parent
                 text: "󰑐"
-                color: Colors.muted
+                color: Theme.muted
                 font.pixelSize: Constants.sizeMd
             }
 
@@ -65,7 +65,7 @@ Rectangle {
         ThemedText {
             Layout.alignment: Qt.AlignHCenter
             text: root.timedOut ? "No devices found" : "Scanning..."
-            color: Colors.muted
+            color: Theme.muted
             font.pixelSize: Constants.sizeSm
         }
 
@@ -87,7 +87,7 @@ Rectangle {
             text: "Devices"
             font.pixelSize: Constants.sizeSm
             font.letterSpacing: 1
-            color: Colors.muted
+            color: Theme.muted
         }
 
         Repeater {
@@ -106,7 +106,7 @@ Rectangle {
                     ThemedText {
                         text: "󰂱"
                         font.pixelSize: Constants.sizeXs
-                        color: Colors.blue
+                        color: Theme.blue
                         opacity: 0.5
                         Layout.alignment: Qt.AlignVCenter
                     }

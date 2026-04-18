@@ -189,7 +189,7 @@ CenterWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40
-                color: Colors.bgSecondary
+                color: Theme.bgSecondary
                 radius: Constants.sizeXl
 
                 RowLayout {
@@ -208,8 +208,8 @@ CenterWindow {
 
                         Layout.fillWidth: true
                         placeholderText: "Search clipboard history..."
-                        placeholderTextColor: Colors.muted
-                        color: Colors.fg
+                        placeholderTextColor: Theme.muted
+                        color: Theme.fg
                         font.pixelSize: Constants.sizeMd
                         font.family: Constants.fontFamily
                         background: null
@@ -242,8 +242,8 @@ CenterWindow {
 
             IconButton {
                 icon: "󰆴"
-                iconColor: Colors.red
-                hoverColor: Colors.red
+                iconColor: Theme.red
+                hoverColor: Theme.red
                 iconSize: Constants.sizeXl
                 visible: filteredModel.count > 0
                 onClicked: root.clearHistory()
@@ -262,14 +262,14 @@ CenterWindow {
 
                 ThemedText {
                     text: "󰅍"
-                    color: Colors.muted
+                    color: Theme.muted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
 
                 ThemedText {
                     text: "Clipboard is empty"
-                    color: Colors.muted
+                    color: Theme.muted
                     font.pixelSize: Constants.sizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -290,14 +290,14 @@ CenterWindow {
 
                 ThemedText {
                     text: "󰩉"
-                    color: Colors.muted
+                    color: Theme.muted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
 
                 ThemedText {
                     text: "No results found"
-                    color: Colors.muted
+                    color: Theme.muted
                     font.pixelSize: Constants.sizeMd
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -409,7 +409,7 @@ CenterWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Constants.sizeXs
-                        color: Colors.bgSecondary
+                        color: Theme.bgSecondary
 
                         Rectangle {
                             anchors.left: parent.left
@@ -420,7 +420,7 @@ CenterWindow {
                             anchors.bottomMargin: 8
                             width: 3
                             radius: 2
-                            color: Colors.purple
+                            color: Theme.purple
                         }
 
                     }
@@ -439,7 +439,7 @@ CenterWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Constants.sizeXs
-                        color: Colors.bgSecondary
+                        color: Theme.bgSecondary
                         opacity: hoverHandler.hovered && !isCurrent ? 1 : 0
 
                         Behavior on opacity {
@@ -461,7 +461,7 @@ CenterWindow {
 
                         ThemedText {
                             text: model.text
-                            color: isCurrent ? Colors.purple : Colors.fg
+                            color: isCurrent ? Theme.purple : Theme.fg
                             font.bold: isCurrent
                             font.pixelSize: Constants.sizeMd
                             wrapMode: Text.NoWrap
@@ -490,8 +490,8 @@ CenterWindow {
 
                         IconButton {
                             icon: ""
-                            iconColor: Colors.red
-                            hoverColor: Colors.red
+                            iconColor: Theme.red
+                            hoverColor: Theme.red
                             iconSize: Constants.sizeMd
                             Layout.alignment: Qt.AlignVCenter
                             onClicked: {

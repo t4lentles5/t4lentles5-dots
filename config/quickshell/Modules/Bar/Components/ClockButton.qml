@@ -3,7 +3,7 @@ import qs.Core
 
 BarButton {
     text: Qt.formatDateTime(new Date(), "HH:mm")
-    textColor: Colors.cyan
+    textColor: Theme.blue
 
     Timer {
         interval: 1000

@@ -2,9 +2,9 @@
 
 # t4lentles5 Dotfiles
 
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1775658862/output_pr1rht.gif" alt="Preview 1" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1775658639/output_eazyne.gif" alt="Preview 2" />
-
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776481208/output_jwytio.gif" alt="Preview 1" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776480694/output_vaxokt.gif" alt="Preview 2" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776483790/output_xzwcft.gif" alt="Preview 2" width="49%" />
 </div>
 
 ## 🚀 Quick Install
@@ -30,25 +30,6 @@ chmod +x install.sh
 
 ---
 
-## 🛠️ What exactly does the installation script do?
-
-The `install.sh` script is designed to prevent breaking your system. Here are the steps it performs automatically:
-
-1. **Installs `yay`**: Checks if the AUR helper is present; otherwise, it compiles and configures it.
-2. **Official Dependencies**: Installs modern tools like `eza`, `fzf`, `ripgrep`, `btop`, fonts (Nerd Fonts), Wayland ecosystem utilities (hyprlock, hypridle, etc.), and much more from the official Arch repositories.
-3. **AUR Dependencies**: Installs community add-ons, including GTK themes (`Catppuccin Mocha`), cursor themes (`Bibata`), icon themes (`Tela Circle Dracula`), among others.
-4. **Safe Backups 🛡️**: Before modifying your files, it makes a copy of your existing configurations in `~/.dotfiles_backup/YYYYMMDD_HHMMSS`.
-5. **Dotfiles Deployment**:
-   - Copies the contents from `config/` to `~/.config/`
-   - Deploys base files from `home/` to your home root `~/`
-   - Moves images from `Wallpapers/` to `~/Pictures/Wallpapers/`
-6. **Visual Autoconfiguration**: Runs extra utilities (`nwg-look`) to automatically inject your new GTK theme.
-7. **Disables dunst**: Stops and masks [dunst](https://dunst-project.org/) to avoid conflicts, since **all notifications are handled natively by QuickShell**.
-8. **Terminal Setup**: Changes your default shell to `zsh` using the new configuration.
-9. **Web Development Environment**: Installs `fnm` and prepares the latest LTS version of **Node.js**.
-
----
-
 ## 🔄 Next steps after installation
 
 - Once the script finishes, it is highly recommended to **reboot your computer** (e.g. using `sudo reboot`) to ensure your new `zsh` shell, global variables, themes, and system daemons are fully loaded.
@@ -69,16 +50,6 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
 
 ---
 
-## 📂 How is it organized?
-
-- 📁 `config/`: Everything intended for your system's `~/.config/` folder.
-- 📁 `etc/`: System-level configuration files (e.g. SDDM theme) copied to `/etc/`.
-- 📁 `home/`: Standalone hidden files (e.g. your `.zshrc`) that are placed directly in `~/`.
-- 📁 `Wallpapers/`: Your wallpaper collection used by the configuration.
-- 📜 `install.sh`: The main orchestration script.
-
----
-
 ## ⌨️ Keybinds
 
 > `SUPER` = Windows/Meta key. All keybinds are defined in `config/hypr/keybinds.conf`.
@@ -90,6 +61,7 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
 | `SUPER + Enter`         | Open terminal (Kitty)        |
 | `SUPER + SHIFT + Enter` | Open floating terminal       |
 | `SUPER + E`             | Open file manager (Nautilus) |
+| `SUPER + B`             | Open Browser                 |
 
 ### 🪟 Window Management
 
@@ -107,22 +79,16 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
 | `SUPER + N`         | Minimize window to scratchpad |
 | `SUPER + SHIFT + N` | Restore minimized windows     |
 
-### 🔧 Tools
-
-| Keybind             | Action                           |
-| ------------------- | -------------------------------- |
-| `SUPER + SHIFT + C` | Pick color (hyprpicker)          |
-| `SUPER + SPACE`     | Switch keyboard layout (US ↔ ES) |
-
 ### 🧰 Quickshell Widgets
 
-| Keybind             | Action                    |
-| ------------------- | ------------------------- |
-| `SUPER + A`         | Open app launcher         |
-| `SUPER + V`         | Open clipboard history    |
-| `SUPER + SHIFT + S` | Take screenshot           |
-| `SUPER + K`         | Open keybinds cheat sheet |
-| `CTRL + ALT + W`    | Open wallpaper picker     |
+| Keybind             | Action                     |
+| ------------------- | -------------------------- |
+| `SUPER + A`         | Open app launcher          |
+| `SUPER + V`         | Open clipboard history     |
+| `SUPER + SHIFT + S` | Take screenshot            |
+| `SUPER + K`         | Open keybinds cheat sheet  |
+| `CTRL + ALT + W`    | Open wallpaper selector    |
+| `CTRL + ALT + C`    | Open color scheme selector |
 
 ### 🧭 Navigation
 
@@ -141,33 +107,3 @@ The `install.sh` script is designed to prevent breaking your system. Here are th
 | `SUPER + SHIFT + 1..0`   | Send window to workspace 1–10 |
 | `CTRL + SUPER + ←/→`     | Previous / next workspace     |
 | `SUPER + Scroll Up/Down` | Scroll through workspaces     |
-
----
-
-## ✏️ Customization
-
-- **Keybinds**: Edit `config/hypr/keybinds.conf`.
-- **Monitor setup**: Edit `config/hypr/monitors.conf` — see the [Hyprland wiki](https://wiki.hyprland.org/Configuring/Monitors/) for options.
-- **Keyboard layout**: The default is `us,es` (toggle with `SUPER + SPACE`). Change it in `config/hypr/userprefs.conf` under `input.kb_layout`.
-- **Colors / borders**: Edit the `rgba()` values in `config/hypr/userprefs.conf` to match your preferred palette.
-- **Autostart apps**: Add or remove entries in `config/hypr/autostart.conf`.
-- **Wallpapers**: Drop new wallpapers into `~/Pictures/Wallpapers/` and use the wallpaper picker (`CTRL + ALT + W`).
-
----
-
-## 🆘 Troubleshooting
-
-| Problem                           | Solution                                                                   |
-| --------------------------------- | -------------------------------------------------------------------------- |
-| Quickshell widgets not responding | Make sure `quickshell` is running: `quickshell &`                          |
-| Clipboard history empty           | Check `wl-paste` and `cliphist` are installed and running                  |
-| Wrong keyboard layout             | Verify `kb_layout` in `userprefs.conf`; toggle with `SUPER + SPACE`        |
-| GTK theme not applied             | Run `nwg-look` manually after logging in                                   |
-| Fonts look broken                 | Install a Nerd Font manually: `yay -S ttf-jetbrains-mono-nerd`             |
-| `yay` not found after install     | Restart your shell or run `source ~/.zshrc`                                |
-| Notifications not appearing       | They are handled by QuickShell, not dunst. Make sure QuickShell is running |
-| Want to use dunst instead?        | Run `systemctl --user unmask dunst.service` and restore its D-Bus file     |
-
----
-
-I hope you enjoy this environment! ✨

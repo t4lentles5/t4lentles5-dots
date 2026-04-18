@@ -5,12 +5,12 @@ Rectangle {
     property var widget
     property alias text: layoutText.text
     property alias mouseArea: mouseArea
-    property color textColor: Colors.fg
+    property color textColor: Theme.fg
     property int horizontalPadding: Constants.sizeLg
     property int fontSize: Constants.sizeSm
     property bool isButton: true
 
-    color: Colors.bgSecondary
+    color: Theme.bgSecondary
     radius: Constants.sizeLg
     implicitWidth: layoutText.implicitWidth + (horizontalPadding * 2)
     implicitHeight: 32
