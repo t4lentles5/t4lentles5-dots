@@ -2,9 +2,8 @@
 
 # t4lentles5 Dotfiles
 
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776481208/output_jwytio.gif" alt="Preview 1" width="49%" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776480694/output_vaxokt.gif" alt="Preview 2" width="49%" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776550272/output_kb4cib.gif" alt="Preview 3" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776553339/output_ddu2iw.webp" alt="Preview 1" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776552748/output_opt5gz.webp" alt="Preview 2" width="49%" />
 </div>
 
 ## 🚀 Quick Install
