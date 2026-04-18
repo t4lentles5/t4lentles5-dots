@@ -23,7 +23,6 @@ return {
   },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   { "ellisonleao/gruvbox.nvim", priority = 1000 },
-  { "shaunsingh/nord.nvim", priority = 1000 },
   {
     "rose-pine/neovim",
     name = "rose-pine",
@@ -34,7 +33,4 @@ return {
     },
   },
   { "rebelot/kanagawa.nvim", priority = 1000 },
-  { "sainnhe/everforest", priority = 1000 },
-  { "navarasu/onedark.nvim", priority = 1000 },
-  { "Shatur/neovim-ayu", priority = 1000 },
 }

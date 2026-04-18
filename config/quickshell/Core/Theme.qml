@@ -23,7 +23,7 @@ QtObject {
         },
         "light": {
             "name": "Default Light",
-            "bg": '#dcccfa',
+            "bg": '#e8dbff',
             "bgSecondary": '#ede6fb',
             "fg": '#1e1a2e',
             "muted": '#6b6489',
@@ -39,7 +39,7 @@ QtObject {
         "dark": {
             "name": "Tokyo Night",
             "bg": "#1a1b26",
-            "bgSecondary": "#24283b66",
+            "bgSecondary": "#24283b",
             "fg": "#c0caf5",
             "muted": "#565f89",
             "cyan": "#7dcfff",
@@ -52,7 +52,7 @@ QtObject {
         "light": {
             "name": "Tokyo Night Day",
             "bg": "#e1e2e7",
-            "bgSecondary": "#c4c8da66",
+            "bgSecondary": "#c4c8da",
             "fg": "#3760bf",
             "muted": "#848cb5",
             "cyan": "#007197",
@@ -67,7 +67,7 @@ QtObject {
         "dark": {
             "name": "Catppuccin Mocha",
             "bg": "#1e1e2e",
-            "bgSecondary": "#31324466",
+            "bgSecondary": "#313244",
             "fg": "#cdd6f4",
             "muted": "#6c7086",
             "cyan": "#89dceb",
@@ -80,7 +80,7 @@ QtObject {
         "light": {
             "name": "Catppuccin Latte",
             "bg": "#eff1f5",
-            "bgSecondary": "#ccd0da66",
+            "bgSecondary": "#ccd0da",
             "fg": "#4c4f69",
             "muted": "#9ca0b0",
             "cyan": "#04a5e5",
@@ -91,39 +91,11 @@ QtObject {
             "green": "#40a02b"
         }
     }, {
-        "name": "Nord",
-        "dark": {
-            "name": "Nord",
-            "bg": "#2e3440",
-            "bgSecondary": "#3b425266",
-            "fg": "#eceff4",
-            "muted": "#4c566a",
-            "cyan": "#88c0d0",
-            "purple": "#b48ead",
-            "red": "#bf616a",
-            "yellow": "#ebcb8b",
-            "blue": "#81a1c1",
-            "green": "#a3be8c"
-        },
-        "light": {
-            "name": "Nord Light",
-            "bg": "#eceff4",
-            "bgSecondary": "#d8dee966",
-            "fg": "#2e3440",
-            "muted": "#4c566a",
-            "cyan": "#88c0d0",
-            "purple": "#b48ead",
-            "red": "#bf616a",
-            "yellow": "#ebcb8b",
-            "blue": "#5e81ac",
-            "green": "#a3be8c"
-        }
-    }, {
         "name": "Gruvbox",
         "dark": {
             "name": "Gruvbox Dark",
             "bg": "#1d2021",
-            "bgSecondary": "#3c383666",
+            "bgSecondary": "#3c3836",
             "fg": "#ebdbb2",
             "muted": "#665c54",
             "cyan": "#8ec07c",
@@ -136,7 +108,7 @@ QtObject {
         "light": {
             "name": "Gruvbox Light",
             "bg": "#fbf1c7",
-            "bgSecondary": "#ebdbb266",
+            "bgSecondary": "#ebdbb2",
             "fg": "#3c3836",
             "muted": "#928374",
             "cyan": "#427b58",
@@ -151,7 +123,7 @@ QtObject {
         "dark": {
             "name": "Rose Pine",
             "bg": "#191724",
-            "bgSecondary": "#1f1d2e66",
+            "bgSecondary": "#1f1d2e",
             "fg": "#e0def4",
             "muted": "#6e6a86",
             "cyan": "#9ccfd8",
@@ -164,7 +136,7 @@ QtObject {
         "light": {
             "name": "Rose Pine Dawn",
             "bg": "#faf4ed",
-            "bgSecondary": "#f2e9e166",
+            "bgSecondary": "#f2e9e1",
             "fg": "#575279",
             "muted": "#9893a5",
             "cyan": "#56949f",
@@ -175,39 +147,11 @@ QtObject {
             "green": "#56949f"
         }
     }, {
-        "name": "Everforest",
-        "dark": {
-            "name": "Everforest",
-            "bg": "#2d353b",
-            "bgSecondary": "#343f4466",
-            "fg": "#d3c6aa",
-            "muted": "#859289",
-            "cyan": "#83c092",
-            "purple": "#d699b6",
-            "red": "#e67e80",
-            "yellow": "#dbbc7f",
-            "blue": "#7fbbb3",
-            "green": "#a7c080"
-        },
-        "light": {
-            "name": "Everforest Light",
-            "bg": "#fdf6e3",
-            "bgSecondary": "#f4f0d966",
-            "fg": "#5c6a72",
-            "muted": "#939f91",
-            "cyan": "#35a77c",
-            "purple": "#df69ba",
-            "red": "#f85552",
-            "yellow": "#dfa000",
-            "blue": "#3a94c5",
-            "green": "#8da101"
-        }
-    }, {
         "name": "Kanagawa",
         "dark": {
             "name": "Kanagawa",
             "bg": "#1f1f28",
-            "bgSecondary": "#2a2a3766",
+            "bgSecondary": "#2a2a37",
             "fg": "#dcd7ba",
             "muted": "#727169",
             "cyan": "#7fb4ca",
@@ -220,7 +164,7 @@ QtObject {
         "light": {
             "name": "Kanagawa Lotus",
             "bg": "#f2ecbc",
-            "bgSecondary": "#e5ddb066",
+            "bgSecondary": "#e5ddb0",
             "fg": "#545464",
             "muted": "#8a8980",
             "cyan": "#6693bf",
@@ -229,62 +173,6 @@ QtObject {
             "yellow": "#77713f",
             "blue": "#4d699b",
             "green": "#6f894e"
-        }
-    }, {
-        "name": "One",
-        "dark": {
-            "name": "One Dark",
-            "bg": "#282c34",
-            "bgSecondary": "#3e445166",
-            "fg": "#abb2bf",
-            "muted": "#5c6370",
-            "cyan": "#56b6c2",
-            "purple": "#c678dd",
-            "red": "#e06c75",
-            "yellow": "#e5c07b",
-            "blue": "#61afef",
-            "green": "#98c379"
-        },
-        "light": {
-            "name": "One Light",
-            "bg": "#fafafa",
-            "bgSecondary": "#f0f0f066",
-            "fg": "#383a42",
-            "muted": "#a0a1a7",
-            "cyan": "#0184bc",
-            "purple": "#a626a4",
-            "red": "#e45649",
-            "yellow": "#c18401",
-            "blue": "#4078f2",
-            "green": "#50a14f"
-        }
-    }, {
-        "name": "Ayu",
-        "dark": {
-            "name": "Ayu Dark",
-            "bg": "#0b0e14",
-            "bgSecondary": "#11151c66",
-            "fg": "#bfbdb6",
-            "muted": "#565b66",
-            "cyan": "#73b8ff",
-            "purple": "#d2a6ff",
-            "red": "#d95757",
-            "yellow": "#e6b450",
-            "blue": "#59c2ff",
-            "green": "#aad94c"
-        },
-        "light": {
-            "name": "Ayu Light",
-            "bg": "#fafafa",
-            "bgSecondary": "#f0f0f066",
-            "fg": "#5c6166",
-            "muted": "#8a9199",
-            "cyan": "#55b4d4",
-            "purple": "#a37acc",
-            "red": "#f07171",
-            "yellow": "#f2ae49",
-            "blue": "#399ee6",
-            "green": "#86b300"
         }
     }]
     property string currentScheme: "Default"
@@ -386,13 +274,6 @@ QtObject {
             nvimTheme = "catppuccin-latte";
             background = "light";
             break;
-        case "Nord":
-            nvimTheme = "nord";
-            break;
-        case "Nord Light":
-            nvimTheme = "nord";
-            background = "light";
-            break;
         case "Gruvbox Dark":
             nvimTheme = "gruvbox";
             break;
@@ -407,32 +288,11 @@ QtObject {
             nvimTheme = "rose-pine-dawn";
             background = "light";
             break;
-        case "Everforest":
-            nvimTheme = "everforest";
-            break;
-        case "Everforest Light":
-            nvimTheme = "everforest";
-            background = "light";
-            break;
         case "Kanagawa":
             nvimTheme = "kanagawa-wave";
             break;
         case "Kanagawa Lotus":
             nvimTheme = "kanagawa-lotus";
-            background = "light";
-            break;
-        case "One Dark":
-            nvimTheme = "onedark";
-            break;
-        case "One Light":
-            nvimTheme = "onedark";
-            background = "light";
-            break;
-        case "Ayu Dark":
-            nvimTheme = "ayu-dark";
-            break;
-        case "Ayu Light":
-            nvimTheme = "ayu-light";
             background = "light";
             break;
         default:

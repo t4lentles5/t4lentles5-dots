@@ -4,7 +4,7 @@
 
 <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776481208/output_jwytio.gif" alt="Preview 1" width="49%" />
 <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776480694/output_vaxokt.gif" alt="Preview 2" width="49%" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776483790/output_xzwcft.gif" alt="Preview 2" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776550272/output_kb4cib.gif" alt="Preview 3" width="49%" />
 </div>
 
 ## 🚀 Quick Install
@@ -30,14 +30,14 @@ chmod +x install.sh
 
 ---
 
-## 🔄 Next steps after installation
+## Next steps after installation
 
 - Once the script finishes, it is highly recommended to **reboot your computer** (e.g. using `sudo reboot`) to ensure your new `zsh` shell, global variables, themes, and system daemons are fully loaded.
 - If anything fails, remember you have complete copies of your previous configurations under your user folder in `~/.dotfiles_backup/`.
 
 ---
 
-## 🧩 Stack & Components
+## Stack & Components
 
 | Component         | Tool                                                 |
 | ----------------- | ---------------------------------------------------- |
@@ -50,11 +50,11 @@ chmod +x install.sh
 
 ---
 
-## ⌨️ Keybinds
+## Keybinds
 
 > `SUPER` = Windows/Meta key. All keybinds are defined in `config/hypr/keybinds.conf`.
 
-### 🖥️ Applications
+### Applications
 
 | Keybind                 | Action                       |
 | ----------------------- | ---------------------------- |
@@ -63,7 +63,7 @@ chmod +x install.sh
 | `SUPER + E`             | Open file manager (Nautilus) |
 | `SUPER + B`             | Open Browser                 |
 
-### 🪟 Window Management
+### Window Management
 
 | Keybind             | Action                        |
 | ------------------- | ----------------------------- |
@@ -79,7 +79,7 @@ chmod +x install.sh
 | `SUPER + N`         | Minimize window to scratchpad |
 | `SUPER + SHIFT + N` | Restore minimized windows     |
 
-### 🧰 Quickshell Widgets
+### Quickshell Widgets
 
 | Keybind             | Action                     |
 | ------------------- | -------------------------- |
@@ -90,7 +90,7 @@ chmod +x install.sh
 | `CTRL + ALT + W`    | Open wallpaper selector    |
 | `CTRL + ALT + C`    | Open color scheme selector |
 
-### 🧭 Navigation
+### Navigation
 
 | Keybind                         | Action                     |
 | ------------------------------- | -------------------------- |
@@ -99,7 +99,7 @@ chmod +x install.sh
 | `SUPER + ALT + ←/→/↑/↓`         | Resize active window       |
 | `SUPER + ALT + SHIFT + ←/→/↑/↓` | Swap window with neighbor  |
 
-### 🗃️ Workspaces
+### Workspaces
 
 | Keybind                  | Action                        |
 | ------------------------ | ----------------------------- |
