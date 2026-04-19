@@ -1,0 +1,30 @@
+[manager]
+cwd = { fg = "cyan" }
+hovered = { fg = "#030107", bg = "blue" }
+tab_active = { fg = "#030107", bg = "blue" }
+tab_inactive = { fg = "#d1d1d1", bg = "16" }
+border_style = { fg = "bright-black" }
+
+[mode]
+normal_main = { fg = "#030107", bg = "blue", bold = true }
+normal_alt = { fg = "blue", bg = "16" }
+select_main = { fg = "#030107", bg = "green", bold = true }
+select_alt = { fg = "green", bg = "16" }
+unset_main = { fg = "#030107", bg = "magenta", bold = true }
+unset_alt = { fg = "magenta", bg = "16" }
+
+[status]
+separator_open  = ""
+separator_close = ""
+separator_style = { fg = "16", bg = "16" }
+mode_normal = { fg = "#030107", bg = "blue", bold = true }
+mode_select = { fg = "#030107", bg = "green", bold = true }
+mode_unset  = { fg = "#030107", bg = "magenta", bold = true }
+progress_label = { fg = "#d1d1d1", bold = true }
+progress_normal = { fg = "blue", bg = "16" }
+progress_error = { fg = "red", bg = "16" }
+permissions_t = { fg = "blue" }
+permissions_r = { fg = "yellow" }
+permissions_w = { fg = "red" }
+permissions_x = { fg = "green" }
+permissions_s = { fg = "bright-black" }

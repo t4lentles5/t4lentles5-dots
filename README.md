@@ -38,14 +38,14 @@ chmod +x install.sh
 
 ## Stack & Components
 
-| Component         | Tool                                                 |
-| ----------------- | ---------------------------------------------------- |
-| **Compositor**    | [Hyprland](https://hyprland.org/)                    |
-| **Shell**         | Zsh + [Starship](https://starship.rs/) prompt        |
-| **Terminal**      | [Kitty](https://sw.kovidgoyal.net/kitty/)            |
-| **Editor**        | [Neovim](https://neovim.io/)                         |
-| **File Manager**  | Nautilus / [Ranger](https://ranger.github.io/) (TUI) |
-| **Bar / Widgets** | [Quickshell](https://quickshell.org/)                |
+| Component         | Tool                                          |
+| ----------------- | --------------------------------------------- |
+| **Compositor**    | [Hyprland](https://hyprland.org/)             |
+| **Shell**         | Zsh + [Starship](https://starship.rs/) prompt |
+| **Terminal**      | [Kitty](https://sw.kovidgoyal.net/kitty/)     |
+| **Editor**        | [Neovim](https://neovim.io/)                  |
+| **File Manager**  | Nautilus / Yazi (TUI)                         |
+| **Bar / Widgets** | [Quickshell](https://quickshell.org/)         |
 
 ---
 

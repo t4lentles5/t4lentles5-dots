@@ -42,7 +42,7 @@ dependencies=(
   hyprsunset imagemagick inetutils iwd jq lazygit loupe nautilus network-manager-applet
   networkmanager noto-fonts-emoji nwg-look openssl pacman-contrib pamixer pavucontrol
   pipewire pipewire-alsa pipewire-audio pipewire-pulse python-gobject python-pygments
-  python-pip ranger rfkill ripgrep starship ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
+  python-pip yazi rfkill ripgrep starship ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
   tumbler unzip upower wireplumber wl-clipboard wlsunset
   xclip xdg-desktop-portal-gtk zsh zsh-autosuggestions zsh-history-substring-search
   zsh-syntax-highlighting brightnessctl blueman bluez bluez-utils grim slurp cliphist

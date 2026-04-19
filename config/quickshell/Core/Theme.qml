@@ -193,6 +193,7 @@ QtObject {
     property Process kittyProc
     property Process gtkProc
     property Process nvimProc
+    property Process yaziProc
 
     function applyScheme(scheme) {
         currentScheme = scheme.name;
@@ -212,6 +213,7 @@ QtObject {
         applyKittyTheme();
         applyGtkMode();
         applyNvimTheme(scheme.name);
+        applyYaziTheme();
     }
 
     function applyKittyTheme() {
@@ -220,7 +222,7 @@ QtObject {
         let c7 = fg;
         let c8 = muted;
         let c15 = fg;
-        let theme = "" + "foreground              " + fg + "\n" + "background              " + bg + "\n" + "selection_foreground    " + bg + "\n" + "selection_background    " + purple + "\n" + "cursor                  " + fg + "\n" + "cursor_text_color       " + bg + "\n" + "url_color               " + blue + "\n" + "active_border_color     " + purple + "\n" + "inactive_border_color   " + muted + "\n" + "bell_border_color       " + yellow + "\n" + "active_tab_foreground   " + bg + "\n" + "active_tab_background   " + purple + "\n" + "inactive_tab_foreground " + fg + "\n" + "inactive_tab_background " + bg + "\n" + "tab_bar_background      " + bg + "\n" + "color0  " + c0 + "\n" + "color8  " + c8 + "\n" + "color1  " + red + "\n" + "color9  " + red + "\n" + "color2  " + green + "\n" + "color10 " + green + "\n" + "color3  " + yellow + "\n" + "color11 " + yellow + "\n" + "color4  " + blue + "\n" + "color12 " + blue + "\n" + "color5  " + purple + "\n" + "color13 " + purple + "\n" + "color6  " + cyan + "\n" + "color14 " + cyan + "\n" + "color7  " + c7 + "\n" + "color15 " + c15 + "\n";
+        let theme = "" + "foreground              " + fg + "\n" + "background              " + bg + "\n" + "selection_foreground    " + bg + "\n" + "selection_background    " + purple + "\n" + "cursor                  " + fg + "\n" + "cursor_text_color       " + bg + "\n" + "url_color               " + blue + "\n" + "active_border_color     " + purple + "\n" + "inactive_border_color   " + muted + "\n" + "bell_border_color       " + yellow + "\n" + "active_tab_foreground   " + bg + "\n" + "active_tab_background   " + purple + "\n" + "inactive_tab_foreground " + fg + "\n" + "inactive_tab_background " + bg + "\n" + "tab_bar_background      " + bg + "\n" + "color0  " + c0 + "\n" + "color8  " + c8 + "\n" + "color1  " + red + "\n" + "color9  " + red + "\n" + "color2  " + green + "\n" + "color10 " + green + "\n" + "color3  " + yellow + "\n" + "color11 " + yellow + "\n" + "color4  " + blue + "\n" + "color12 " + blue + "\n" + "color5  " + purple + "\n" + "color13 " + purple + "\n" + "color6  " + cyan + "\n" + "color14 " + cyan + "\n" + "color7  " + c7 + "\n" + "color15 " + c15 + "\n" + "color16 " + bgSecondary + "\n";
         kittyProc.running = false;
         kittyProc.command = ["bash", "-c", "echo '" + theme + "' > '" + home + "/.config/kitty/theme.conf' && kill -SIGUSR1 $(pidof kitty) 2>/dev/null || true"];
         kittyProc.running = true;
@@ -312,6 +314,14 @@ QtObject {
         nvimProc.running = true;
     }
 
+    function applyYaziTheme() {
+        let home = Quickshell.env("HOME");
+        let toml = "[manager]\n" + "cwd = { fg = \"cyan\" }\n" + "hovered = { fg = \"" + sanitizeColor(bg) + "\", bg = \"blue\" }\n" + "tab_active = { fg = \"" + sanitizeColor(bg) + "\", bg = \"blue\" }\n" + "tab_inactive = { fg = \"" + sanitizeColor(fg) + "\", bg = \"16\" }\n" + "border_style = { fg = \"bright-black\" }\n\n" + "[mode]\n" + "normal_main = { fg = \"" + sanitizeColor(bg) + "\", bg = \"blue\", bold = true }\n" + "normal_alt = { fg = \"blue\", bg = \"16\" }\n" + "select_main = { fg = \"" + sanitizeColor(bg) + "\", bg = \"green\", bold = true }\n" + "select_alt = { fg = \"green\", bg = \"16\" }\n" + "unset_main = { fg = \"" + sanitizeColor(bg) + "\", bg = \"magenta\", bold = true }\n" + "unset_alt = { fg = \"magenta\", bg = \"16\" }\n\n" + "[status]\n" + "separator_open  = \"\"\n" + "separator_close = \"\"\n" + "separator_style = { fg = \"16\", bg = \"16\" }\n" + "mode_normal = { fg = \"" + sanitizeColor(bg) + "\", bg = \"blue\", bold = true }\n" + "mode_select = { fg = \"" + sanitizeColor(bg) + "\", bg = \"green\", bold = true }\n" + "mode_unset  = { fg = \"" + sanitizeColor(bg) + "\", bg = \"magenta\", bold = true }\n" + "progress_label = { fg = \"" + sanitizeColor(fg) + "\", bold = true }\n" + "progress_normal = { fg = \"blue\", bg = \"16\" }\n" + "progress_error = { fg = \"red\", bg = \"16\" }\n" + "permissions_t = { fg = \"blue\" }\n" + "permissions_r = { fg = \"yellow\" }\n" + "permissions_w = { fg = \"red\" }\n" + "permissions_x = { fg = \"green\" }\n" + "permissions_s = { fg = \"bright-black\" }\n";
+        yaziProc.running = false;
+        yaziProc.command = ["bash", "-c", "mkdir -p '" + home + "/.config/yazi' && echo '" + toml + "' > '" + home + "/.config/yazi/theme.toml' && ya emit reload"];
+        yaziProc.running = true;
+    }
+
     function saveScheme() {
         let obj = {
             "name": currentScheme,
@@ -387,6 +397,7 @@ QtObject {
                     root.applyKittyTheme();
                     root.applyGtkMode();
                     root.applyNvimTheme(root.currentScheme);
+                    root.applyYaziTheme();
                 } catch (e) {
                     console.log("Colors: Error parsing config, using default");
                     root.applyScheme(root.themes[0].dark);
@@ -410,6 +421,9 @@ QtObject {
     }
 
     nvimProc: Process {
+    }
+
+    yaziProc: Process {
     }
 
 }
