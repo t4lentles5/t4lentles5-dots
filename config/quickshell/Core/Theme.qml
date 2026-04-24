@@ -188,6 +188,7 @@ QtObject {
     property color blue: themes[0].dark.blue
     property color blueArch: "#0a9cf5"
     property color green: themes[0].dark.green
+    property bool _wasDark: true
     property Process saver
     property Process loader
     property Process kittyProc
@@ -231,13 +232,15 @@ QtObject {
     function applyGtkMode() {
         let brightness = bg.r * 0.299 + bg.g * 0.587 + bg.b * 0.114;
         let isDark = brightness <= 0.5;
+        let modeChanged = (isDark !== _wasDark);
+        _wasDark = isDark;
         let darkVal = isDark ? "1" : "0";
         let gsVal = isDark ? "prefer-dark" : "prefer-light";
         let gtkThemeName = isDark ? "catppuccin-mocha-mauve-standard+default" : "catppuccin-latte-mauve-standard+default";
         let home = Quickshell.env("HOME");
         let themeDir = "/usr/share/themes/" + gtkThemeName + "/gtk-4.0";
         let configDir = home + "/.config/gtk-4.0";
-        let bashCmd = "sed -i 's/gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=" + darkVal + "/' '" + home + "/.config/gtk-3.0/settings.ini' '" + configDir + "/settings.ini' 2>/dev/null; " + "sed -i 's/^gtk-theme-name=.*/gtk-theme-name=" + gtkThemeName + "/' '" + home + "/.config/gtk-3.0/settings.ini' '" + configDir + "/settings.ini' 2>/dev/null; " + "gsettings set org.gnome.desktop.interface color-scheme '" + gsVal + "'; " + "gsettings set org.gnome.desktop.interface gtk-theme '" + gtkThemeName + "'; " + "rm -rf '" + configDir + "/assets' '" + configDir + "/gtk.css' '" + configDir + "/gtk-dark.css'; " + "ln -sf '" + themeDir + "/assets' '" + configDir + "/assets'; " + "ln -sf '" + themeDir + "/gtk.css' '" + configDir + "/gtk.css'; " + "ln -sf '" + themeDir + "/gtk-dark.css' '" + configDir + "/gtk-dark.css'; " + "killall -q nautilus || true";
+        let bashCmd = "sed -i 's/gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=" + darkVal + "/' '" + home + "/.config/gtk-3.0/settings.ini' '" + configDir + "/settings.ini' 2>/dev/null; " + "sed -i 's/^gtk-theme-name=.*/gtk-theme-name=" + gtkThemeName + "/' '" + home + "/.config/gtk-3.0/settings.ini' '" + configDir + "/settings.ini' 2>/dev/null; " + "gsettings set org.gnome.desktop.interface color-scheme '" + gsVal + "'; " + "gsettings set org.gnome.desktop.interface gtk-theme '" + gtkThemeName + "'; " + "rm -rf '" + configDir + "/assets' '" + configDir + "/gtk.css' '" + configDir + "/gtk-dark.css'; " + "ln -sf '" + themeDir + "/assets' '" + configDir + "/assets'; " + "ln -sf '" + themeDir + "/gtk.css' '" + configDir + "/gtk.css'; " + "ln -sf '" + themeDir + "/gtk-dark.css' '" + configDir + "/gtk-dark.css'" + (modeChanged ? "; killall -q nautilus || true" : "");
         gtkProc.running = false;
         gtkProc.command = ["bash", "-c", bashCmd];
         gtkProc.running = true;

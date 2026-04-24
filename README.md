@@ -2,13 +2,28 @@
 
 # t4lentles5 Dotfiles
 
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776553339/output_ddu2iw.webp" alt="Preview 1" width="49%" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776552748/output_opt5gz.webp" alt="Preview 2" width="49%" />
+**Aesthetic Hyprland rice for Arch Linux — dynamic theming, Quickshell widgets, and a polished workflow out of the box.**
+
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776553339/output_ddu2iw.webp" alt="Preview Dark" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777004625/output_ogo7wk.webp" alt="Preview Light" width="49%" />
+
 </div>
 
-## 🚀 Quick Install
+---
 
-Open your terminal and run the following commands:
+## ✨ Features
+
+- 🎨 **Dynamic Theming** — switch between 6 color schemes (Default, Tokyo Night, Catppuccin, Gruvbox, Rosé Pine, Kanagawa) with light/dark variants that instantly propagate across **all** apps: Kitty, GTK, Neovim, Yazi, and the bar itself.
+- 🖥️ **Quickshell Bar & Widgets** — custom bar with dashboard, app launcher, clipboard history, wallpaper selector, color scheme selector, screenshot tool, keybinds cheat sheet, and notification center.
+- 🖼️ **Wallpaper Selector** — browse and apply wallpapers directly from a widget, with separate Dark/Light collections.
+- 🔒 **Lock Screen** — `hyprlock` with custom styling.
+- ⚡ **Zsh** — configured with Starship prompt, fzf-tab, autosuggestions, syntax highlighting, and history substring search.
+- 📝 **Neovim** — full Lua config with lazy.nvim, auto-synced color scheme from the system theme.
+- 📁 **Yazi** — TUI file manager with dynamic theme integration.
+
+---
+
+## 🚀 Quick Install
 
 ```bash
 # Clone this repository (shallow clone to save space and time)
@@ -29,29 +44,75 @@ chmod +x install.sh
 
 ---
 
-## Next steps after installation
+## 🔧 Post-Installation Setup
 
-- Once the script finishes, it is highly recommended to **reboot your computer** (e.g. using `sudo reboot`) to ensure your new `zsh` shell, global variables, themes, and system daemons are fully loaded.
-- If anything fails, remember you have complete copies of your previous configurations under your user folder in `~/.dotfiles_backup/`.
+### 1. Reboot
+
+Once the script finishes, **reboot your computer** to ensure your new `zsh` shell, global variables, themes, and system daemons are fully loaded:
+
+```bash
+sudo reboot
+```
+
+### 2. Set your profile picture (`.face`)
+
+The Quickshell dashboard displays your user avatar from `~/.face`. Place a **square image** (PNG or JPG, 256×256 recommended) in your home directory:
+
+```bash
+# Copy your desired profile picture
+cp /path/to/your/avatar.png ~/.face
+```
+
+### 3. Set your wallpaper
+
+Wallpapers are stored in `~/Pictures/Wallpapers/` and are organized in `Dark/` and `Light/` sub-folders. You can add your own wallpapers to these directories and use the wallpaper selector widget (`Ctrl + Alt + W`) to apply them.
+
+### 4. Monitor Configuration
+
+The default monitor config is set to auto-detect. If you need custom resolution, refresh rate, or multi-monitor setup, edit:
+
+```bash
+~/.config/hypr/monitors.conf
+```
+
+Refer to the [Hyprland Wiki — Monitors](https://wiki.hyprland.org/Configuring/Monitors/) for syntax details.
+
+### 5. Restore from Backup
+
+If anything goes wrong, the installer creates a timestamped backup of your previous configuration:
+
+```
+~/.dotfiles_backup/<timestamp>/
+```
 
 ---
 
-## Stack & Components
+## 🎨 Color Schemes
 
-| Component         | Tool                                          |
-| ----------------- | --------------------------------------------- |
-| **Compositor**    | [Hyprland](https://hyprland.org/)             |
-| **Shell**         | Zsh + [Starship](https://starship.rs/) prompt |
-| **Terminal**      | [Kitty](https://sw.kovidgoyal.net/kitty/)     |
-| **Editor**        | [Neovim](https://neovim.io/)                  |
-| **File Manager**  | Nautilus / Yazi (TUI)                         |
-| **Bar / Widgets** | [Quickshell](https://quickshell.org/)         |
+All schemes include both **dark** and **light** variants, instantly switchable via `Ctrl + Alt + C`:
+
+| Scheme      | Dark Variant  | Light Variant   |
+| ----------- | ------------- | --------------- |
+| Default     | Default       | Default Light   |
+| Tokyo Night | Tokyo Night   | Tokyo Night Day |
+| Catppuccin  | Mocha         | Latte           |
+| Gruvbox     | Gruvbox Dark  | Gruvbox Light   |
+| Rosé Pine   | Rose Pine     | Rose Pine Dawn  |
+| Kanagawa    | Kanagawa Wave | Kanagawa Lotus  |
+
+When you switch a scheme, the following are updated **in real time**:
+
+- Quickshell bar & all widgets
+- Kitty terminal colors
+- GTK 3/4 theme (Catppuccin dark ↔ light)
+- Neovim color scheme
+- Yazi file manager theme
 
 ---
 
-## Keybinds
+## ⌨️ Keybinds
 
-> `SUPER` = Windows/Meta key. All keybinds are defined in `config/hypr/keybinds.conf`.
+> `SUPER` = Windows/Meta key.
 
 ### Applications
 
@@ -106,3 +167,100 @@ chmod +x install.sh
 | `SUPER + SHIFT + 1..0`   | Send window to workspace 1–10 |
 | `CTRL + SUPER + ←/→`     | Previous / next workspace     |
 | `SUPER + Scroll Up/Down` | Scroll through workspaces     |
+
+---
+
+## 🛠️ Customization
+
+### Adding Wallpapers
+
+Drop images into `~/Pictures/Wallpapers/Dark/` or `~/Pictures/Wallpapers/Light/`, then open the wallpaper selector with `Ctrl + Alt + W`.
+
+### Changing Default Applications
+
+Edit `~/.config/hypr/keybinds.conf` to change which apps are launched by each keybind.
+
+### Adjusting Animations
+
+Tweak animation curves and durations in `~/.config/hypr/animations.conf`.
+
+### Shell Aliases
+
+Common aliases defined in `~/.zshrc`:
+
+| Alias       | Command                        |
+| ----------- | ------------------------------ |
+| `cat`       | `bat --theme=base16`           |
+| `ls`        | `eza --icons -a`               |
+| `ll`        | `eza --icons -la`              |
+| `cls`       | `clear`                        |
+| `fastfetch` | `clear && fastfetch`           |
+| `update`    | `sudo pacman -Syu && yay -Syu` |
+
+---
+
+## ❓ Troubleshooting
+
+<details>
+<summary><b>Quickshell dashboard shows a generic avatar</b></summary>
+
+Place a square image at `~/.face` (PNG or JPG). The dashboard reads it from `$HOME/.face`. SDDM also uses this file for the login screen.
+
+```bash
+cp /path/to/avatar.png ~/.face
+```
+
+</details>
+
+<details>
+<summary><b>No wallpapers appear in the wallpaper selector</b></summary>
+
+Make sure `~/Pictures/Wallpapers/Dark/` and `~/Pictures/Wallpapers/Light/` exist and contain image files. The installer copies wallpapers from the repo if the `Wallpapers/` directory is present.
+
+</details>
+
+<details>
+<summary><b>GTK apps don't follow the theme change</b></summary>
+
+Nautilus is automatically restarted when switching between light ↔ dark mode. For other GTK apps, you may need to close and reopen them. The `nwg-look` tool is used during installation to apply the initial GTK settings.
+
+</details>
+
+<details>
+<summary><b>Notifications aren't showing</b></summary>
+
+The installer disables `dunst` because Quickshell handles notifications natively. If you installed another notification daemon, it may conflict. Check with:
+
+```bash
+systemctl --user status dunst.service
+```
+
+</details>
+
+<details>
+<summary><b>Some packages failed to install</b></summary>
+
+The installer will print warnings for any packages that couldn't be installed. Ensure your mirrors are up to date:
+
+```bash
+sudo pacman -Syy
+```
+
+For AUR packages, make sure `yay` is working correctly:
+
+```bash
+yay -Syu
+```
+
+</details>
+
+---
+
+## 🙏 Credits & Inspiration
+
+- [Hyprland](https://hypr.land/) — the Wayland compositor
+- [Quickshell](https://quickshell.org/) — the Qt-based shell framework
+- [Catppuccin](https://catppuccin.com/) — the GTK theme used for light/dark switching
+- [Tokyo Night](https://github.com/enkia/tokyo-night-vscode-theme) — color scheme inspiration
+- [Starship](https://starship.rs/) — the cross-shell prompt
+- The Arch & Hyprland communities for all the rice inspiration ❤️
