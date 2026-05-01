@@ -64,34 +64,6 @@ return {
   },
 
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" },
-    opts = {
-      heading = {
-        enabled = true,
-        sign = true,
-        style = "full",
-        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
-        left_pad = 1,
-      },
-      bullet = {
-        enabled = true,
-        icons = { "●", "○", "◆", "◇" },
-        right_pad = 1,
-        highlight = "render-markdownBullet",
-      },
-      checkbox = {
-        enabled = true,
-        unchecked = { icon = "󰄱 " },
-        checked = { icon = "󰱒 " },
-        custom = {
-          todo = { raw = "[-]", rendered = "󰥔 " },
-        },
-      },
-    },
-  },
-
-  {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
@@ -232,5 +204,11 @@ return {
       }
       alpha.setup(dashboard.config)
     end,
+  },
+
+  {
+    "ravibrock/spellwarn.nvim",
+    event = "VeryLazy",
+    config = true,
   },
 }

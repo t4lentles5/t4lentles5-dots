@@ -80,8 +80,17 @@ case "$MODE" in
 "full_delay" | "area_delay")
   NOTIFY_ID=$(notify-send -p -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in 5 seconds...")
   sleep 1
+  SILENT=false
   for i in {4..1}; do
-    notify-send -p -r $NOTIFY_ID -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in $i seconds..." >/dev/null 2>&1
+    if [ "$SILENT" = false ]; then
+      NEW_ID=$(notify-send -p -r $NOTIFY_ID -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in $i seconds..." 2>/dev/null)
+      if [ -z "$NEW_ID" ] || [ "$NEW_ID" != "$NOTIFY_ID" ]; then
+        if [ -n "$NEW_ID" ]; then
+          gdbus call --session --dest org.freedesktop.Notifications --object-path /org/freedesktop/Notifications --method org.freedesktop.Notifications.CloseNotification $NEW_ID >/dev/null 2>&1
+        fi
+        SILENT=true
+      fi
+    fi
     sleep 1
   done
   gdbus call --session --dest org.freedesktop.Notifications --object-path /org/freedesktop/Notifications --method org.freedesktop.Notifications.CloseNotification $NOTIFY_ID >/dev/null 2>&1

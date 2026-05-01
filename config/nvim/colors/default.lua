@@ -182,3 +182,131 @@ hl("@lsp.type.method", { link = "@method.call" })
 hl("@lsp.type.property", { link = "@property" })
 hl("@lsp.type.variable", { link = "@variable" })
 hl("@lsp.type.decorator", { link = "@attribute" })
+
+-- Standard UI Enhancements
+hl("TabLine", { bg = colors.bgSecondary, fg = colors.muted })
+hl("TabLineFill", { bg = colors.bgSecondary })
+hl("TabLineSel", { bg = colors.purple, fg = colors.bg })
+hl("Directory", { fg = colors.blue })
+hl("Title", { fg = colors.purple, bold = true })
+hl("ErrorMsg", { fg = colors.red, bg = colors.bg })
+hl("WarningMsg", { fg = colors.yellow })
+hl("ModeMsg", { fg = colors.fg, bold = true })
+hl("MoreMsg", { fg = colors.blue })
+hl("Question", { fg = colors.cyan })
+hl("Conceal", { fg = colors.muted })
+hl("SpellBad", { sp = colors.red, undercurl = true })
+hl("SpellCap", { sp = colors.yellow, undercurl = true })
+hl("SpellLocal", { sp = colors.cyan, undercurl = true })
+hl("SpellRare", { sp = colors.purple, undercurl = true })
+
+-- Diffs
+hl("DiffAdd", { bg = "#1e2e2e", fg = colors.green })
+hl("DiffChange", { bg = "#2d2a2e", fg = colors.yellow })
+hl("DiffDelete", { bg = "#3c1f1e", fg = colors.red })
+hl("DiffText", { bg = "#3e3a3e", fg = colors.fg })
+
+-- Diagnostic Enhancements
+hl("DiagnosticUnderlineError", { undercurl = true, sp = colors.red })
+hl("DiagnosticUnderlineWarn", { undercurl = true, sp = colors.yellow })
+hl("DiagnosticUnderlineInfo", { undercurl = true, sp = colors.blue })
+hl("DiagnosticUnderlineHint", { undercurl = true, sp = colors.cyan })
+
+hl("DiagnosticVirtualTextError", { bg = is_light and "#ffebeb" or "#2e1a1f", fg = colors.red })
+hl("DiagnosticVirtualTextWarn", { bg = is_light and "#fff5eb" or "#2e2a1f", fg = colors.yellow })
+hl("DiagnosticVirtualTextInfo", { bg = is_light and "#ebf5ff" or "#1a2a3f", fg = colors.blue })
+hl("DiagnosticVirtualTextHint", { bg = is_light and "#ebffff" or "#1a2f2f", fg = colors.cyan })
+
+-- Telescope
+hl("TelescopeMatching", { fg = colors.cyan, bold = true })
+hl("TelescopeSelection", { fg = colors.fg, bg = colors.bgSecondary, bold = true })
+hl("TelescopeSelectionCaret", { fg = colors.purple })
+hl("TelescopePromptPrefix", { fg = colors.purple })
+hl("TelescopePromptNormal", { fg = colors.fg, bg = colors.bg })
+hl("TelescopePromptBorder", { fg = colors.purple, bg = colors.bg })
+hl("TelescopeResultsNormal", { fg = colors.fg, bg = colors.bg })
+hl("TelescopeResultsBorder", { fg = colors.muted, bg = colors.bg })
+hl("TelescopePreviewNormal", { fg = colors.fg, bg = colors.bg })
+hl("TelescopePreviewBorder", { fg = colors.muted, bg = colors.bg })
+hl("TelescopeBorder", { fg = colors.muted, bg = colors.bg })
+hl("TelescopeTitle", { fg = colors.bg, bg = colors.purple, bold = true })
+hl("TelescopePromptTitle", { fg = colors.bg, bg = colors.purple, bold = true })
+hl("TelescopePreviewTitle", { fg = colors.bg, bg = colors.blue, bold = true })
+hl("TelescopeResultsTitle", { fg = colors.bg, bg = colors.muted, bold = true })
+
+-- Neo-tree
+hl("NeoTreeNormal", { fg = colors.fg, bg = colors.bgSecondary })
+hl("NeoTreeNormalNC", { fg = colors.fg, bg = colors.bgSecondary })
+hl("NeoTreeDirectoryIcon", { fg = colors.blue })
+hl("NeoTreeDirectoryName", { fg = colors.fg })
+hl("NeoTreeRootName", { fg = colors.purple, bold = true })
+hl("NeoTreeFileName", { fg = colors.fg })
+hl("NeoTreeFileIcon", { fg = colors.fg })
+hl("NeoTreeGitAdded", { fg = colors.green })
+hl("NeoTreeGitConflict", { fg = colors.red, bold = true })
+hl("NeoTreeGitDeleted", { fg = colors.red })
+hl("NeoTreeGitIgnored", { fg = colors.muted })
+hl("NeoTreeGitModified", { fg = colors.yellow })
+hl("NeoTreeGitUntracked", { fg = colors.cyan })
+hl("NeoTreeIndentMarker", { fg = colors.muted })
+hl("NeoTreeWinSeparator", { fg = colors.bgSecondary, bg = colors.bgSecondary })
+
+-- Cmp
+hl("CmpItemAbbr", { fg = colors.fg })
+hl("CmpItemAbbrDeprecated", { fg = colors.muted, strikethrough = true })
+hl("CmpItemAbbrMatch", { fg = colors.cyan, bold = true })
+hl("CmpItemAbbrMatchFuzzy", { fg = colors.cyan, bold = true })
+hl("CmpItemKind", { fg = colors.purple })
+hl("CmpItemMenu", { fg = colors.muted })
+hl("CmpPmenu", { bg = colors.bgSecondary })
+hl("CmpSel", { bg = colors.purple, fg = colors.bg })
+
+-- Notify
+hl("NotifyERRORBorder", { fg = colors.red })
+hl("NotifyWARNBorder", { fg = colors.yellow })
+hl("NotifyINFOBorder", { fg = colors.blue })
+hl("NotifyDEBUGBorder", { fg = colors.muted })
+hl("NotifyTRACEBorder", { fg = colors.purple })
+hl("NotifyERRORIcon", { fg = colors.red })
+hl("NotifyWARNIcon", { fg = colors.yellow })
+hl("NotifyINFOIcon", { fg = colors.blue })
+hl("NotifyDEBUGIcon", { fg = colors.muted })
+hl("NotifyTRACEIcon", { fg = colors.purple })
+hl("NotifyERRORTitle", { fg = colors.red })
+hl("NotifyWARNTitle", { fg = colors.yellow })
+hl("NotifyINFOTitle", { fg = colors.blue })
+hl("NotifyDEBUGTitle", { fg = colors.muted })
+hl("NotifyTRACETitle", { fg = colors.purple })
+
+-- Alpha
+hl("AlphaHeader", { fg = colors.purple })
+hl("AlphaButtons", { fg = colors.cyan })
+hl("AlphaShortcut", { fg = colors.yellow })
+hl("AlphaFooter", { fg = colors.muted })
+
+-- Lazy
+hl("LazyProgressDone", { fg = colors.purple, bold = true })
+hl("LazyProgressTodo", { fg = colors.muted, bold = true })
+hl("LazyNormal", { fg = colors.fg, bg = colors.bgSecondary })
+
+-- Mason
+hl("MasonNormal", { fg = colors.fg, bg = colors.bgSecondary })
+
+-- WhichKey
+hl("WhichKey", { fg = colors.cyan })
+hl("WhichKeyGroup", { fg = colors.blue })
+hl("WhichKeyDesc", { fg = colors.purple })
+hl("WhichKeySeperator", { fg = colors.muted })
+hl("WhichKeySeparator", { fg = colors.muted })
+hl("WhichKeyFloat", { bg = colors.bgSecondary })
+hl("WhichKeyValue", { fg = colors.muted })
+
+-- Noice
+hl("NoiceCmdlinePopup", { bg = colors.bgSecondary })
+hl("NoiceCmdlinePopupBorder", { fg = colors.purple, bg = colors.bgSecondary })
+hl("NoiceCmdlineIcon", { fg = colors.cyan })
+
+-- Lualine
+hl("lualine_a_normal", { bg = colors.purple, fg = colors.bg, bold = true })
+hl("lualine_b_normal", { bg = colors.bgSecondary, fg = colors.fg })
+hl("lualine_c_normal", { bg = colors.bgSecondary, fg = colors.fg })

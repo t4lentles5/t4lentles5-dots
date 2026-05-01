@@ -87,86 +87,51 @@ If anything goes wrong, the installer creates a timestamped backup of your previ
 
 ---
 
-## 🎨 Color Schemes
+## 🖼️ Gallery & Color Schemes
 
-All schemes include both **dark** and **light** variants, instantly switchable via `Ctrl + Alt + C`:
+All schemes include both **dark** and **light** variants, instantly switchable via `Ctrl + Alt + C`. When you switch a scheme, the bar, widgets, Kitty, GTK, Neovim, and Yazi are updated **in real time**.
 
-| Scheme      | Dark Variant  | Light Variant   |
-| ----------- | ------------- | --------------- |
-| Default     | Default       | Default Light   |
-| Tokyo Night | Tokyo Night   | Tokyo Night Day |
-| Catppuccin  | Mocha         | Latte           |
-| Gruvbox     | Gruvbox Dark  | Gruvbox Light   |
-| Rosé Pine   | Rose Pine     | Rose Pine Dawn  |
-| Kanagawa    | Kanagawa Wave | Kanagawa Lotus  |
+### Themes (Dark / Light)
 
-When you switch a scheme, the following are updated **in real time**:
+| Theme           |                                                            Dark Variant                                                            |                                                            Light Variant                                                            |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------: |
+| **Default**     |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593703/Shot-2026-04-30-174953_caxdjl.png" alt="Default Dark">   |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175024_fpjee6.png" alt="Default Light">   |
+| **Tokyo Night** | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-175217_dawyas.png" alt="Tokyo Night Dark"> | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175231_kafjtn.png" alt="Tokyo Night Light"> |
+| **Catppuccin**  | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-175508_rfpwzv.png" alt="Catppuccin Mocha"> | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175530_brfkwm.png" alt="Catppuccin Latte">  |
+| **Gruvbox**     |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175656_elwzip.png" alt="Gruvbox Dark">   |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593703/Shot-2026-04-30-175712_s0fe5i.png" alt="Gruvbox Light">   |
+| **Rosé Pine**   |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593704/Shot-2026-04-30-175815_ijrk0x.png" alt="Rosé Pine Dark">  |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593704/Shot-2026-04-30-175828_d8v8e7.png" alt="Rosé Pine Light">  |
+| **Kanagawa**    |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593705/Shot-2026-04-30-175844_otiwvr.png" alt="Kanagawa Dark">   |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593704/Shot-2026-04-30-175900_kldojd.png" alt="Kanagawa Light">   |
 
-- Quickshell bar & all widgets
-- Kitty terminal colors
-- GTK 3/4 theme (Catppuccin dark ↔ light)
-- Neovim color scheme
-- Yazi file manager theme
+### Widgets
+
+#### Bar Widgets
+
+<p align="center">
+  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777594199/output_ye5e3y.gif" alt="Bar Overview" width="100%" />
+</p>
+
+#### Quickshell Menus & Overlays
+
+|                                                              App Launcher                                                               |                                                           Clipboard History                                                            |                                                          Wallpaper Selector                                                          |
+| :-------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------: |
+|     <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181612_uete4i.png" alt="App Launcher">      |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181909_xiyiax.png" alt="Clipboard History">   | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181702_lrmdcf.png" alt="Wallpaper Selector"> |
+|                                                        **Color Scheme Selector**                                                        |                                                        **Keybinds Cheat Sheet**                                                        |                                                         **Screenshot Tool**                                                          |
+| <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181728_u3kycg.png" alt="Color Scheme Selector"> | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-182000_v3x2uf.png" alt="Keybinds Cheat Sheet"> |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-182023_bxan34.png" alt="Screenshot Tool">   |
 
 ---
 
 ## ⌨️ Keybinds
 
-> `SUPER` = Windows/Meta key.
+> **Tip:** You don't need to memorize these! Press `SUPER + K` at any time to open the built-in interactive **Keybinds Cheat Sheet** directly on your desktop.
 
-### Applications
+- `SUPER` = Windows/Meta key
+- `SUPER + Enter` = Open Terminal (Kitty)
+- `SUPER + A` = App Launcher
+- `SUPER + K` = Keybinds Cheat Sheet
+- `CTRL + ALT + C` = Color Scheme Selector
+- `CTRL + ALT + W` = Wallpaper Selector
 
-| Keybind                 | Action                       |
-| ----------------------- | ---------------------------- |
-| `SUPER + Enter`         | Open terminal (Kitty)        |
-| `SUPER + SHIFT + Enter` | Open floating terminal       |
-| `SUPER + E`             | Open file manager (Nautilus) |
-| `SUPER + B`             | Open Browser                 |
-
-### Window Management
-
-| Keybind             | Action                        |
-| ------------------- | ----------------------------- |
-| `SUPER + Q`         | Close active window           |
-| `SUPER + SHIFT + M` | Exit Hyprland                 |
-| `SUPER + L`         | Lock screen (hyprlock)        |
-| `SUPER + W`         | Toggle floating mode          |
-| `SUPER + F`         | Toggle fullscreen             |
-| `SUPER + P`         | Toggle pseudo-tiling          |
-| `SUPER + J`         | Toggle split direction        |
-| `SUPER + C`         | Center floating window        |
-| `SUPER + SHIFT + P` | Pin window on all workspaces  |
-| `SUPER + N`         | Minimize window to scratchpad |
-| `SUPER + SHIFT + N` | Restore minimized windows     |
-
-### Quickshell Widgets
-
-| Keybind             | Action                     |
-| ------------------- | -------------------------- |
-| `SUPER + A`         | Open app launcher          |
-| `SUPER + V`         | Open clipboard history     |
-| `SUPER + SHIFT + S` | Take screenshot            |
-| `SUPER + K`         | Open keybinds cheat sheet  |
-| `CTRL + ALT + W`    | Open wallpaper selector    |
-| `CTRL + ALT + C`    | Open color scheme selector |
-
-### Navigation
-
-| Keybind                         | Action                     |
-| ------------------------------- | -------------------------- |
-| `SUPER + ←/→/↑/↓`               | Move focus between windows |
-| `SUPER + SHIFT + ←/→/↑/↓`       | Move window position       |
-| `SUPER + ALT + ←/→/↑/↓`         | Resize active window       |
-| `SUPER + ALT + SHIFT + ←/→/↑/↓` | Swap window with neighbor  |
-
-### Workspaces
-
-| Keybind                  | Action                        |
-| ------------------------ | ----------------------------- |
-| `SUPER + 1..0`           | Switch to workspace 1–10      |
-| `SUPER + SHIFT + 1..0`   | Send window to workspace 1–10 |
-| `CTRL + SUPER + ←/→`     | Previous / next workspace     |
-| `SUPER + Scroll Up/Down` | Scroll through workspaces     |
+_For window management, resizing, and workspace navigation, refer to the cheat sheet widget (`SUPER + K`)._
 
 ---
 
@@ -183,21 +148,6 @@ Edit `~/.config/hypr/keybinds.conf` to change which apps are launched by each ke
 ### Adjusting Animations
 
 Tweak animation curves and durations in `~/.config/hypr/animations.conf`.
-
-### Shell Aliases
-
-Common aliases defined in `~/.zshrc`:
-
-| Alias       | Command                        |
-| ----------- | ------------------------------ |
-| `cat`       | `bat --theme=base16`           |
-| `ls`        | `eza --icons -a`               |
-| `ll`        | `eza --icons -la`              |
-| `cls`       | `clear`                        |
-| `fastfetch` | `clear && fastfetch`           |
-| `update`    | `sudo pacman -Syu && yay -Syu` |
-
----
 
 ## ❓ Troubleshooting
 

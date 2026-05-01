@@ -40,6 +40,7 @@ if [ -z "$NOTIFY_ID" ]; then
   exit 0
 fi
 
+SILENT=false
 for i in {9..1}; do
   if [ "$ACCEPT" = true ]; then
     echo "$(date): Accepted via signal" >>"$LOG"
@@ -51,7 +52,16 @@ for i in {9..1}; do
     echo "$(date): Accepted via signal after wait" >>"$LOG"
     break
   fi
-  notify-send -p -r $NOTIFY_ID -i "$ICON_PATH" -t 11000 "Power Menu" "Confirming ${LABEL} in ${i} seconds..." >/dev/null 2>&1
+  if [ "$SILENT" = false ]; then
+    NEW_ID=$(notify-send -p -r $NOTIFY_ID -i "$ICON_PATH" -t 11000 "Power Menu" "Confirming ${LABEL} in ${i} seconds..." 2>/dev/null)
+    if [ -z "$NEW_ID" ] || [ "$NEW_ID" != "$NOTIFY_ID" ]; then
+      echo "$(date): Dismissed by user, continuing silently" >>"$LOG"
+      if [ -n "$NEW_ID" ]; then
+        gdbus call --session --dest org.freedesktop.Notifications --object-path /org/freedesktop/Notifications --method org.freedesktop.Notifications.CloseNotification $NEW_ID >/dev/null 2>&1
+      fi
+      SILENT=true
+    fi
+  fi
 done
 
 echo "$(date): Executing: ${CMD[*]}" >>"$LOG"

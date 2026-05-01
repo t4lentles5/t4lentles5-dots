@@ -5,7 +5,18 @@ return {
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-      vim.diagnostic.config({ float = { border = "rounded" } })
+      vim.diagnostic.config({
+        virtual_text = true,
+        float = { border = "rounded", source = "always" },
+      })
+
+      -- Automatically open floating window for diagnostics on hover
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        group = vim.api.nvim_create_augroup("float_diagnostic_cursor", { clear = true }),
+        callback = function()
+          vim.diagnostic.open_float(nil, { focus = false })
+        end,
+      })
     end,
   },
   { "williamboman/mason.nvim", config = true },

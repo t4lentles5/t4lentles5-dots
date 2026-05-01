@@ -22,3 +22,8 @@ opt.splitright = true
 opt.splitbelow = true
 
 opt.clipboard = "unnamedplus"
+
+-- Spelling
+opt.spelllang = { "en", "es" }
+opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+opt.spell = true
