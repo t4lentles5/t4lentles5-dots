@@ -348,7 +348,7 @@ CenterWindow {
         Layout.fillWidth: true
         Layout.preferredHeight: 32
         radius: Constants.sizeXs
-        color: isActive ? Theme.bgSecondary : (itemHover.hovered ? Qt.rgba(Theme.bgSecondary.r, Theme.bgSecondary.g, Theme.bgSecondary.b, 0.5) : "transparent")
+        color: isActive ? Theme.bgSecondary : (itemHover.hovered ? Qt.rgba(Theme.bgSecondary.r, Theme.bgSecondary.g, Theme.bgSecondary.b, 0.5) : Qt.rgba(Theme.bgSecondary.r, Theme.bgSecondary.g, Theme.bgSecondary.b, 0))
 
         RowLayout {
             anchors.fill: parent

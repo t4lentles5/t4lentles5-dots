@@ -362,38 +362,38 @@ QtObject {
             if (exitCode === 0) {
                 try {
                     let colors = JSON.parse(loaderOutput.text);
-                    if (Theme.name)
-                        root.currentScheme = Theme.name;
+                    if (colors.name)
+                        root.currentScheme = colors.name;
 
-                    if (Theme.bg)
-                        root.bg = Theme.bg;
+                    if (colors.bg)
+                        root.bg = colors.bg;
 
-                    if (Theme.bgSecondary)
-                        root.bgSecondary = Theme.bgSecondary;
+                    if (colors.bgSecondary)
+                        root.bgSecondary = colors.bgSecondary;
 
-                    if (Theme.fg)
-                        root.fg = Theme.fg;
+                    if (colors.fg)
+                        root.fg = colors.fg;
 
-                    if (Theme.muted)
-                        root.muted = Theme.muted;
+                    if (colors.muted)
+                        root.muted = colors.muted;
 
-                    if (Theme.cyan)
-                        root.cyan = Theme.cyan;
+                    if (colors.cyan)
+                        root.cyan = colors.cyan;
 
-                    if (Theme.purple)
-                        root.purple = Theme.purple;
+                    if (colors.purple)
+                        root.purple = colors.purple;
 
-                    if (Theme.red)
-                        root.red = Theme.red;
+                    if (colors.red)
+                        root.red = colors.red;
 
-                    if (Theme.yellow)
-                        root.yellow = Theme.yellow;
+                    if (colors.yellow)
+                        root.yellow = colors.yellow;
 
-                    if (Theme.blue)
-                        root.blue = Theme.blue;
+                    if (colors.blue)
+                        root.blue = colors.blue;
 
-                    if (Theme.green)
-                        root.green = Theme.green;
+                    if (colors.green)
+                        root.green = colors.green;
 
                     let brightness = root.bg.r * 0.299 + root.bg.g * 0.587 + root.bg.b * 0.114;
                     root.border = brightness > 0.5 ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(1, 1, 1, 0.05);

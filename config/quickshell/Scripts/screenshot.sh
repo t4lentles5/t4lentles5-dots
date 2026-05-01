@@ -79,9 +79,30 @@ take_screenshot() {
 case "$MODE" in
 "full_delay" | "area_delay")
   NOTIFY_ID=$(notify-send -p -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in 5 seconds...")
-  sleep 1
+  CLOSED=false
+  trap 'CLOSED=true' USR2
+
+  gdbus monitor --session --dest org.freedesktop.Notifications --object-path /org/freedesktop/Notifications | while read -r line; do
+    if [[ "$line" == *"NotificationClosed (uint32 $NOTIFY_ID"* ]]; then
+      kill -USR2 $$ 2>/dev/null
+      break
+    fi
+  done &
+  MONITOR_PID=$!
+
+  trap 'kill $MONITOR_PID 2>/dev/null; exit 0' TERM INT EXIT
+
   SILENT=false
   for i in {4..1}; do
+    if [ "$CLOSED" = true ]; then
+      SILENT=true
+    fi
+    sleep 1 &
+    wait $!
+    if [ "$CLOSED" = true ]; then
+      SILENT=true
+    fi
+
     if [ "$SILENT" = false ]; then
       NEW_ID=$(notify-send -p -r $NOTIFY_ID -i "$ICON_PATH" -t 5000 "Screenshot" "Taking shot in $i seconds..." 2>/dev/null)
       if [ -z "$NEW_ID" ] || [ "$NEW_ID" != "$NOTIFY_ID" ]; then
@@ -91,7 +112,6 @@ case "$MODE" in
         SILENT=true
       fi
     fi
-    sleep 1
   done
   gdbus call --session --dest org.freedesktop.Notifications --object-path /org/freedesktop/Notifications --method org.freedesktop.Notifications.CloseNotification $NOTIFY_ID >/dev/null 2>&1
   sleep 0.1
