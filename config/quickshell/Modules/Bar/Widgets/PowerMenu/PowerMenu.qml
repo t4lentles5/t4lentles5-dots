@@ -63,16 +63,18 @@ TopPopup {
                 id: delegateRoot
 
                 readonly property bool isHovered: hoverHandler.hovered
+                readonly property bool isPressed: tapHandler.pressed
 
                 Layout.fillWidth: true
                 implicitHeight: 40
                 implicitWidth: Math.max(160, innerRow.implicitWidth)
+                scale: isPressed ? 0.95 : 1
 
                 Rectangle {
                     anchors.fill: parent
                     radius: Constants.sizeXs
                     color: modelData.color
-                    opacity: isHovered ? 0.15 : 0
+                    opacity: isPressed ? 0.25 : (isHovered ? 0.15 : 0)
 
                     Behavior on opacity {
                         NumberAnimation {
@@ -139,6 +141,8 @@ TopPopup {
                 }
 
                 TapHandler {
+                    id: tapHandler
+
                     onTapped: {
                         if (modelData.confirm) {
                             let scriptPath = Quickshell.shellDir + "/Scripts/power_action.sh";
@@ -151,6 +155,14 @@ TopPopup {
                         actionProc.startDetached();
                         root.isOpen = false;
                     }
+                }
+
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Constants.animFast
+                        easing.type: Easing.OutBack
+                    }
+
                 }
 
             }

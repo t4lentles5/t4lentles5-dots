@@ -23,6 +23,7 @@ BarButton {
         return Theme.yellow;
     }
 
+    isButton: false
     onBatteryStatusChanged: {
         if (batteryStatus === "" || batteryStatus === _prevStatus)
             return ;
@@ -68,7 +69,6 @@ BarButton {
         }
         _prevLevel = batteryLevel;
     }
-    isButton: false
     visible: hasBattery && batPath !== ""
     implicitWidth: mainRow.implicitWidth + 24
     Component.onCompleted: findBattery.running = true
@@ -111,7 +111,7 @@ BarButton {
     Timer {
         id: updateTimer
 
-        interval: 10000
+        interval: 2000
         running: false
         repeat: true
         triggeredOnStart: true

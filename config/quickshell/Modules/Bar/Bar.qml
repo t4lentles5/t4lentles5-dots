@@ -66,12 +66,12 @@ PanelWindow {
             spacing: Constants.sizeXs
             anchors.rightMargin: 8
 
-            ClockButton {
-                widget: calendar
-            }
-
             BatteryIndicator {
                 notificationService: mainBar.notificationService
+            }
+
+            ClockButton {
+                widget: calendar
             }
 
             KeyboardLayoutButton {
@@ -122,7 +122,7 @@ PanelWindow {
 
         popupId: "calendar"
         anchor.window: mainBar
-        anchor.rect.x: mainBar.width - implicitWidth - 260
+        anchor.rect.x: mainBar.width - implicitWidth - 190
         anchor.rect.y: mainBar.height
     }
 

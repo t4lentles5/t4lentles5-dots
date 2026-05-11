@@ -8,7 +8,6 @@ BarButton {
     id: root
 
     implicitWidth: layout.implicitWidth + 24
-    mouseArea.hoverEnabled: false
 
     RowLayout {
         id: layout

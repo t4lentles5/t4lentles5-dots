@@ -10,7 +10,8 @@ Rectangle {
     property int fontSize: Constants.sizeSm
     property bool isButton: true
 
-    color: Theme.bgSecondary
+    color: mouseArea.containsPress ? Qt.darker(Theme.bgSecondary, 1.1) : (mouseArea.containsMouse ? Qt.lighter(Theme.bgSecondary, 1.2) : Theme.bgSecondary)
+    scale: isButton && mouseArea.containsPress ? 0.95 : 1
     radius: Constants.sizeLg
     implicitWidth: layoutText.implicitWidth + (horizontalPadding * 2)
     implicitHeight: 32
@@ -40,6 +41,14 @@ Rectangle {
     Behavior on color {
         ColorAnimation {
             duration: Constants.animNormal
+        }
+
+    }
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: Constants.animFast
+            easing.type: Easing.OutBack
         }
 
     }

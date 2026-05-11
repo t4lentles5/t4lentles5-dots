@@ -103,6 +103,8 @@ PopupWindow {
             height: root.implicitHeight
             x: 0
             y: root.isOpen ? 0 : -height
+            scale: root.isOpen ? 1 : 0.95
+            transformOrigin: Item.Top
 
             MouseArea {
                 anchors.fill: parent
@@ -230,6 +232,14 @@ PopupWindow {
                 NumberAnimation {
                     duration: root.animationDuration
                     easing.type: root.isOpen ? Easing.OutCubic : Easing.InCubic
+                }
+
+            }
+
+            Behavior on scale {
+                NumberAnimation {
+                    duration: root.animationDuration
+                    easing.type: root.isOpen ? Easing.OutBack : Easing.InCubic
                 }
 
             }

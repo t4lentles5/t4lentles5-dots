@@ -98,6 +98,7 @@ PanelWindow {
             layer.enabled: true
             y: root.height > 0 ? (root.isOpen ? (root.height - root.preferredHeight) / 2 : root.height + root.preferredHeight) : 3000
             opacity: root.isOpen ? 1 : 0
+            scale: root.isOpen ? 1 : 0.95
 
             MouseArea {
                 anchors.fill: parent
@@ -136,6 +137,14 @@ PanelWindow {
                     duration: root.fadeDuration
                     easing.type: Easing.Bezier
                     easing.bezierCurve: [0.25, 0.1, 0.25, 1, 1, 1]
+                }
+
+            }
+
+            Behavior on scale {
+                NumberAnimation {
+                    duration: root.animationDuration
+                    easing.type: root.isOpen ? Easing.OutBack : Easing.InCubic
                 }
 
             }

@@ -203,12 +203,15 @@ PanelWindow {
                             spacing: Constants.sizeMd
 
                             Rectangle {
+                                id: acceptButton
+
                                 Layout.preferredWidth: 80
                                 Layout.preferredHeight: 28
-                                color: acceptMouse.containsMouse ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : Theme.bgSecondary
+                                color: acceptMouse.containsPress ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.25) : (acceptMouse.containsMouse ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : Theme.bgSecondary)
                                 border.color: acceptMouse.containsMouse ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.4) : Theme.border
                                 border.width: 1
                                 radius: Constants.sizeXs
+                                scale: acceptMouse.containsPress ? 0.95 : 1
 
                                 ThemedText {
                                     anchors.centerIn: parent
@@ -226,21 +229,39 @@ PanelWindow {
                                     preventStealing: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        actionCommand.command = ["bash", "-c", "pgrep -n -f [p]ower_action.sh | xargs -r kill -USR1"];
+                                        actionCommand.command = ["bash", "-c", "kill -USR1 $(cat /tmp/quickshell_power_action.pid 2>/dev/null)"];
                                         actionCommand.startDetached();
                                         toastRect.closeNotification();
                                     }
                                 }
 
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Constants.animNormal
+                                    }
+
+                                }
+
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: Constants.animFast
+                                        easing.type: Easing.OutBack
+                                    }
+
+                                }
+
                             }
 
                             Rectangle {
+                                id: cancelButton
+
                                 Layout.preferredWidth: 80
                                 Layout.preferredHeight: 28
-                                color: cancelMouse.containsMouse ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15) : Theme.bgSecondary
+                                color: cancelMouse.containsPress ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.25) : (cancelMouse.containsMouse ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15) : Theme.bgSecondary)
                                 border.color: cancelMouse.containsMouse ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.4) : Theme.border
                                 border.width: 1
                                 radius: Constants.sizeXs
+                                scale: cancelMouse.containsPress ? 0.95 : 1
 
                                 ThemedText {
                                     anchors.centerIn: parent
@@ -258,10 +279,25 @@ PanelWindow {
                                     preventStealing: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        actionCommand.command = ["bash", "-c", "pgrep -n -f [p]ower_action.sh | xargs -r kill -TERM"];
+                                        actionCommand.command = ["bash", "-c", "kill -TERM $(cat /tmp/quickshell_power_action.pid 2>/dev/null)"];
                                         actionCommand.startDetached();
                                         toastRect.closeNotification();
                                     }
+                                }
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Constants.animNormal
+                                    }
+
+                                }
+
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: Constants.animFast
+                                        easing.type: Easing.OutBack
+                                    }
+
                                 }
 
                             }

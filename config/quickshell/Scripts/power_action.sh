@@ -21,10 +21,13 @@ esac
 
 ICON_PATH="$ICON_DIR/$CASE_ICON"
 
+PID_FILE="/tmp/quickshell_power_action.pid"
+echo $$ >"$PID_FILE"
+
 ACCEPT=false
 trap 'ACCEPT=true' USR1
 
-trap 'exit 0' TERM INT
+trap 'rm -f "$PID_FILE"; exit 0' TERM INT
 
 LOG="/tmp/quickshell_power.log"
 echo "$(date): Action triggered: ${LABEL}" >"$LOG"
@@ -51,7 +54,7 @@ gdbus monitor --session --dest org.freedesktop.Notifications --object-path /org/
 done &
 MONITOR_PID=$!
 
-trap 'kill $MONITOR_PID 2>/dev/null; exit 0' TERM INT EXIT
+trap 'kill $MONITOR_PID 2>/dev/null; rm -f "$PID_FILE"; exit 0' TERM INT EXIT
 
 SILENT=false
 for i in {9..1}; do
@@ -92,6 +95,6 @@ gdbus call --session \
   --dest org.freedesktop.Notifications \
   --object-path /org/freedesktop/Notifications \
   --method org.freedesktop.Notifications.CloseNotification \
-  $NOTIFY_ID >/dev/null 2>&1
+  $NOTIFY_ID >/dev/null 2>&1 &
 
 "${CMD[@]}"
