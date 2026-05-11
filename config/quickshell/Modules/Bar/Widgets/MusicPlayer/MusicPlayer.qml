@@ -182,7 +182,6 @@ TopPopup {
                     icon: "󰒮"
                     iconSize: Constants.sizeXl
                     iconColor: (root.activePlayer && root.activePlayer.canGoPrevious) ? Theme.fg : Theme.muted
-                    hoverColor: Theme.fg
                     onClicked: {
                         if (root.activePlayer)
                             root.activePlayer.previous();
@@ -198,7 +197,6 @@ TopPopup {
                     icon: (root.activePlayer && playButton.isPlaying) ? "󰏤" : "󰐊"
                     iconSize: Constants.sizeXl
                     iconColor: Theme.bg
-                    hoverColor: Theme.bg
                     bgColor: Theme.purple
                     onClicked: {
                         if (root.activePlayer)
@@ -211,7 +209,6 @@ TopPopup {
                     icon: "󰒭"
                     iconSize: Constants.sizeXl
                     iconColor: (root.activePlayer && root.activePlayer.canGoNext) ? Theme.fg : Theme.muted
-                    hoverColor: Theme.fg
                     onClicked: {
                         if (root.activePlayer)
                             root.activePlayer.next();

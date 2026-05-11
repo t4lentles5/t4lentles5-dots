@@ -90,7 +90,7 @@ TopPopup {
                 ThemedText {
                     anchors.centerIn: parent
                     text: modelData.name
-                    color: (isHovered || modelData.code === root.currentCode) ? Theme.purple : Theme.fg
+                    color: (modelData.code === root.currentCode) ? Theme.purple : Theme.fg
 
                     Behavior on color {
                         ColorAnimation {

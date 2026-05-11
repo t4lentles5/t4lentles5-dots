@@ -9,14 +9,23 @@ Rectangle {
     property color bgColor: Theme.bgSecondary
     property color iconColor: Theme.fg
     property color activeColor: Theme.purple
-    property color hoverColor: Theme.purple
+    property color hoverColor: iconColor
     property bool isActive: false
     property bool useText: true
     property alias hovered: hoverHandler.hovered
 
     signal clicked()
 
-    color: tapHandler.pressed ? Qt.darker(bgColor, 1.1) : (hoverHandler.hovered ? Qt.lighter(bgColor, 1.2) : bgColor)
+    color: {
+        if (hoverColor.a === 0)
+            return bgColor;
+
+        if (tapHandler.pressed)
+            return bgColor.a === 0 ? Qt.rgba(iconColor.r, iconColor.g, iconColor.b, 0.25) : Qt.tint(bgColor, Qt.rgba(iconColor.r, iconColor.g, iconColor.b, 0.25));
+        else if (hoverHandler.hovered)
+            return bgColor.a === 0 ? Qt.rgba(iconColor.r, iconColor.g, iconColor.b, 0.15) : Qt.tint(bgColor, Qt.rgba(iconColor.r, iconColor.g, iconColor.b, 0.15));
+        return bgColor;
+    }
     scale: tapHandler.pressed ? 0.95 : 1
     radius: iconSize
     implicitWidth: iconSize * 2
@@ -29,13 +38,22 @@ Rectangle {
             if (root.isActive)
                 return root.activeColor;
 
-            if (hoverHandler.hovered)
+            if (hoverHandler.hovered && root.hoverColor.a !== 0)
                 return root.hoverColor;
 
             return root.iconColor;
         }
         font.pixelSize: root.iconSize
         visible: root.useText
+        scale: hoverHandler.hovered ? 1.15 : 1
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Constants.animFast
+                easing.type: Easing.OutQuint
+            }
+
+        }
 
         Behavior on color {
             ColorAnimation {

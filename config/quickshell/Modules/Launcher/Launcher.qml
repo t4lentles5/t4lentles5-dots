@@ -395,7 +395,6 @@ CenterWindow {
                         iconSize: Constants.sizeMd
                         visible: delegateRoot.hasActions
                         iconColor: Theme.muted
-                        hoverColor: Theme.fg
                         activeColor: Theme.fg
                         isActive: delegateRoot.isExpanded
                         anchors.right: parent.right

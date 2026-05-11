@@ -152,7 +152,7 @@ RowLayout {
                 icon: root.isActive ? "󰤨" : "󰤭"
                 iconSize: Constants.sizeXl
                 iconColor: root.isActive ? Theme.purple : Theme.muted
-                hoverColor: root.isActive ? Theme.purple : Theme.muted
+                hoverColor: "transparent"
                 bgColor: "transparent"
                 onClicked: root.toggle()
             }
@@ -170,8 +170,8 @@ RowLayout {
             IconButton {
                 icon: root.expanded ? "" : ""
                 iconSize: Constants.sizeMd
-                hoverColor: Theme.purple
                 visible: root.isActive
+                hoverColor: "transparent"
                 bgColor: "transparent"
                 onClicked: {
                     if (root.isActive)

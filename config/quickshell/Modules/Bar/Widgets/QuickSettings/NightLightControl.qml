@@ -12,7 +12,6 @@ IconButton {
     isActive: activeState
     activeColor: Theme.yellow
     iconColor: Theme.yellow
-    hoverColor: Theme.yellow
     iconSize: Constants.sizeXl
     onClicked: {
         activeState = !activeState;

@@ -317,7 +317,6 @@ PanelWindow {
                     icon: toastRect.expanded ? "" : ""
                     iconSize: Constants.sizeMd
                     visible: bodyText.truncated || toastRect.expanded
-                    hoverColor: Theme.fg
                     iconColor: Theme.muted
                     onClicked: {
                         toastRect.expanded = !toastRect.expanded;

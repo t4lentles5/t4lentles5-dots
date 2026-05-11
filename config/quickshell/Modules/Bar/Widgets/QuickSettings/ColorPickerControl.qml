@@ -10,7 +10,6 @@ IconButton {
 
     icon: "󰈋"
     iconColor: Theme.red
-    hoverColor: Theme.red
     iconSize: Constants.sizeXl
     onClicked: {
         root.requestClose();

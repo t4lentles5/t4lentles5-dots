@@ -65,7 +65,6 @@ TopPopup {
             IconButton {
                 icon: (notificationService && notificationService.dndEnabled) ? "󰂛" : "󰂚"
                 iconColor: (notificationService && notificationService.dndEnabled) ? Theme.muted : Theme.blue
-                hoverColor: (notificationService && notificationService.dndEnabled) ? Theme.muted : Theme.blue
                 iconSize: Constants.sizeMd
                 onClicked: {
                     if (notificationService)
@@ -77,7 +76,6 @@ TopPopup {
             IconButton {
                 icon: "󰃢"
                 iconColor: Theme.red
-                hoverColor: Theme.red
                 iconSize: Constants.sizeMd
                 visible: historyView.count > 0
                 onClicked: {
@@ -282,7 +280,6 @@ TopPopup {
                                         IconButton {
                                             icon: delegateRoot.expanded ? "" : ""
                                             iconColor: Theme.blue
-                                            hoverColor: Theme.blue
                                             iconSize: Constants.sizeSm - 2
                                             visible: bodyText.truncated || delegateRoot.expanded
                                             onClicked: {
@@ -293,7 +290,6 @@ TopPopup {
                                         IconButton {
                                             icon: ""
                                             iconColor: Theme.red
-                                            hoverColor: Theme.red
                                             iconSize: Constants.sizeSm - 2
                                             onClicked: {
                                                 if (notificationService)

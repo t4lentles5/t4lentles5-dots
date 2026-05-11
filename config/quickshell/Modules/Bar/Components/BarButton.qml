@@ -9,8 +9,19 @@ Rectangle {
     property int horizontalPadding: Constants.sizeLg
     property int fontSize: Constants.sizeSm
     property bool isButton: true
+    property color bgColor: Theme.bgSecondary
+    property color hoverColor: textColor
 
-    color: mouseArea.containsPress ? Qt.darker(Theme.bgSecondary, 1.1) : (mouseArea.containsMouse ? Qt.lighter(Theme.bgSecondary, 1.2) : Theme.bgSecondary)
+    color: {
+        if (!isButton || hoverColor.a === 0)
+            return bgColor;
+
+        if (mouseArea.containsPress)
+            return bgColor.a === 0 ? Qt.rgba(textColor.r, textColor.g, textColor.b, 0.05) : Qt.tint(bgColor, Qt.rgba(textColor.r, textColor.g, textColor.b, 0.05));
+        else if (mouseArea.containsMouse)
+            return bgColor.a === 0 ? Qt.rgba(textColor.r, textColor.g, textColor.b, 0.1) : Qt.tint(bgColor, Qt.rgba(textColor.r, textColor.g, textColor.b, 0.1));
+        return bgColor;
+    }
     scale: isButton && mouseArea.containsPress ? 0.95 : 1
     radius: Constants.sizeLg
     implicitWidth: layoutText.implicitWidth + (horizontalPadding * 2)

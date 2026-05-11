@@ -10,6 +10,7 @@ CenterWindow {
     id: root
 
     property string searchText: ""
+    property bool isDeleting: false
 
     function syncModel(listModel, sourceArray) {
         let sourceIds = {
@@ -51,11 +52,13 @@ CenterWindow {
         query = query.toLowerCase();
         for (let i = 0; i < clipboardModel.count; i++) {
             let item = clipboardModel.get(i);
-            if (item.text.toLowerCase().includes(query))
+            let isImage = item.isImage !== undefined ? item.isImage : false;
+            if (item.text.toLowerCase().includes(query) || (isImage && query === ""))
                 matchedItems.push({
                 "itemId": item.itemId,
                 "text": item.text,
-                "fullLine": item.fullLine
+                "fullLine": item.fullLine,
+                "isImage": isImage
             });
 
         }
@@ -76,6 +79,8 @@ CenterWindow {
     }
 
     function deleteItem(index, fullLine) {
+        isDeleting = true;
+        deletingResetTimer.restart();
         filteredModel.remove(index);
         for (let i = 0; i < clipboardModel.count; i++) {
             if (clipboardModel.get(i).fullLine === fullLine) {
@@ -92,6 +97,8 @@ CenterWindow {
         if (filteredModel.count === 0)
             return ;
 
+        isDeleting = true;
+        deletingResetTimer.restart();
         clipboardModel.clear();
         filteredModel.remove(0, filteredModel.count);
         clearProc.running = false;
@@ -116,6 +123,14 @@ CenterWindow {
         onTriggered: searchField.forceActiveFocus()
     }
 
+    Timer {
+        id: deletingResetTimer
+
+        interval: Constants.animSlow + 50
+        repeat: false
+        onTriggered: root.isDeleting = false
+    }
+
     ListModel {
         id: clipboardModel
     }
@@ -137,20 +152,33 @@ CenterWindow {
                     return ;
                 }
                 let lines = output.split('\n');
+                let imageIds = [];
                 lines.forEach(function(line) {
                     if (line.trim() === "")
                         return ;
 
                     let parts = line.split('\t');
-                    if (parts.length >= 2)
-                        clipboardModel.append({
-                        "itemId": parts[0],
-                        "text": parts.slice(1).join('\t'),
-                        "fullLine": line
-                    });
+                    if (parts.length >= 2) {
+                        let text = parts.slice(1).join('\t');
+                        let isImage = text.startsWith("[[ binary data") && text.includes("]]");
+                        if (isImage)
+                            imageIds.push(parts[0]);
 
+                        clipboardModel.append({
+                            "itemId": parts[0],
+                            "text": text,
+                            "fullLine": line,
+                            "isImage": isImage
+                        });
+                    }
                 });
-                filterClipboard("");
+                if (imageIds.length > 0) {
+                    let cmd = "mkdir -p /tmp/quickshell-clipboard && for id in " + imageIds.join(" ") + "; do if [ ! -f /tmp/quickshell-clipboard/$id.png ]; then cliphist decode $id > /tmp/quickshell-clipboard/$id.png; fi; done";
+                    decodeImagesProc.command = ["bash", "-c", cmd];
+                    decodeImagesProc.running = true;
+                } else {
+                    filterClipboard("");
+                }
             }
         }
 
@@ -158,6 +186,14 @@ CenterWindow {
             id: clipboardOutput
         }
 
+    }
+
+    Process {
+        id: decodeImagesProc
+
+        onExited: function(exitCode) {
+            filterClipboard("");
+        }
     }
 
     Process {
@@ -243,7 +279,6 @@ CenterWindow {
             IconButton {
                 icon: "󰆴"
                 iconColor: Theme.red
-                hoverColor: Theme.red
                 iconSize: Constants.sizeXl
                 visible: filteredModel.count > 0
                 onClicked: root.clearHistory()
@@ -363,15 +398,15 @@ CenterWindow {
                 remove: Transition {
                     NumberAnimation {
                         property: "x"
-                        to: clipboardView.width
-                        duration: Constants.animSlow
+                        to: root.isDeleting ? clipboardView.width : 0
+                        duration: root.isDeleting ? Constants.animSlow : Constants.animFast
                         easing.type: Easing.InExpo
                     }
 
                     NumberAnimation {
                         property: "opacity"
                         to: 0
-                        duration: Constants.animSlow
+                        duration: root.isDeleting ? Constants.animSlow : Constants.animFast
                     }
 
                 }
@@ -379,12 +414,12 @@ CenterWindow {
                 removeDisplaced: Transition {
                     SequentialAnimation {
                         PauseAnimation {
-                            duration: Constants.animSlow
+                            duration: root.isDeleting ? Constants.animSlow : 0
                         }
 
                         NumberAnimation {
                             properties: "y"
-                            duration: Constants.animSlow
+                            duration: root.isDeleting ? Constants.animSlow : Constants.animFast
                             easing.type: Easing.OutExpo
                         }
 
@@ -461,6 +496,7 @@ CenterWindow {
 
                         ThemedText {
                             text: model.text
+                            visible: !(model.isImage !== undefined ? model.isImage : false)
                             color: isCurrent ? Theme.purple : Theme.fg
                             font.bold: isCurrent
                             font.pixelSize: Constants.sizeMd
@@ -488,10 +524,35 @@ CenterWindow {
 
                         }
 
+                        Image {
+                            visible: model.isImage !== undefined ? model.isImage : false
+                            source: visible ? "file:///tmp/quickshell-clipboard/" + model.itemId + ".png" : ""
+                            asynchronous: true
+                            Layout.preferredHeight: visible ? 80 : 0
+                            Layout.preferredWidth: visible ? 160 : 0
+                            Layout.alignment: Qt.AlignLeft
+                            fillMode: Image.PreserveAspectFit
+                            scale: isCurrent ? 1.02 : 1
+                            transformOrigin: Item.Left
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Constants.animNormal
+                                    easing.type: Easing.OutQuint
+                                }
+
+                            }
+
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            visible: model.isImage !== undefined ? model.isImage : false
+                        }
+
                         IconButton {
                             icon: ""
                             iconColor: Theme.red
-                            hoverColor: Theme.red
                             iconSize: Constants.sizeMd
                             Layout.alignment: Qt.AlignVCenter
                             onClicked: {
