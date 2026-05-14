@@ -180,7 +180,7 @@ QtObject {
     property color bgSecondary: themes[0].dark.bgSecondary
     property color fg: themes[0].dark.fg
     property color muted: themes[0].dark.muted
-    property color border: Qt.rgba(1, 1, 1, 0.05)
+    property color border: Qt.rgba(1, 1, 1, 0.15)
     property color cyan: themes[0].dark.cyan
     property color purple: themes[0].dark.purple
     property color red: themes[0].dark.red
@@ -209,7 +209,7 @@ QtObject {
         blue = scheme.blue;
         green = scheme.green;
         let brightness = bg.r * 0.299 + bg.g * 0.587 + bg.b * 0.114;
-        border = brightness > 0.5 ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(1, 1, 1, 0.05);
+        border = brightness > 0.5 ? Qt.rgba(0, 0, 0, 0.2) : Qt.rgba(1, 1, 1, 0.15);
         saveScheme();
         applyKittyTheme();
         applyGtkMode();
@@ -396,7 +396,7 @@ QtObject {
                         root.green = colors.green;
 
                     let brightness = root.bg.r * 0.299 + root.bg.g * 0.587 + root.bg.b * 0.114;
-                    root.border = brightness > 0.5 ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(1, 1, 1, 0.05);
+                    root.border = brightness > 0.5 ? Qt.rgba(0, 0, 0, 0.2) : Qt.rgba(1, 1, 1, 0.15);
                     root.applyKittyTheme();
                     root.applyGtkMode();
                     root.applyNvimTheme(root.currentScheme);

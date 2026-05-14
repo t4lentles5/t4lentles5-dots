@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Parse hyprland keybinds.conf and neovim keymaps.lua, output JSON for KeybindsCheatSheet."""
 
 import json
 import os
