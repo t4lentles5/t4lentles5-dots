@@ -450,4 +450,32 @@ CenterWindow {
 
     }
 
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 18
+        spacing: Constants.sizeXs
+
+        ThemedText {
+            text: {
+                if (Theme.themes.length > 0)
+                    return Theme.themes.length + (Theme.themes.length === 1 ? " theme available" : " themes available");
+
+                return "";
+            }
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
+        }
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        ThemedText {
+            text: "󰌒  Switch Mode  •  ↑↓  Navigate  •  󰌑  Apply"
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
+        }
+
+    }
+
 }

@@ -2,6 +2,15 @@
 
 set -e
 
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+
+ERROR_LOG="$HOME/install_errors.log"
+>"$ERROR_LOG"
+exec 3>&2
+exec 2> >(tee /dev/fd/3 | sed -u -r 's/\x1b\[[0-9;]*[mK]//g; s/\r/\n/g' | sed -u 's/^[[:space:]]*//; /^$/d' >>"$ERROR_LOG")
+
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -10,14 +19,11 @@ NC='\033[0m'
 
 log() { echo -e "${CYAN}[INFO]${NC} $1"; }
 ok() { echo -e "${GREEN}[OK]${NC} $1"; }
-warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+warn() { echo -e "${YELLOW}[WARN]${NC} $1" >&2; }
 error() {
-  echo -e "${RED}[ERROR]${NC} $1"
+  echo -e "${RED}[ERROR]${NC} $1" >&2
   exit 1
 }
-
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
 
 # ── 1. yay ───────────────────────────────────────────────────────────────────
 log "Installing yay (AUR helper)..."
@@ -43,11 +49,11 @@ dependencies=(
   networkmanager noto-fonts-emoji nwg-look openssl pacman-contrib pamixer pavucontrol
   pipewire pipewire-alsa pipewire-audio pipewire-pulse python-gobject python-pygments
   python-pip yazi rfkill ripgrep starship ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
-  tumbler unzip upower wireplumber wl-clipboard wlsunset
+  tumbler unzip upower wireplumber wl-clipboard wlsunset libmtp
   xclip xdg-desktop-portal-gtk zsh zsh-autosuggestions zsh-history-substring-search
   zsh-syntax-highlighting brightnessctl blueman bluez bluez-utils grim slurp cliphist
   fastfetch neovim curl unrar socat qt6-imageformats mpv fnm polkit-gnome ntfs-3g
-  gnome-keyring libsecret awww playerctl
+  gnome-keyring libsecret awww playerctl ffmpeg exfatprogs dosfstools gvfs-afc
 )
 
 sudo pacman -S --needed --noconfirm "${dependencies[@]}" ||
@@ -140,10 +146,33 @@ else
   warn "Wallpapers/ not found in repo, skipping."
 fi
 
-# ── 5. apply GTK theme via nwg-look ──────────────────────────────────────────
+# ── 5. apply GTK theme via gsettings ──────────────────────────────────────────
 log "Applying GTK theme..."
-if command -v nwg-look &>/dev/null; then
-  nwg-look -a && ok "nwg-look applied settings." || warn "nwg-look -a failed, check your gtk config files."
+if [ -f "$HOME/.config/gtk-3.0/settings.ini" ]; then
+  SCHEMA="org.gnome.desktop.interface"
+
+  gtk_theme=$(grep 'gtk-theme-name' "$HOME/.config/gtk-3.0/settings.ini" | cut -d'=' -f2)
+  if [ -n "$gtk_theme" ]; then gsettings set "$SCHEMA" gtk-theme "$gtk_theme" 2>/dev/null || true; fi
+
+  icon_theme=$(grep 'gtk-icon-theme-name' "$HOME/.config/gtk-3.0/settings.ini" | cut -d'=' -f2)
+  if [ -n "$icon_theme" ]; then gsettings set "$SCHEMA" icon-theme "$icon_theme" 2>/dev/null || true; fi
+
+  cursor_theme=$(grep 'gtk-cursor-theme-name' "$HOME/.config/gtk-3.0/settings.ini" | cut -d'=' -f2)
+  if [ -n "$cursor_theme" ]; then gsettings set "$SCHEMA" cursor-theme "$cursor_theme" 2>/dev/null || true; fi
+
+  font_name=$(grep 'gtk-font-name' "$HOME/.config/gtk-3.0/settings.ini" | cut -d'=' -f2)
+  if [ -n "$font_name" ]; then gsettings set "$SCHEMA" font-name "$font_name" 2>/dev/null || true; fi
+
+  color_scheme=$(grep 'gtk-application-prefer-dark-theme' "$HOME/.config/gtk-3.0/settings.ini" | cut -d'=' -f2)
+  if [ "$color_scheme" = "1" ]; then
+    gsettings set "$SCHEMA" color-scheme "prefer-dark" 2>/dev/null || true
+  else
+    gsettings set "$SCHEMA" color-scheme "default" 2>/dev/null || true
+  fi
+
+  ok "GTK theme applied via gsettings."
+else
+  warn "gtk-3.0/settings.ini not found, skipping gsettings."
 fi
 
 # ── 6. SDDM theme ─────────────────────────────────────────────────────────────
@@ -202,6 +231,18 @@ if command -v fnm &>/dev/null; then
 else
   warn "fnm not found in PATH. Make sure ~/.local/bin is in your PATH and re-run."
 fi
+
+# ── 10. Enable system services ────────────────────────────────────────────────
+log "Checking and enabling system services (NetworkManager, bluetooth)..."
+
+for svc in NetworkManager.service bluetooth.service; do
+  if ! systemctl is-enabled --quiet "$svc" 2>/dev/null || ! systemctl is-active --quiet "$svc" 2>/dev/null; then
+    log "Enabling and starting $svc..."
+    sudo systemctl enable --now "$svc" || warn "Failed to enable $svc."
+  else
+    ok "$svc is already enabled and running."
+  fi
+done
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════╗${NC}"

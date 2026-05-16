@@ -1,5 +1,3 @@
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
-
 [mgr]
 ratio          = [ 1, 3, 3 ]
 sort_by        = "natural"
@@ -75,17 +73,17 @@ download = [
 [open]
 rules = [
 	# User rules
-	{ name = "*.{js,jsx,ts,tsx,py,pyw,json,html,css,scss,md,sh,rs,go,lua,toml,yml,yaml,xml,txt,c,cpp,h,hpp,cs,java}", use = [ "edit", "open", "reveal" ] },
+	{ url = "*.{js,jsx,ts,tsx,py,pyw,json,html,css,scss,md,sh,rs,go,lua,toml,yml,yaml,xml,txt,c,cpp,h,hpp,cs,java}", use = [ "edit", "open", "reveal" ] },
 	{ mime = "application/{javascript,typescript,json,x-sh,x-python}", use = [ "edit", "open", "reveal" ] },
-	{ name = "*.pdf", use = [ "pdf", "open", "reveal" ] },
+	{ url = "*.pdf", use = [ "pdf", "open", "reveal" ] },
 	{ mime = "image/*", use = [ "image", "open", "reveal" ] },
-	{ name = "*.tar", use = [ "archive", "open", "reveal" ] },
-	{ name = "*.gz", use = [ "archive", "open", "reveal" ] },
-	{ name = "*.bz2", use = [ "archive", "open", "reveal" ] },
-	{ name = "*.xz", use = [ "archive", "open", "reveal" ] },
-	{ name = "*.zip", use = [ "archive", "open", "reveal" ] },
-	{ name = "*.rar", use = [ "archive", "open", "reveal" ] },
-	{ name = "*.7z", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.tar", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.gz", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.bz2", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.xz", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.zip", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.rar", use = [ "archive", "open", "reveal" ] },
+	{ url = "*.7z", use = [ "archive", "open", "reveal" ] },
 	{ mime = "text/*", use = [ "edit", "open", "reveal" ] },
 	# Example rules appended
 	# Folder
@@ -101,7 +99,7 @@ rules = [
 	# Virtual file system
 	{ mime = "vfs/{absent,stale}", use = "download" },
 	# Fallback
-	{ name = "*", use = [ "open", "edit", "reveal" ] },
+	{ url = "*", use = [ "open", "edit", "reveal" ] },
 ]
 
 [tasks]
@@ -115,9 +113,9 @@ suppress_preload = false
 [plugin]
 fetchers = [
 	# Mimetype
-	{ id = "mime", url = "*/",         run = "mime.dir", prio = "high" },
-	{ id = "mime", url = "local://*",  run = "mime.local", prio = "high" },
-	{ id = "mime", url = "remote://*", run = "mime.remote", prio = "high" },
+	{ id = "mime", url = "*/",         run = "mime.dir", prio = "high", group = "mime" },
+	{ id = "mime", url = "local://*",  run = "mime.local", prio = "high", group = "mime" },
+	{ id = "mime", url = "remote://*", run = "mime.remote", prio = "high", group = "mime" },
 ]
 spotters = [
 	{ url = "*/", run = "folder" },

@@ -396,22 +396,6 @@ CenterWindow {
 
                 }
 
-                ThemedText {
-                    text: "󰑐"
-                    font.pixelSize: Constants.sizeLg
-                    color: Theme.purple
-                    visible: root.isSearching
-
-                    RotationAnimation on rotation {
-                        from: 0
-                        to: 360
-                        duration: 1000
-                        loops: Animation.Infinite
-                        running: root.isSearching
-                    }
-
-                }
-
             }
 
             Behavior on border.color {
@@ -492,6 +476,43 @@ CenterWindow {
 
             }
 
+            ColumnLayout {
+                anchors.centerIn: parent
+                visible: root.isSearching
+                opacity: visible ? 1 : 0
+
+                ThemedText {
+                    text: "󰑐"
+                    color: Theme.purple
+                    font.pixelSize: 36
+                    Layout.alignment: Qt.AlignHCenter
+
+                    RotationAnimation on rotation {
+                        from: 0
+                        to: 360
+                        duration: 1000
+                        loops: Animation.Infinite
+                        running: root.isSearching
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Searching..."
+                    color: Theme.muted
+                    font.pixelSize: Constants.sizeMd
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Constants.animNormal
+                    }
+
+                }
+
+            }
+
             ListView {
                 id: pkgView
 
@@ -503,7 +524,7 @@ CenterWindow {
                 highlightResizeDuration: 0
                 highlightMoveDuration: 250
                 highlightFollowsCurrentItem: true
-                visible: resultsModel.count > 0
+                visible: resultsModel.count > 0 && !root.isSearching
                 Keys.onPressed: function(event) {
                     root.handleKeyPress(event, false);
                 }

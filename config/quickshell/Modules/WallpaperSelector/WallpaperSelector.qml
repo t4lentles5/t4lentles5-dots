@@ -143,7 +143,7 @@ CenterWindow {
                 id: searchField
 
                 Layout.fillWidth: true
-                placeholderText: currentTab === 0 ? "Search Dark wallpapers... (Tab to switch)" : "Search Light wallpapers... (Tab to switch)"
+                placeholderText: currentTab === 0 ? "Search Dark wallpapers..." : "Search Light wallpapers..."
                 placeholderTextColor: Theme.muted
                 color: Theme.fg
                 font.pixelSize: Constants.sizeMd
@@ -392,6 +392,34 @@ CenterWindow {
                 active: true
             }
 
+        }
+
+    }
+
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 18
+        spacing: Constants.sizeXs
+
+        ThemedText {
+            text: {
+                if (filteredModel.count > 0)
+                    return filteredModel.count + (filteredModel.count === 1 ? " wallpaper found" : " wallpapers found");
+
+                return "";
+            }
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
+        }
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        ThemedText {
+            text: "󰌒  Switch Mode  •  ↑↓←→  Navigate  •  󰌑  Apply"
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
         }
 
     }

@@ -4,8 +4,7 @@
 
 **Aesthetic Hyprland rice for Arch Linux — dynamic theming, Quickshell widgets, and a polished workflow out of the box.**
 
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1776553339/output_ddu2iw.webp" alt="Preview Dark" width="49%" />
-<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777004625/output_ogo7wk.webp" alt="Preview Light" width="49%" />
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778889772/output_bjbuhy.webp" alt="Preview" />
 
 </div>
 
@@ -14,7 +13,7 @@
 ## ✨ Features
 
 - 🎨 **Dynamic Theming** — switch between 6 color schemes (Default, Tokyo Night, Catppuccin, Gruvbox, Rosé Pine, Kanagawa) with light/dark variants that instantly propagate across **all** apps: Kitty, GTK, Neovim, Yazi, and the bar itself.
-- 🖥️ **Quickshell Bar & Widgets** — custom bar with dashboard, app launcher, clipboard history, wallpaper selector, color scheme selector, screenshot tool, keybinds cheat sheet, and notification center.
+- 🖥️ **Quickshell Bar & Widgets** — custom bar with dashboard, app launcher, clipboard history, wallpaper selector, color scheme selector, screenshot tool, keybinds cheat sheet, notification center, and package manager.
 - 🖼️ **Wallpaper Selector** — browse and apply wallpapers directly from a widget, with separate Dark/Light collections.
 - 🔒 **Lock Screen** — `hyprlock` with custom styling.
 - ⚡ **Zsh** — configured with Starship prompt, fzf-tab, autosuggestions, syntax highlighting, and history substring search.
@@ -93,61 +92,28 @@ All schemes include both **dark** and **light** variants, instantly switchable v
 
 ### Themes (Dark / Light)
 
-| Theme           |                                                            Dark Variant                                                            |                                                            Light Variant                                                            |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------: |
-| **Default**     |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593703/Shot-2026-04-30-174953_caxdjl.png" alt="Default Dark">   |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175024_fpjee6.png" alt="Default Light">   |
-| **Tokyo Night** | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-175217_dawyas.png" alt="Tokyo Night Dark"> | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175231_kafjtn.png" alt="Tokyo Night Light"> |
-| **Catppuccin**  | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-175508_rfpwzv.png" alt="Catppuccin Mocha"> | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175530_brfkwm.png" alt="Catppuccin Latte">  |
-| **Gruvbox**     |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-175656_elwzip.png" alt="Gruvbox Dark">   |   <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593703/Shot-2026-04-30-175712_s0fe5i.png" alt="Gruvbox Light">   |
-| **Rosé Pine**   |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593704/Shot-2026-04-30-175815_ijrk0x.png" alt="Rosé Pine Dark">  |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593704/Shot-2026-04-30-175828_d8v8e7.png" alt="Rosé Pine Light">  |
-| **Kanagawa**    |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593705/Shot-2026-04-30-175844_otiwvr.png" alt="Kanagawa Dark">   |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593704/Shot-2026-04-30-175900_kldojd.png" alt="Kanagawa Light">   |
+**Default**  
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778885444/themes_iw5hxa.webp" alt="Default Theme">
 
-### Widgets
+**Tokyo Night**
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778885752/themes_timq9h.webp" alt="Tokyo Night Theme">
 
-#### Bar Widgets
+**Catppuccin**
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778887100/themes_uhmpmk.webp" alt="Catppuccin Theme">
 
-<p align="center">
-  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777594199/output_ye5e3y.gif" alt="Bar Overview" width="100%" />
-</p>
+**Gruvbox**
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778887374/themes_thdlef.webp" alt="Gruvbox Theme">
 
-#### Quickshell Menus & Overlays
+**Rosé Pine**
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778887500/themes_ttddun.webp" alt="Rosé Pine Theme">
 
-|                                                              App Launcher                                                               |                                                           Clipboard History                                                            |                                                          Wallpaper Selector                                                          |
-| :-------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------: |
-|     <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181612_uete4i.png" alt="App Launcher">      |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181909_xiyiax.png" alt="Clipboard History">   | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181702_lrmdcf.png" alt="Wallpaper Selector"> |
-|                                                        **Color Scheme Selector**                                                        |                                                        **Keybinds Cheat Sheet**                                                        |                                                         **Screenshot Tool**                                                          |
-| <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593701/Shot-2026-04-30-181728_u3kycg.png" alt="Color Scheme Selector"> | <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-182000_v3x2uf.png" alt="Keybinds Cheat Sheet"> |  <img src="https://res.cloudinary.com/diu2godjy/image/upload/v1777593702/Shot-2026-04-30-182023_bxan34.png" alt="Screenshot Tool">   |
-
----
+**Kanagawa**
+<img src="https://res.cloudinary.com/diu2godjy/image/upload/v1778887649/themes_ldpgbw.webp" alt="Kanagawa Theme">
 
 ## ⌨️ Keybinds
 
-> **Tip:** You don't need to memorize these! Press `SUPER + K` at any time to open the built-in interactive **Keybinds Cheat Sheet** directly on your desktop.
-
-- `SUPER` = Windows/Meta key
-- `SUPER + Enter` = Open Terminal (Kitty)
-- `SUPER + A` = App Launcher
-- `SUPER + K` = Keybinds Cheat Sheet
-- `CTRL + ALT + C` = Color Scheme Selector
-- `CTRL + ALT + W` = Wallpaper Selector
-
-_For window management, resizing, and workspace navigation, refer to the cheat sheet widget (`SUPER + K`)._
-
----
-
-## 🛠️ Customization
-
-### Adding Wallpapers
-
-Drop images into `~/Pictures/Wallpapers/Dark/` or `~/Pictures/Wallpapers/Light/`, then open the wallpaper selector with `Ctrl + Alt + W`.
-
-### Changing Default Applications
-
-Edit `~/.config/hypr/keybinds.conf` to change which apps are launched by each keybind.
-
-### Adjusting Animations
-
-Tweak animation curves and durations in `~/.config/hypr/animations.conf`.
+> [!NOTE]  
+> You don't need to memorize these! Press `SUPER + K` at any time to open the built-in **Keybinds Cheat Sheet** directly on your desktop!
 
 ## ❓ Troubleshooting
 
@@ -188,29 +154,14 @@ systemctl --user status dunst.service
 </details>
 
 <details>
-<summary><b>Some packages failed to install</b></summary>
+<summary><b>Installation errors or packages failed to install</b></summary>
 
-The installer will print warnings for any packages that couldn't be installed. Ensure your mirrors are up to date:
-
-```bash
-sudo pacman -Syy
-```
-
-For AUR packages, make sure `yay` is working correctly:
+The installer automatically captures all warnings and errors in a log file. You can check it to find out exactly what went wrong:
 
 ```bash
-yay -Syu
+cat ~/install_errors.log
 ```
+
+If packages failed to install, ensure your mirrors are up to date (`sudo pacman -Syy`) and that your AUR helper is working correctly (`yay -Syu`).
 
 </details>
-
----
-
-## 🙏 Credits & Inspiration
-
-- [Hyprland](https://hypr.land/) — the Wayland compositor
-- [Quickshell](https://quickshell.org/) — the Qt-based shell framework
-- [Catppuccin](https://catppuccin.com/) — the GTK theme used for light/dark switching
-- [Tokyo Night](https://github.com/enkia/tokyo-night-vscode-theme) — color scheme inspiration
-- [Starship](https://starship.rs/) — the cross-shell prompt
-- The Arch & Hyprland communities for all the rice inspiration ❤️

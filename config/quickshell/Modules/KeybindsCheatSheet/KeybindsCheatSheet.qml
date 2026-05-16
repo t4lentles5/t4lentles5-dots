@@ -337,6 +337,23 @@ CenterWindow {
 
     }
 
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 18
+        spacing: Constants.sizeXs
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        ThemedText {
+            text: "󰌒  Switch Environment"
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
+        }
+
+    }
+
     component SidebarItem: Rectangle {
         property string icon
         property string label
