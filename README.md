@@ -76,7 +76,26 @@ The default monitor config is set to auto-detect. If you need custom resolution,
 
 Refer to the [Hyprland Wiki — Monitors](https://wiki.hyprland.org/Configuring/Monitors/) for syntax details.
 
-### 5. Restore from Backup
+### 5. GitHub Stats Configuration
+
+To display your GitHub statistics (stars, forks, followers, and repository count) in the dashboard widget, you must rename the configuration template and set your username:
+
+```bash
+mv ~/.config/quickshell/Core/GithubConfig_template.qml ~/.config/quickshell/Core/GithubConfig.qml
+```
+
+Open `~/.config/quickshell/Core/GithubConfig.qml` and set your username and token (token is optional, but required to display private repository stats and total commits):
+
+```qml
+QtObject {
+    // Mandatory: Your GitHub username
+    property string username: "your_username"
+    // Optional: GitHub Personal Access Token (needed for private repos and commit count)
+    property string token: "your_token"
+}
+```
+
+### 6. Restore from Backup
 
 If anything goes wrong, the installer creates a timestamped backup of your previous configuration:
 

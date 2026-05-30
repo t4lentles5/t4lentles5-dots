@@ -4,9 +4,8 @@ import Quickshell
 import qs.Core
 import qs.Modules.Bar.Components
 import qs.Modules.Bar.Widgets.Calendar
-import qs.Modules.Bar.Widgets.Dashboard
 import qs.Modules.Bar.Widgets.KeyboardLayout
-import qs.Modules.Bar.Widgets.MusicPlayer
+import qs.Modules.Bar.Widgets.MainPanel
 import qs.Modules.Bar.Widgets.NotificationCenter
 import qs.Modules.Bar.Widgets.PowerMenu
 import qs.Modules.Bar.Widgets.QuickSettings
@@ -46,7 +45,7 @@ PanelWindow {
             anchors.leftMargin: 8
 
             ArchButton {
-                widget: dashboard
+                widget: mainPanel
             }
 
             Workspaces {
@@ -54,8 +53,7 @@ PanelWindow {
 
         }
 
-        MusicStatusButton {
-            widget: musicPlayer
+        ActiveWindow {
             anchors.centerIn: parent
         }
 
@@ -99,19 +97,10 @@ PanelWindow {
 
     }
 
-    Dashboard {
-        id: dashboard
+    MainPanel {
+        id: mainPanel
 
         popupId: "dashboard"
-        anchor.window: mainBar
-        anchor.rect.x: (mainBar.width / 2) - (implicitWidth / 2)
-        anchor.rect.y: mainBar.height
-    }
-
-    MusicPlayer {
-        id: musicPlayer
-
-        popupId: "musicPlayer"
         anchor.window: mainBar
         anchor.rect.x: (mainBar.width / 2) - (implicitWidth / 2)
         anchor.rect.y: mainBar.height

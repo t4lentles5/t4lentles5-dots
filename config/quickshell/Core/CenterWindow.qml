@@ -59,6 +59,18 @@ PanelWindow {
 
         }
 
+        function onTogglePopup(id) {
+            if (popupId !== "" && id === popupId)
+                root.isOpen = !root.isOpen;
+
+        }
+
+        function onOpenPopup(id) {
+            if (popupId !== "" && id === popupId)
+                root.isOpen = true;
+
+        }
+
         target: AppState
     }
 

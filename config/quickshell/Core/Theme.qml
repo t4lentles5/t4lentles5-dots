@@ -17,7 +17,7 @@ QtObject {
             "cyan": '#72cbff',
             "purple": '#a77ef5',
             "red": '#e52e4f',
-            "yellow": '#f0a32f',
+            "yellow": '#ea9a23',
             "blue": '#5b70db',
             "green": '#86c93f'
         },
@@ -30,7 +30,7 @@ QtObject {
             "cyan": '#1e8fbc',
             "purple": '#7040e8',
             "red": '#c41840',
-            "yellow": '#a67a0a',
+            "yellow": '#daa92e',
             "blue": '#3f52c4',
             "green": '#4a9a28'
         }

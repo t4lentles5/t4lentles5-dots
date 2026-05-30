@@ -5,25 +5,13 @@ import Quickshell
 import Quickshell.Io
 import qs.Core
 
-Rectangle {
+Card {
     id: root
 
     property string userName: Quickshell.env("USER") || "User"
     property string userHome: Quickshell.env("HOME") || ""
     property string uptime: "..."
-    property string greeting: {
-        let h = new Date().getHours();
-        if (h < 12)
-            return "Good Morning,";
 
-        if (h < 18)
-            return "Good Afternoon,";
-
-        return "Good Evening,";
-    }
-
-    color: Theme.bgSecondary
-    radius: Constants.sizeXs
     implicitWidth: mainLayout.implicitWidth + (Constants.sizeLg * 2)
     implicitHeight: mainLayout.implicitHeight + (Constants.sizeLg * 2)
 
@@ -49,13 +37,6 @@ Rectangle {
         repeat: true
         onTriggered: {
             uptimeProc.running = true;
-            let h = new Date().getHours();
-            if (h < 12)
-                root.greeting = "Good Morning,";
-            else if (h < 18)
-                root.greeting = "Good Afternoon,";
-            else
-                root.greeting = "Good Evening,";
         }
     }
 
@@ -69,8 +50,8 @@ Rectangle {
         Item {
             id: avatarContainer
 
-            Layout.preferredWidth: 80
-            Layout.preferredHeight: 80
+            Layout.preferredWidth: 64
+            Layout.preferredHeight: 64
             Layout.alignment: Qt.AlignVCenter
 
             Rectangle {
@@ -87,11 +68,6 @@ Rectangle {
                 fillMode: Image.PreserveAspectCrop
                 visible: false
                 antialiasing: true
-                onStatusChanged: {
-                    if (status === Image.Error)
-                        source = "qrc:/qt/qml/qs/Shared/assets/default_avatar.png";
-
-                }
             }
 
             Rectangle {
@@ -107,6 +83,15 @@ Rectangle {
                 anchors.fill: parent
                 source: userImage
                 maskSource: mask
+                visible: userImage.status === Image.Ready
+            }
+
+            ThemedText {
+                anchors.centerIn: parent
+                text: ""
+                font.pixelSize: 28
+                color: Theme.purple
+                visible: userImage.status !== Image.Ready
             }
 
             Rectangle {
@@ -124,33 +109,31 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-
-            ThemedText {
-                text: root.greeting
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-                Layout.fillWidth: true
-            }
+            spacing: 4
 
             ThemedText {
                 text: root.userName.charAt(0).toUpperCase() + root.userName.slice(1)
-                font.pixelSize: Constants.sizeLg
+                font.pixelSize: Constants.sizeMd + 2
                 font.weight: Font.Bold
                 color: Theme.purple
                 elide: Text.ElideRight
                 Layout.fillWidth: true
+                Layout.bottomMargin: 2
             }
 
             RowLayout {
+                spacing: Constants.sizeSm
+
                 ThemedText {
                     text: "󰣇"
-                    font.pixelSize: Constants.sizeMd
+                    font.pixelSize: Constants.sizeMd + 2
                     color: Theme.blueArch
                 }
 
                 ThemedText {
                     text: "Arch Linux"
                     font.pixelSize: Constants.sizeSm
+                    font.weight: Font.Medium
                     color: Theme.fg
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -159,17 +142,18 @@ Rectangle {
             }
 
             RowLayout {
-                spacing: Constants.sizeXs
+                spacing: Constants.sizeSm
 
                 ThemedText {
                     text: "󰅐"
-                    font.pixelSize: Constants.sizeMd
+                    font.pixelSize: Constants.sizeMd + 2
                     color: Theme.yellow
                 }
 
                 ThemedText {
-                    text: root.uptime
+                    text: root.uptime.startsWith("up ") ? root.uptime : "up " + root.uptime
                     font.pixelSize: Constants.sizeSm
+                    font.weight: Font.Medium
                     color: Theme.fg
                     elide: Text.ElideRight
                     Layout.fillWidth: true
