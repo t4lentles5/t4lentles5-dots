@@ -6,6 +6,7 @@ import qs.Modules.KeybindsCheatSheet
 import qs.Modules.Launcher
 import qs.Modules.Notifications
 import qs.Modules.PackageManager
+import qs.Modules.Pomodoro
 import qs.Modules.Screenshot
 import qs.Modules.WallpaperSelector
 import qs.Services.System
@@ -42,6 +43,9 @@ ShellRoot {
 
     NotificationOverlay {
         notificationService: globalNotificationService
+    }
+
+    Pomodoro {
     }
 
 }

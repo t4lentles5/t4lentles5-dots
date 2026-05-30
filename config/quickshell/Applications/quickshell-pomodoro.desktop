@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pomodoro Timer
+Comment=Toggle Quickshell Pomodoro Timer
+Exec=sh -c $HOME/.config/quickshell/Scripts/toggle_pomodoro.sh
+Icon=/usr/share/icons/Tela-circle-dracula/scalable/apps/Pomodoro.svg
+Terminal=false
+Categories=Utility;

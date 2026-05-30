@@ -146,6 +146,16 @@ else
   warn "Wallpapers/ not found in repo, skipping."
 fi
 
+# ── 4.1. quickshell applications ──────────────────────────────────────────────
+log "Installing Quickshell desktop entries..."
+if [ -d "$REPO_DIR/config/quickshell/Applications" ]; then
+  mkdir -p "$HOME/.local/share/applications"
+  cp -r "$REPO_DIR/config/quickshell/Applications/." "$HOME/.local/share/applications/"
+  ok "Quickshell desktop entries copied to ~/.local/share/applications/"
+else
+  warn "config/quickshell/Applications not found, skipping."
+fi
+
 # ── 5. apply GTK theme via gsettings ──────────────────────────────────────────
 log "Applying GTK theme..."
 if [ -f "$HOME/.config/gtk-3.0/settings.ini" ]; then
