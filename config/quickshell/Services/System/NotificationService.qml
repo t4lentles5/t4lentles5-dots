@@ -104,7 +104,7 @@ Item {
             "summary": dndEnabled ? "Do Not Disturb Enabled" : "Do Not Disturb Disabled",
             "body": dndEnabled ? "Notifications are now silenced." : "Notifications will now be shown.",
             "appName": "System",
-            "icon": dndEnabled ? Constants.iconActionsPath + "notifications-disabled.svg" : Constants.iconActionsPath + "notifications.svg",
+            "icon": dndEnabled ? "notifications-disabled" : "notifications",
             "image": "",
             "progress": 1,
             "timestamp": timestamp

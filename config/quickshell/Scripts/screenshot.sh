@@ -9,7 +9,7 @@ DIR="$HOME/Pictures/Screenshots"
 TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
 FILENAME="$DIR/Shot-${TIMESTAMP}.png"
 LOG="/tmp/screenshot_debug.log"
-ICON_PATH="/usr/share/icons/Tela-circle-dracula-dark/scalable/apps/accessories-screenshot.svg"
+ICON_PATH="accessories-screenshot"
 
 mkdir -p "$DIR"
 

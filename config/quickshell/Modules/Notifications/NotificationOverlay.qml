@@ -12,6 +12,160 @@ PanelWindow {
 
     required property var notificationService
 
+    function getSystemFontIcon(iconPath) {
+        if (!iconPath)
+            return "";
+
+        let path = iconPath.toString();
+        if (path.includes("microphone-sensitivity-high"))
+            return "󰍬";
+
+        if (path.includes("microphone-sensitivity-muted"))
+            return "󰍭";
+
+        if (path.includes("preferences-system-bluetooth-active"))
+            return "󰂯";
+
+        if (path.includes("preferences-system-bluetooth-inactive"))
+            return "󰂲";
+
+        if (path.includes("weather-clear-night"))
+            return "󰖔";
+
+        if (path.includes("weather-clear"))
+            return "󰖙";
+
+        if (path.includes("audio-volume-high"))
+            return "󰕾";
+
+        if (path.includes("audio-volume-muted"))
+            return "󰝟";
+
+        if (path.includes("network-wireless-connected"))
+            return "󰤨";
+
+        if (path.includes("network-wireless-disconnected"))
+            return "󰤭";
+
+        if (path.includes("input-keyboard"))
+            return "󰌌";
+
+        if (path.includes("battery-good-charging"))
+            return "󰂄";
+
+        if (path.includes("battery-good"))
+            return "󰁹";
+
+        if (path.includes("battery-full"))
+            return "󰁹";
+
+        if (path.includes("battery-caution"))
+            return "󰂃";
+
+        if (path.includes("color-management"))
+            return "󰏘";
+
+        if (path.includes("system-shutdown"))
+            return "";
+
+        if (path.includes("system-reboot"))
+            return "";
+
+        if (path.includes("system-suspend"))
+            return "󰒲";
+
+        if (path.includes("system-log-out"))
+            return "󰍃";
+
+        if (path.includes("accessories-screenshot"))
+            return "󰄄";
+
+        if (path.includes("notifications-disabled"))
+            return "󰂛";
+
+        if (path.includes("notifications"))
+            return "󰂚";
+
+        return "";
+    }
+
+    function getSystemFontIconColor(iconPath, fallbackColor) {
+        if (!iconPath)
+            return fallbackColor;
+
+        let path = iconPath.toString();
+        if (path.includes("microphone-sensitivity-high"))
+            return Theme.blue;
+
+        if (path.includes("microphone-sensitivity-muted"))
+            return Theme.muted;
+
+        if (path.includes("preferences-system-bluetooth-active"))
+            return Theme.blue;
+
+        if (path.includes("preferences-system-bluetooth-inactive"))
+            return Theme.muted;
+
+        if (path.includes("weather-clear-night"))
+            return Theme.yellow;
+
+        if (path.includes("weather-clear"))
+            return Theme.yellow;
+
+        if (path.includes("audio-volume-high"))
+            return Theme.cyan;
+
+        if (path.includes("audio-volume-muted"))
+            return Theme.muted;
+
+        if (path.includes("network-wireless-connected"))
+            return Theme.purple;
+
+        if (path.includes("network-wireless-disconnected"))
+            return Theme.muted;
+
+        if (path.includes("input-keyboard"))
+            return Theme.blue;
+
+        if (path.includes("battery-good-charging"))
+            return Theme.green;
+
+        if (path.includes("battery-good"))
+            return Theme.yellow;
+
+        if (path.includes("battery-full"))
+            return Theme.green;
+
+        if (path.includes("battery-caution"))
+            return Theme.red;
+
+        if (path.includes("color-management"))
+            return Theme.purple;
+
+        if (path.includes("system-shutdown"))
+            return Theme.red;
+
+        if (path.includes("system-reboot"))
+            return Theme.yellow;
+
+        if (path.includes("system-suspend"))
+            return Theme.blue;
+
+        if (path.includes("system-log-out"))
+            return Theme.purple;
+
+        if (path.includes("accessories-screenshot"))
+            return Theme.cyan;
+
+        if (path.includes("notifications-disabled"))
+            return Theme.muted;
+
+        if (path.includes("notifications"))
+            return Theme.purple;
+
+        return fallbackColor;
+    }
+
     screen: Quickshell.screens[0]
     WlrLayershell.layer: WlrLayershell.Overlay
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
@@ -133,6 +287,11 @@ PanelWindow {
 
                             anchors.fill: parent
                             source: {
+                                let img = model.image ? model.image.toString() : "";
+                                let ico = model.icon ? model.icon.toString() : "";
+                                if (root.getSystemFontIcon(img) !== "" || root.getSystemFontIcon(ico) !== "")
+                                    return "";
+
                                 if (model.image)
                                     return model.image;
 
@@ -141,9 +300,9 @@ PanelWindow {
                                     if (iconStr.startsWith("/") || iconStr.startsWith("file://") || iconStr.startsWith("image://"))
                                         return iconStr;
 
-                                    return "image://icon/" + iconStr + "?fallback=dialog-information";
+                                    return Quickshell.iconPath(iconStr, true);
                                 }
-                                return Constants.fallbackIcon;
+                                return "";
                             }
                             sourceSize: Qt.size(48, 48)
                             visible: false
@@ -153,7 +312,7 @@ PanelWindow {
                         OpacityMask {
                             anchors.fill: parent
                             source: notifImage
-                            visible: notifImage.source.toString() !== ""
+                            visible: notifImage.status === Image.Ready && notifImage.source.toString() !== ""
 
                             maskSource: Rectangle {
                                 width: notifImage.width
@@ -161,6 +320,30 @@ PanelWindow {
                                 radius: 8
                             }
 
+                        }
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            visible: notifImage.status !== Image.Ready || notifImage.source.toString() === ""
+                            text: {
+                                let img = model.image ? model.image.toString() : "";
+                                let ico = model.icon ? model.icon.toString() : "";
+                                let sysIcon = root.getSystemFontIcon(img) || root.getSystemFontIcon(ico);
+                                if (sysIcon !== "")
+                                    return sysIcon;
+
+                                return "󰂚";
+                            }
+                            color: {
+                                let img = model.image ? model.image.toString() : "";
+                                let ico = model.icon ? model.icon.toString() : "";
+                                let sysColor = root.getSystemFontIconColor(img, "") || root.getSystemFontIconColor(ico, "");
+                                if (sysColor !== "")
+                                    return sysColor;
+
+                                return Theme.purple;
+                            }
+                            font.pixelSize: 36
                         }
 
                     }

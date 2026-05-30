@@ -2,7 +2,7 @@
 
 CURRENT_LAYOUT=$(hyprctl getoption input:kb_layout -j | jq -r '.str')
 CURRENT_LAYOUT=$(echo "$CURRENT_LAYOUT" | xargs)
-ICON_PATH="/usr/share/icons/Tela-circle-dracula-dark/22/devices/input-keyboard.svg"
+ICON_PATH="input-keyboard"
 
 if [[ "$CURRENT_LAYOUT" == "latam" ]]; then
   NEW_LAYOUT="us"

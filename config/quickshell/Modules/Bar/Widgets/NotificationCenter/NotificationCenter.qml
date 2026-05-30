@@ -2,6 +2,7 @@ import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell
 import qs.Core
 
 TopPopup {
@@ -10,6 +11,160 @@ TopPopup {
     property var notificationService
     property var currentTime: new Date()
     property bool controlCenterOpen: false
+
+    function getSystemFontIcon(iconPath) {
+        if (!iconPath)
+            return "";
+
+        let path = iconPath.toString();
+        if (path.includes("microphone-sensitivity-high"))
+            return "󰍬";
+
+        if (path.includes("microphone-sensitivity-muted"))
+            return "󰍭";
+
+        if (path.includes("preferences-system-bluetooth-active"))
+            return "󰂯";
+
+        if (path.includes("preferences-system-bluetooth-inactive"))
+            return "󰂲";
+
+        if (path.includes("weather-clear-night"))
+            return "󰖔";
+
+        if (path.includes("weather-clear"))
+            return "󰖙";
+
+        if (path.includes("audio-volume-high"))
+            return "󰕾";
+
+        if (path.includes("audio-volume-muted"))
+            return "󰝟";
+
+        if (path.includes("network-wireless-connected"))
+            return "󰤨";
+
+        if (path.includes("network-wireless-disconnected"))
+            return "󰤭";
+
+        if (path.includes("input-keyboard"))
+            return "󰌌";
+
+        if (path.includes("battery-good-charging"))
+            return "󰂄";
+
+        if (path.includes("battery-good"))
+            return "󰁹";
+
+        if (path.includes("battery-full"))
+            return "󰁹";
+
+        if (path.includes("battery-caution"))
+            return "󰂃";
+
+        if (path.includes("color-management"))
+            return "󰏘";
+
+        if (path.includes("system-shutdown"))
+            return "";
+
+        if (path.includes("system-reboot"))
+            return "";
+
+        if (path.includes("system-suspend"))
+            return "󰒲";
+
+        if (path.includes("system-log-out"))
+            return "󰍃";
+
+        if (path.includes("accessories-screenshot"))
+            return "󰄀";
+
+        if (path.includes("notifications-disabled"))
+            return "󰂛";
+
+        if (path.includes("notifications"))
+            return "󰂚";
+
+        return "";
+    }
+
+    function getSystemFontIconColor(iconPath, fallbackColor) {
+        if (!iconPath)
+            return fallbackColor;
+
+        let path = iconPath.toString();
+        if (path.includes("microphone-sensitivity-high"))
+            return Theme.blue;
+
+        if (path.includes("microphone-sensitivity-muted"))
+            return Theme.muted;
+
+        if (path.includes("preferences-system-bluetooth-active"))
+            return Theme.blue;
+
+        if (path.includes("preferences-system-bluetooth-inactive"))
+            return Theme.muted;
+
+        if (path.includes("weather-clear-night"))
+            return Theme.yellow;
+
+        if (path.includes("weather-clear"))
+            return Theme.yellow;
+
+        if (path.includes("audio-volume-high"))
+            return Theme.cyan;
+
+        if (path.includes("audio-volume-muted"))
+            return Theme.muted;
+
+        if (path.includes("network-wireless-connected"))
+            return Theme.purple;
+
+        if (path.includes("network-wireless-disconnected"))
+            return Theme.muted;
+
+        if (path.includes("input-keyboard"))
+            return Theme.blue;
+
+        if (path.includes("battery-good-charging"))
+            return Theme.green;
+
+        if (path.includes("battery-good"))
+            return Theme.yellow;
+
+        if (path.includes("battery-full"))
+            return Theme.green;
+
+        if (path.includes("battery-caution"))
+            return Theme.red;
+
+        if (path.includes("color-management"))
+            return Theme.purple;
+
+        if (path.includes("system-shutdown"))
+            return Theme.red;
+
+        if (path.includes("system-reboot"))
+            return Theme.yellow;
+
+        if (path.includes("system-suspend"))
+            return Theme.blue;
+
+        if (path.includes("system-log-out"))
+            return Theme.purple;
+
+        if (path.includes("accessories-screenshot"))
+            return Theme.cyan;
+
+        if (path.includes("notifications-disabled"))
+            return Theme.muted;
+
+        if (path.includes("notifications"))
+            return Theme.purple;
+
+        return fallbackColor;
+    }
 
     function timeAgo(date, now) {
         if (!date || isNaN(date.getTime()) || !now || isNaN(now.getTime()))
@@ -214,17 +369,22 @@ TopPopup {
 
                                         anchors.fill: parent
                                         source: {
+                                            let img = model.image ? model.image.toString() : "";
+                                            let ico = model.icon ? model.icon.toString() : "";
+                                            if (root.getSystemFontIcon(img) !== "" || root.getSystemFontIcon(ico) !== "")
+                                                return "";
+
                                             if (model.image)
                                                 return model.image;
 
                                             if (model.icon) {
-                                                const ico = model.icon.toString();
-                                                if (ico.startsWith("/") || ico.startsWith("file://") || ico.startsWith("image://"))
-                                                    return ico;
+                                                const icoStr = model.icon.toString();
+                                                if (icoStr.startsWith("/") || icoStr.startsWith("file://") || icoStr.startsWith("image://"))
+                                                    return icoStr;
 
-                                                return "image://icon/" + ico + "?fallback=dialog-information";
+                                                return Quickshell.iconPath(icoStr, true);
                                             }
-                                            return Constants.fallbackIcon;
+                                            return "";
                                         }
                                         visible: false
                                         fillMode: Image.PreserveAspectCrop
@@ -233,7 +393,7 @@ TopPopup {
                                     OpacityMask {
                                         anchors.fill: parent
                                         source: notifImage
-                                        visible: notifImage.source.toString() !== ""
+                                        visible: notifImage.status === Image.Ready && notifImage.source.toString() !== ""
 
                                         maskSource: Rectangle {
                                             width: notifImage.width
@@ -241,6 +401,30 @@ TopPopup {
                                             radius: 8
                                         }
 
+                                    }
+
+                                    ThemedText {
+                                        anchors.centerIn: parent
+                                        visible: notifImage.status !== Image.Ready || notifImage.source.toString() === ""
+                                        text: {
+                                            let img = model.image ? model.image.toString() : "";
+                                            let ico = model.icon ? model.icon.toString() : "";
+                                            let sysIcon = root.getSystemFontIcon(img) || root.getSystemFontIcon(ico);
+                                            if (sysIcon !== "")
+                                                return sysIcon;
+
+                                            return "󰂚";
+                                        }
+                                        color: {
+                                            let img = model.image ? model.image.toString() : "";
+                                            let ico = model.icon ? model.icon.toString() : "";
+                                            let sysColor = root.getSystemFontIconColor(img, "") || root.getSystemFontIconColor(ico, "");
+                                            if (sysColor !== "")
+                                                return sysColor;
+
+                                            return Theme.purple;
+                                        }
+                                        font.pixelSize: 32
                                     }
 
                                 }

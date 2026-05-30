@@ -9,17 +9,12 @@ LABEL="$1"
 shift
 CMD=("$@")
 
-ICON_DIR="/usr/share/icons/Tela-circle-dracula-dark/22/actions"
-CASE_ICON="system-shutdown.svg"
-
 case "$LABEL" in
-"shutdown") CASE_ICON="system-shutdown.svg" ;;
-"reboot") CASE_ICON="system-reboot.svg" ;;
-"suspend") CASE_ICON="system-suspend.svg" ;;
-"logout") CASE_ICON="xfsm-logout.svg" ;;
+"shutdown") ICON_PATH="system-shutdown" ;;
+"reboot") ICON_PATH="system-reboot" ;;
+"suspend") ICON_PATH="system-suspend" ;;
+"logout") ICON_PATH="system-log-out" ;;
 esac
-
-ICON_PATH="$ICON_DIR/$CASE_ICON"
 
 PID_FILE="/tmp/quickshell_power_action.pid"
 echo $$ >"$PID_FILE"
