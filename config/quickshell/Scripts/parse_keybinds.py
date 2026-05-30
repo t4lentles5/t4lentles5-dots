@@ -67,7 +67,8 @@ def parse_keybinds(filepath):
     SECTION_MERGE_HYPR = {
         "Applications": "System",
         "Tools": "System",
-        "Quickshell Widgets": "System",
+        "Quickshell Widgets": "Quickshell",
+        "Quickshell Apps": "Quickshell",
         "Volume": "Media",
         "Brightness": "Media",
         "Media Player": "Media",
@@ -141,7 +142,6 @@ def parse_keybinds(filepath):
 
 
 def expand_nvim_key(raw_key):
-    """Convert a neovim key like '<leader>gg' or '<C-h>' into UI key parts."""
     keys = []
     i = 0
     s = raw_key.strip().strip('"').strip("'")
@@ -169,7 +169,6 @@ def expand_nvim_key(raw_key):
 
 
 def parse_nvim_keymaps(filepath):
-    """Parse neovim keymaps.lua and return sections with binds."""
     SECTION_MERGE = {
         "General Keymaps": "General",
         "Save File": "General",
@@ -199,7 +198,6 @@ def parse_nvim_keymaps(filepath):
             if not line:
                 continue
 
-            # Section comment like "-- General Keymaps"
             section_match = re.match(r"^--\s+(.+)$", line)
             if section_match:
                 name = section_match.group(1).strip()
@@ -215,7 +213,6 @@ def parse_nvim_keymaps(filepath):
                 current_section_name = target
                 continue
 
-            # keymap.set("n", "<key>", ..., { desc = "..." })
             km_match = re.match(
                 r'keymap\.set\(\s*(?:\{[^}]*\}|"[^"]*")\s*,\s*"([^"]+)"\s*,.*desc\s*=\s*"([^"]+)"',
                 line,
@@ -227,7 +224,6 @@ def parse_nvim_keymaps(filepath):
                 merged[current_section_name].append({"keys": keys, "desc": desc})
                 continue
 
-    # Parse LSP section from inside autocmd
     lsp_binds = []
     in_lsp = False
     with open(filepath) as f:
@@ -251,7 +247,6 @@ def parse_nvim_keymaps(filepath):
         merged["LSP"] = [{"is_subheader": True, "name": "LSP Keymaps"}] + lsp_binds
         section_order.append("LSP")
 
-    # Parse plugin keybinds from lazy.nvim plugin specs
     plugins_dir = os.path.join(os.path.dirname(os.path.dirname(filepath)), "plugins")
     if os.path.isdir(plugins_dir):
         plugin_target = "Plugins"
@@ -269,7 +264,6 @@ def parse_nvim_keymaps(filepath):
             with open(ppath) as pf:
                 for pline in pf:
                     pline = pline.rstrip()
-                    # Match lazy.nvim key specs: { "<key>", "<cmd>...", desc = "..." }
                     pm = re.match(
                         r'\s*\{\s*"([^"]+)"\s*,\s*"[^"]*"\s*,\s*desc\s*=\s*"([^"]+)"',
                         pline,
@@ -278,7 +272,6 @@ def parse_nvim_keymaps(filepath):
                         raw_key = pm.group(1)
                         desc = pm.group(2)
                         keys = expand_nvim_key(raw_key)
-                        # Avoid duplicates already in Plugins from keymaps.lua
                         if not any(
                             b.get("desc") == desc for b in merged[plugin_target]
                         ):

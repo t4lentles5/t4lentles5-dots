@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.Core
@@ -90,51 +91,67 @@ Rectangle {
             color: Theme.muted
         }
 
-        Repeater {
-            model: root.btList
+        ScrollView {
+            Layout.fillWidth: true
+            Layout.preferredHeight: Math.min(btRepeaterCol.implicitHeight, 200)
+            clip: true
+            ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: 28
+            ColumnLayout {
+                id: btRepeaterCol
 
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: Constants.sizeSm
-                    anchors.rightMargin: Constants.sizeXs
-                    spacing: Constants.sizeXs
+                width: parent.width
+                spacing: Constants.sizeXs
 
-                    ThemedText {
-                        text: "󰂱"
-                        font.pixelSize: Constants.sizeXs
-                        color: Theme.blue
-                        opacity: 0.5
-                        Layout.alignment: Qt.AlignVCenter
-                    }
+                Repeater {
+                    model: root.btList
 
-                    ThemedText {
-                        text: modelData.name
-                        font.pixelSize: Constants.sizeSm
-                        opacity: hoverHandlerB.hovered ? 1 : 0.65
+                    Item {
                         Layout.fillWidth: true
-                        elide: Text.ElideRight
+                        implicitHeight: 28
 
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: Constants.animNormal
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: Constants.sizeSm
+                            anchors.rightMargin: Constants.sizeXs
+                            spacing: Constants.sizeXs
+
+                            ThemedText {
+                                text: "󰂱"
+                                font.pixelSize: Constants.sizeXs
+                                color: Theme.blue
+                                opacity: 0.5
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
+                            ThemedText {
+                                text: modelData.name
+                                font.pixelSize: Constants.sizeSm
+                                opacity: hoverHandlerB.hovered ? 1 : 0.65
+                                Layout.fillWidth: true
+                                elide: Text.ElideRight
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: Constants.animNormal
+                                    }
+
+                                }
+
                             }
 
                         }
 
+                        HoverHandler {
+                            id: hoverHandlerB
+                        }
+
+                        TapHandler {
+                            onTapped: root.connect(modelData.mac)
+                        }
+
                     }
 
-                }
-
-                HoverHandler {
-                    id: hoverHandlerB
-                }
-
-                TapHandler {
-                    onTapped: root.connect(modelData.mac)
                 }
 
             }

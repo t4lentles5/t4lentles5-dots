@@ -35,8 +35,12 @@ def get_apps():
                     if executable.startswith("/usr/bin/"):
                         executable = executable[9:]
 
-                    icon = entry.get("Icon", "")
+                    icon = entry.get("Icon", "").replace('"', "")
                     terminal = entry.get("Terminal", "false").lower() == "true"
+                    categories_str = entry.get("Categories", "")
+                    categories = [
+                        c.strip() for c in categories_str.split(";") if c.strip()
+                    ]
 
                     actions = []
                     if "Actions" in entry:
@@ -67,6 +71,7 @@ def get_apps():
                                 "exec": raw_exec.split(" %")[0],
                                 "icon": icon,
                                 "terminal": terminal,
+                                "categories": categories,
                                 "actions": actions,
                             }
                         )

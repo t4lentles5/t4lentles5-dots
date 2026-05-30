@@ -114,6 +114,14 @@ CenterWindow {
 
     Shortcut {
         sequence: "Tab"
+        enabled: root.isOpen && root.currentData.length > 0
+        onActivated: {
+            root.selectedCategory = (root.selectedCategory + 1) % root.currentData.length;
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Tab"
         enabled: root.isOpen
         onActivated: {
             root.activeTab = root.activeTab === 0 ? 1 : 0;
@@ -340,16 +348,99 @@ CenterWindow {
     RowLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: 18
-        spacing: Constants.sizeXs
+        spacing: Constants.sizeSm
 
         Item {
             Layout.fillWidth: true
         }
 
+        RowLayout {
+            spacing: 4
+            Layout.alignment: Qt.AlignVCenter
+
+            Rectangle {
+                width: 32
+                height: 16
+                radius: 3
+                color: Theme.bgSecondary
+                border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                border.width: 1
+
+                ThemedText {
+                    anchors.centerIn: parent
+                    text: "Tab"
+                    font.pixelSize: 9
+                    font.bold: true
+                }
+
+            }
+
+            ThemedText {
+                text: "Switch Category"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+            }
+
+        }
+
         ThemedText {
-            text: "󰌒  Switch Environment"
+            text: "•"
             font.pixelSize: Constants.sizeSm
             color: Theme.muted
+            opacity: 0.5
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        RowLayout {
+            spacing: 4
+            Layout.alignment: Qt.AlignVCenter
+
+            Rectangle {
+                width: 32
+                height: 16
+                radius: 3
+                color: Theme.bgSecondary
+                border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                border.width: 1
+
+                ThemedText {
+                    anchors.centerIn: parent
+                    text: "Ctrl"
+                    font.pixelSize: 9
+                    font.bold: true
+                }
+
+            }
+
+            ThemedText {
+                text: "+"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+            }
+
+            Rectangle {
+                width: 32
+                height: 16
+                radius: 3
+                color: Theme.bgSecondary
+                border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                border.width: 1
+
+                ThemedText {
+                    anchors.centerIn: parent
+                    text: "Tab"
+                    font.pixelSize: 9
+                    font.bold: true
+                }
+
+            }
+
+            ThemedText {
+                text: "Switch Environment"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+            }
+
         }
 
     }

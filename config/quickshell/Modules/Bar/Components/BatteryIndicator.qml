@@ -13,6 +13,7 @@ BarButton {
     property var notificationService
     property string _prevStatus: ""
     property int _prevLevel: -1
+    property bool notifiedFull: false
     property color activeColor: {
         if (root.batteryStatus === "Charging")
             return Theme.green;
@@ -33,17 +34,24 @@ BarButton {
             let body = "";
             let icon = "";
             if (batteryStatus === "Charging") {
-                summary = "Battery";
-                body = "Charger connected";
-                icon = Constants.iconPath + "battery-good-charging.svg";
+                if (_prevStatus === "Discharging") {
+                    summary = "Battery";
+                    body = "Charger connected";
+                    icon = "battery-good-charging";
+                }
             } else if (batteryStatus === "Discharging") {
-                summary = "Battery";
-                body = "Charger disconnected";
-                icon = Constants.iconPath + "battery-good.svg";
-            } else if (batteryStatus === "Full") {
-                summary = "Battery";
-                body = "Battery fully charged";
-                icon = Constants.iconPath + "battery-full.svg";
+                if (_prevStatus === "Charging" || _prevStatus === "Full" || _prevStatus === "Not charging") {
+                    summary = "Battery";
+                    body = "Charger disconnected";
+                    icon = "battery-good";
+                }
+            } else if (batteryStatus === "Full" || batteryStatus === "Not charging") {
+                if (!root.notifiedFull && batteryStatus === "Full") {
+                    summary = "Battery";
+                    body = "Battery fully charged";
+                    icon = "battery-full";
+                    root.notifiedFull = true;
+                }
             }
             if (body !== "" && notificationService)
                 notificationService.notify(summary, body, icon);
@@ -55,6 +63,9 @@ BarButton {
         if (batteryLevel <= 0 || batteryLevel === _prevLevel)
             return ;
 
+        if (batteryStatus === "Discharging" && batteryLevel < 95)
+            root.notifiedFull = false;
+
         if (_prevLevel !== -1 && batteryStatus === "Discharging") {
             let threshold = 0;
             if (batteryLevel <= 5 && _prevLevel > 5)
@@ -64,7 +75,7 @@ BarButton {
             else if (batteryLevel <= 20 && _prevLevel > 20)
                 threshold = 20;
             if (threshold > 0 && notificationService)
-                notificationService.notify("Low Battery", "Battery level: " + batteryLevel + "%", Constants.iconPath + "battery-caution.svg");
+                notificationService.notify("Low Battery", "Battery level: " + batteryLevel + "%", "battery-caution");
 
         }
         _prevLevel = batteryLevel;

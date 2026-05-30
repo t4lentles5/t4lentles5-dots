@@ -21,7 +21,7 @@ IconButton {
             nightLightProc.command = ["pkill", "hyprsunset"];
         nightLightProc.running = false;
         nightLightProc.running = true;
-        nlNotifyProc.command = ["notify-send", "-a", "System", "-i", Constants.iconPath.replace("file://", "") + (activeState ? "weather-clear-night.svg" : "weather-clear.svg"), "Night Light", activeState ? "Enabled" : "Disabled", "-t", "1500"];
+        nlNotifyProc.command = ["notify-send", "-a", "System", "-i", activeState ? "weather-clear-night" : "weather-clear", "Night Light", activeState ? "Enabled" : "Disabled", "-t", "1500"];
         nlNotifyProc.running = true;
     }
 

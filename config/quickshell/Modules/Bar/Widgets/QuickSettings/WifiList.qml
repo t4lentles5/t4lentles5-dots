@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.Core
@@ -90,67 +91,83 @@ Rectangle {
             color: Theme.muted
         }
 
-        Repeater {
-            model: root.wifiList
+        ScrollView {
+            Layout.fillWidth: true
+            Layout.preferredHeight: Math.min(wifiRepeaterCol.implicitHeight, 200)
+            clip: true
+            ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
-            Item {
-                Layout.fillWidth: true
-                implicitHeight: 28
+            ColumnLayout {
+                id: wifiRepeaterCol
 
-                RowLayout {
-                    anchors.fill: parent
-                    spacing: Constants.sizeXs
+                width: parent.width
+                spacing: Constants.sizeXs
 
-                    Rectangle {
-                        width: 4
-                        height: 4
-                        radius: 2
-                        color: Theme.purple
-                        opacity: modelData.active ? 0.8 : 0
-                        Layout.alignment: Qt.AlignVCenter
+                Repeater {
+                    model: root.wifiList
 
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: Constants.animNormal
-                            }
-
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: modelData.ssid
-                        color: modelData.active ? Theme.purple : Theme.fg
-                        font.pixelSize: Constants.sizeSm
-                        font.weight: modelData.active ? Font.Medium : Font.Normal
-                        opacity: hoverHandlerW.hovered ? 1 : (modelData.active ? 0.9 : 0.65)
+                    Item {
                         Layout.fillWidth: true
-                        elide: Text.ElideRight
+                        implicitHeight: 28
 
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: Constants.animNormal
+                        RowLayout {
+                            anchors.fill: parent
+                            spacing: Constants.sizeXs
+
+                            Rectangle {
+                                width: 4
+                                height: 4
+                                radius: 2
+                                color: Theme.purple
+                                opacity: modelData.active ? 0.8 : 0
+                                Layout.alignment: Qt.AlignVCenter
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: Constants.animNormal
+                                    }
+
+                                }
+
+                            }
+
+                            ThemedText {
+                                text: modelData.ssid
+                                color: modelData.active ? Theme.purple : Theme.fg
+                                font.pixelSize: Constants.sizeSm
+                                font.weight: modelData.active ? Font.Medium : Font.Normal
+                                opacity: hoverHandlerW.hovered ? 1 : (modelData.active ? 0.9 : 0.65)
+                                Layout.fillWidth: true
+                                elide: Text.ElideRight
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: Constants.animNormal
+                                    }
+
+                                }
+
+                            }
+
+                            ThemedText {
+                                text: modelData.signal + "%"
+                                color: Theme.muted
+                                font.pixelSize: 9
+                                opacity: 0.4
                             }
 
                         }
 
+                        HoverHandler {
+                            id: hoverHandlerW
+                        }
+
+                        TapHandler {
+                            onTapped: root.connect(modelData.ssid)
+                        }
+
                     }
 
-                    ThemedText {
-                        text: modelData.signal + "%"
-                        color: Theme.muted
-                        font.pixelSize: 9
-                        opacity: 0.4
-                    }
-
-                }
-
-                HoverHandler {
-                    id: hoverHandlerW
-                }
-
-                TapHandler {
-                    onTapped: root.connect(modelData.ssid)
                 }
 
             }

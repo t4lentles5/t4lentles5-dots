@@ -13,9 +13,23 @@ CenterWindow {
 
     function selectTheme(theme) {
         let scheme = root.showingDark ? theme.dark : theme.light;
-        WallpaperManager.applySchemeWithSync(scheme);
-        let iconPath = Constants.iconActionsPath + "color-management.svg";
-        notifyProc.command = ["notify-send", "Color Scheme", "Applied: " + scheme.name, "-i", iconPath, "-a", "Quickshell"];
+        let currentlyDark = true;
+        for (let i = 0; i < Theme.themes.length; i++) {
+            if (Theme.themes[i].dark.name === Theme.currentScheme) {
+                currentlyDark = true;
+                break;
+            }
+            if (Theme.themes[i].light.name === Theme.currentScheme) {
+                currentlyDark = false;
+                break;
+            }
+        }
+        let targetDark = root.showingDark;
+        if (currentlyDark !== targetDark)
+            WallpaperManager.applySchemeWithSync(scheme);
+        else
+            Theme.applyScheme(scheme);
+        notifyProc.command = ["notify-send", "Color Scheme", "Applied: " + scheme.name, "-i", "color-management", "-a", "Quickshell"];
         notifyProc.startDetached();
         root.isOpen = false;
     }
@@ -470,10 +484,108 @@ CenterWindow {
             Layout.fillWidth: true
         }
 
-        ThemedText {
-            text: "󰌒  Switch Mode  •  ↑↓  Navigate  •  󰌑  Apply"
-            font.pixelSize: Constants.sizeSm
-            color: Theme.muted
+        RowLayout {
+            spacing: Constants.sizeSm
+            Layout.alignment: Qt.AlignVCenter
+
+            RowLayout {
+                spacing: 4
+
+                Rectangle {
+                    width: 32
+                    height: 16
+                    radius: 3
+                    color: Theme.bgSecondary
+                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                    border.width: 1
+
+                    ThemedText {
+                        anchors.centerIn: parent
+                        text: "Tab"
+                        font.pixelSize: 9
+                        font.bold: true
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Switch Mode"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                }
+
+            }
+
+            ThemedText {
+                text: "•"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+                opacity: 0.5
+            }
+
+            RowLayout {
+                spacing: 4
+
+                Rectangle {
+                    width: 22
+                    height: 16
+                    radius: 3
+                    color: Theme.bgSecondary
+                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                    border.width: 1
+
+                    ThemedText {
+                        anchors.centerIn: parent
+                        text: "↑↓"
+                        font.pixelSize: 10
+                        font.bold: true
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Navigate"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                }
+
+            }
+
+            ThemedText {
+                text: "•"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+                opacity: 0.5
+            }
+
+            RowLayout {
+                spacing: 4
+
+                Rectangle {
+                    width: 20
+                    height: 16
+                    radius: 3
+                    color: Theme.bgSecondary
+                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                    border.width: 1
+
+                    ThemedText {
+                        anchors.centerIn: parent
+                        text: "󰌑"
+                        font.pixelSize: 10
+                        font.bold: true
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Apply"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                }
+
+            }
+
         }
 
     }

@@ -31,10 +31,15 @@ CenterWindow {
             searchProc.running = false;
             searchProc.command = ["python3", Quickshell.shellDir + "/Scripts/search_packages.py", query];
             searchProc.running = true;
-        } else {
+        } else if (root.actionMode === "remove") {
             root.isSearching = true;
             searchProc.running = false;
             searchProc.command = ["python3", Quickshell.shellDir + "/Scripts/search_packages.py", "--list-installed"];
+            searchProc.running = true;
+        } else if (root.actionMode === "update") {
+            root.isSearching = true;
+            searchProc.running = false;
+            searchProc.command = ["python3", Quickshell.shellDir + "/Scripts/search_packages.py", "--list-updates"];
             searchProc.running = true;
         }
     }
@@ -46,7 +51,7 @@ CenterWindow {
 
         resultsModel.clear();
         let data = root.allResults;
-        if (root.actionMode === "remove" && root.searchText.length > 0) {
+        if ((root.actionMode === "remove" || root.actionMode === "update") && root.searchText.length > 0) {
             let q = root.searchText.toLowerCase();
             data = data.filter(function(p) {
                 return p.name.toLowerCase().indexOf(q) !== -1 || p.description.toLowerCase().indexOf(q) !== -1;
@@ -145,6 +150,11 @@ CenterWindow {
             removeProc.running = false;
             removeProc.command = ["kitty", "--class", "kitty-floating", "--hold", "-e", "yay", "-Rns"].concat(root.selectedPackages);
             removeProc.startDetached();
+        } else if (root.actionMode === "update") {
+            installProc.running = false;
+            installProc.command = ["kitty", "--class", "kitty-floating", "--hold", "-e", "yay", "-Syu"].concat(root.selectedPackages);
+            AppState.isSystemUpdating = true;
+            installProc.running = true;
         } else {
             installProc.running = false;
             installProc.command = ["kitty", "--class", "kitty-floating", "--hold", "-e", "yay", "-S"].concat(root.selectedPackages);
@@ -196,7 +206,12 @@ CenterWindow {
             event.accepted = true;
         } else if (event.key === Qt.Key_Tab) {
             if (event.modifiers & Qt.ControlModifier) {
-                root.actionMode = root.actionMode === "install" ? "remove" : "install";
+                if (root.actionMode === "install")
+                    root.actionMode = "remove";
+                else if (root.actionMode === "remove")
+                    root.actionMode = "update";
+                else
+                    root.actionMode = "install";
                 root.selectedPackages = [];
                 root.selectedPackageObjects = {
                 };
@@ -222,11 +237,14 @@ CenterWindow {
         searchField.text = "";
         root.allResults = [];
         root.installingPkg = "";
-        root.actionMode = "install";
+        root.actionMode = AppState.packageManagerMode;
         root.selectedPackages = [];
         root.selectedPackageObjects = {
         };
         root.doSearch("");
+    }
+    onPopupClosed: {
+        AppState.packageManagerMode = "install";
     }
 
     ListModel {
@@ -259,7 +277,7 @@ CenterWindow {
         interval: 300
         repeat: false
         onTriggered: {
-            if (root.actionMode === "remove")
+            if (root.actionMode === "remove" || root.actionMode === "update")
                 root.updateModel();
             else
                 root.doSearch(root.searchText);
@@ -275,6 +293,25 @@ CenterWindow {
             if (exitCode === 0) {
                 try {
                     root.allResults = JSON.parse(searchOutput.text);
+                    if (root.actionMode === "update") {
+                        let arr = [];
+                        let objs = {
+                        };
+                        for (let i = 0; i < root.allResults.length; i++) {
+                            let pkg = root.allResults[i];
+                            arr.push(pkg.name);
+                            objs[pkg.name] = {
+                                "name": pkg.name,
+                                "version": pkg.version,
+                                "repo": pkg.repo,
+                                "source": pkg.source,
+                                "description": pkg.description,
+                                "installed": pkg.installed
+                            };
+                        }
+                        root.selectedPackages = arr;
+                        root.selectedPackageObjects = objs;
+                    }
                     root.updateModel();
                 } catch (e) {
                     console.error("PackageManager: Error parsing search results: " + e);
@@ -292,6 +329,10 @@ CenterWindow {
 
     Process {
         id: installProc
+
+        onExited: (code) => {
+            AppState.isSystemUpdating = false;
+        }
     }
 
     Process {
@@ -308,13 +349,56 @@ CenterWindow {
 
     ColumnLayout {
         spacing: Constants.sizeSm
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
+        Item {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 38
+
+            Rectangle {
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 1
+                color: Theme.border
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                TabButton {
+                    tabIcon: "󱧕"
+                    tabText: "Install"
+                    modeName: "install"
+                    activeColor: Theme.green
+                }
+
+                TabButton {
+                    tabIcon: "󱧖"
+                    tabText: "Remove"
+                    modeName: "remove"
+                    activeColor: Theme.red
+                }
+
+                TabButton {
+                    tabIcon: "󰏖"
+                    tabText: "Update"
+                    modeName: "update"
+                    activeColor: Theme.purple
+                }
+
+            }
+
+        }
 
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
             color: Theme.bgSecondary
             radius: Constants.sizeXl
-            border.color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.2) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.2)
+            border.color: searchField.activeFocus ? (root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.4) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.4) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.4)) : (root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.2) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.2) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.2))
             border.width: 1
 
             RowLayout {
@@ -332,7 +416,7 @@ CenterWindow {
                     id: searchField
 
                     Layout.fillWidth: true
-                    placeholderText: root.actionMode === "remove" ? "Search to remove" : "Search to install"
+                    placeholderText: root.actionMode === "remove" ? "Search to remove" : root.actionMode === "update" ? "Search updates" : "Search to install"
                     placeholderTextColor: Theme.muted
                     color: Theme.fg
                     font.pixelSize: Constants.sizeMd
@@ -352,7 +436,7 @@ CenterWindow {
                     text: root.selectedPackages.length + (root.selectedPackages.length === 1 ? " selected" : " selected")
                     font.pixelSize: Constants.sizeSm
                     font.bold: true
-                    color: root.actionMode === "install" ? Theme.green : Theme.red
+                    color: root.actionMode === "install" ? Theme.green : root.actionMode === "update" ? Theme.purple : Theme.red
                     opacity: 0.8
 
                     Behavior on color {
@@ -370,18 +454,18 @@ CenterWindow {
                     width: execLabel.implicitWidth + 24
                     height: 24
                     radius: 12
-                    color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, execHover.hovered ? 0.3 : 0.15) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, execHover.hovered ? 0.3 : 0.15)
-                    border.color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.4) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.4)
+                    color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, execHover.hovered ? 0.3 : 0.15) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, execHover.hovered ? 0.3 : 0.15) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, execHover.hovered ? 0.3 : 0.15)
+                    border.color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.4) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.4) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.4)
                     border.width: 1
 
                     ThemedText {
                         id: execLabel
 
                         anchors.centerIn: parent
-                        text: root.actionMode === "install" ? "Install" : "Remove"
+                        text: root.actionMode === "install" ? "Install" : root.actionMode === "update" ? "Update" : "Remove"
                         font.pixelSize: 10
                         font.bold: true
-                        color: root.actionMode === "install" ? Theme.green : Theme.red
+                        color: root.actionMode === "install" ? Theme.green : root.actionMode === "update" ? Theme.purple : Theme.red
                     }
 
                     HoverHandler {
@@ -454,14 +538,14 @@ CenterWindow {
                 opacity: visible ? 1 : 0
 
                 ThemedText {
-                    text: "󰩉"
-                    color: Theme.muted
+                    text: root.actionMode === "update" ? "󰄬" : "󰩉"
+                    color: root.actionMode === "update" ? Theme.green : Theme.muted
                     font.pixelSize: 72
                     Layout.alignment: Qt.AlignHCenter
                 }
 
                 ThemedText {
-                    text: "No packages found"
+                    text: root.actionMode === "update" ? "System is up to date" : "No packages found"
                     color: Theme.muted
                     font.pixelSize: Constants.sizeMd
                     Layout.alignment: Qt.AlignHCenter
@@ -537,7 +621,9 @@ CenterWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Constants.sizeXs
-                        color: Theme.bgSecondary
+                        color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.08) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.08) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.08)
+                        border.color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.2) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.2) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.2)
+                        border.width: 1
 
                         Rectangle {
                             anchors.left: parent.left
@@ -548,7 +634,7 @@ CenterWindow {
                             anchors.bottomMargin: 8
                             width: 3
                             radius: 2
-                            color: root.actionMode === "install" ? Theme.green : Theme.red
+                            color: root.actionMode === "install" ? Theme.green : root.actionMode === "update" ? Theme.purple : Theme.red
 
                             Behavior on color {
                                 ColorAnimation {
@@ -556,6 +642,20 @@ CenterWindow {
                                     easing.type: Easing.OutQuint
                                 }
 
+                            }
+
+                        }
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: 250
+                            }
+
+                        }
+
+                        Behavior on border.color {
+                            ColorAnimation {
+                                duration: 250
                             }
 
                         }
@@ -635,7 +735,7 @@ CenterWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Constants.sizeXs
-                        color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.06) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.06)
+                        color: root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.06) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.06) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.06)
                         opacity: isSelected ? 1 : 0
 
                         Behavior on opacity {
@@ -675,8 +775,8 @@ CenterWindow {
                             Layout.preferredHeight: 20
                             Layout.alignment: Qt.AlignVCenter
                             radius: 4
-                            color: isSelected ? (root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15)) : "transparent"
-                            border.color: isSelected ? (root.actionMode === "install" ? Theme.green : Theme.red) : Theme.muted
+                            color: isSelected ? (root.actionMode === "install" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : root.actionMode === "update" ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.15) : Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15)) : "transparent"
+                            border.color: isSelected ? (root.actionMode === "install" ? Theme.green : root.actionMode === "update" ? Theme.purple : Theme.red) : Theme.muted
                             border.width: 1
                             opacity: isSelected ? 1 : (isCurrent ? 0.6 : 0.3)
 
@@ -685,7 +785,7 @@ CenterWindow {
                                 text: "󰄬"
                                 font.pixelSize: 14
                                 font.bold: true
-                                color: root.actionMode === "install" ? Theme.green : Theme.red
+                                color: root.actionMode === "install" ? Theme.green : root.actionMode === "update" ? Theme.purple : Theme.red
                                 visible: isSelected
                             }
 
@@ -723,7 +823,7 @@ CenterWindow {
 
                                 ThemedText {
                                     text: name
-                                    color: isSelected ? (root.actionMode === "install" ? Theme.green : Theme.red) : (isCurrent ? Theme.purple : Theme.fg)
+                                    color: isSelected ? (root.actionMode === "install" ? Theme.green : root.actionMode === "update" ? Theme.purple : Theme.red) : (isCurrent ? Theme.purple : Theme.fg)
                                     font.pixelSize: Constants.sizeMd
                                     font.bold: true
 
@@ -879,12 +979,200 @@ CenterWindow {
                 Layout.fillWidth: true
             }
 
-            ThemedText {
-                text: "󰌒  Select  •  Ctrl+󰌒  Switch Mode  •  󰌑  Execute"
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
+            RowLayout {
+                spacing: Constants.sizeSm
+                Layout.alignment: Qt.AlignVCenter
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 32
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "Tab"
+                            font.pixelSize: 9
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Select"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
+                }
+
+                ThemedText {
+                    text: "•"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                    opacity: 0.5
+                }
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 54
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "Ctrl+Tab"
+                            font.pixelSize: 9
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Switch Mode"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
+                }
+
+                ThemedText {
+                    text: "•"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                    opacity: 0.5
+                }
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 20
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "󰌑"
+                            font.pixelSize: 10
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Execute"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
+                }
+
             }
 
+        }
+
+    }
+
+    component TabButton: Item {
+        id: tabBtn
+
+        property string tabIcon: ""
+        property string tabText: ""
+        property string modeName: ""
+        property color activeColor: Theme.purple
+        readonly property bool isActive: root.actionMode === modeName
+
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
+        RowLayout {
+            anchors.centerIn: parent
+            spacing: Constants.sizeSm
+
+            ThemedText {
+                text: tabBtn.tabIcon
+                font.pixelSize: Constants.sizeMd + 2
+                color: tabBtn.isActive ? tabBtn.activeColor : (hoverHandler.hovered ? Theme.fg : Theme.muted)
+                Layout.alignment: Qt.AlignVCenter
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 150
+                    }
+
+                }
+
+            }
+
+            ThemedText {
+                text: tabBtn.tabText
+                font.pixelSize: Constants.sizeSm
+                font.weight: tabBtn.isActive ? Font.Bold : Font.Normal
+                color: tabBtn.isActive ? tabBtn.activeColor : (hoverHandler.hovered ? Theme.fg : Theme.muted)
+                Layout.alignment: Qt.AlignVCenter
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 150
+                    }
+
+                }
+
+            }
+
+        }
+
+        Rectangle {
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: tabBtn.isActive ? 100 : 0
+            height: 3
+            radius: 1.5
+            color: tabBtn.activeColor
+
+            Behavior on width {
+                NumberAnimation {
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                }
+
+            }
+
+        }
+
+        HoverHandler {
+            id: hoverHandler
+
+            cursorShape: Qt.PointingHandCursor
+        }
+
+        TapHandler {
+            onTapped: {
+                if (root.actionMode === tabBtn.modeName)
+                    return ;
+
+                root.actionMode = tabBtn.modeName;
+                root.selectedPackages = [];
+                root.selectedPackageObjects = {
+                };
+                root.allResults = [];
+                resultsModel.clear();
+                root.doSearch(root.searchText);
+            }
         }
 
     }

@@ -12,12 +12,48 @@ RowLayout {
     property bool expanded: false
     property bool isActive: false
     property var btList: []
-    property var _tempBtList: []
+
+    function addOrUpdateDevice(mac, name) {
+        let list = root.btList;
+        let found = false;
+        let cleanName = name ? name.trim() : "";
+        if (!cleanName || cleanName === "Unknown Device")
+            cleanName = mac;
+
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].mac === mac) {
+                found = true;
+                if (cleanName && cleanName !== mac && list[i].name !== cleanName) {
+                    list[i].name = cleanName;
+                    root.btList = list.slice();
+                }
+                break;
+            }
+        }
+        if (!found) {
+            list.push({
+                "name": cleanName,
+                "mac": mac
+            });
+            root.btList = list.slice();
+        }
+    }
+
+    function removeDevice(mac) {
+        let list = root.btList;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].mac === mac) {
+                list.splice(i, 1);
+                root.btList = list.slice();
+                break;
+            }
+        }
+    }
 
     function toggle() {
         btSetProc.command = ["bluetoothctl", "power", root.isActive ? "off" : "on"];
         btSetProc.running = true;
-        btNotifyProc.command = ["notify-send", "-a", "System", "-i", Constants.iconPath.replace("file://", "") + (root.isActive ? "preferences-system-bluetooth-inactive.svg" : "preferences-system-bluetooth-active.svg"), "Bluetooth", root.isActive ? "Disabled" : "Enabled", "-t", "1500"];
+        btNotifyProc.command = ["notify-send", "-a", "System", "-i", root.isActive ? "preferences-system-bluetooth-inactive" : "preferences-system-bluetooth-active", "Bluetooth", root.isActive ? "Disabled" : "Enabled", "-t", "1500"];
         btNotifyProc.running = true;
         root.isActive = !root.isActive;
     }
@@ -37,7 +73,10 @@ RowLayout {
 
     onExpandedChanged: {
         if (expanded && isActive) {
-            btDiscoveryProc.running = true;
+            root.btList = [];
+            if (!btDiscoveryProc.running)
+                btDiscoveryProc.running = true;
+
             scan();
         } else {
             btDiscoveryProc.running = false;
@@ -45,7 +84,10 @@ RowLayout {
     }
     onIsActiveChanged: {
         if (expanded && isActive) {
-            btDiscoveryProc.running = true;
+            root.btList = [];
+            if (!btDiscoveryProc.running)
+                btDiscoveryProc.running = true;
+
             scan();
         } else {
             btDiscoveryProc.running = false;
@@ -60,15 +102,14 @@ RowLayout {
     }
 
     Timer {
+        id: updateTimer
+
         interval: 2000
         running: true
         repeat: true
         triggeredOnStart: true
         onTriggered: {
             btGetProc.running = true;
-            if (root.expanded)
-                scan();
-
         }
     }
 
@@ -82,7 +123,7 @@ RowLayout {
                 if (!data)
                     return ;
 
-                let cleanData = data.replace(/\u001b\[[0-9;]*m/g, "");
+                let cleanData = data.replace(/\u001b\[[0-9;]*m/g, "").trim();
                 if (cleanData.includes("Powered: yes"))
                     root.isActive = true;
                 else if (cleanData.includes("Powered: no"))
@@ -100,18 +141,47 @@ RowLayout {
         id: btDiscoveryProc
 
         command: ["bluetoothctl", "scan", "on"]
+
+        stdout: SplitParser {
+            onRead: (data) => {
+                if (!data)
+                    return ;
+
+                let line = data.replace(/\u001b\[[0-9;]*m/g, "").trim();
+                if (line.includes("[CHG]")) {
+                    let matchName = line.match(/\[CHG\]\s+Device\s+([0-9A-F:]{17})\s+(?:Name|Alias):\s+(.*)$/i);
+                    if (matchName) {
+                        root.addOrUpdateDevice(matchName[1], matchName[2]);
+                    } else {
+                        let matchConn = line.match(/\[CHG\]\s+Device\s+([0-9A-F:]{17})\s+Connected:\s+no/i);
+                        if (matchConn)
+                            root.removeDevice(matchConn[1]);
+
+                    }
+                } else if (line.includes("[DEL]")) {
+                    let match = line.match(/\[DEL\]\s+Device\s+([0-9A-F:]{17})/i);
+                    if (match)
+                        root.removeDevice(match[1]);
+
+                } else if (line.includes("[NEW]") || line.startsWith("Device ")) {
+                    let match = line.match(/(?:\[NEW\]\s+)?Device\s+([0-9A-F:]{17})\s*(.*)$/i);
+                    if (match) {
+                        let mac = match[1];
+                        let name = match[2].trim() || "Unknown Device";
+                        if (!name.startsWith("RSSI:") && !name.startsWith("TxPower:") && !name.startsWith("Connected:") && !name.startsWith("UUIDs:"))
+                            root.addOrUpdateDevice(mac, name);
+
+                    }
+                }
+            }
+        }
+
     }
 
     Process {
         id: btScanProc
 
-        command: ["bluetoothctl", "devices"]
-        onRunningChanged: {
-            if (running)
-                root._tempBtList = [];
-            else
-                root.btList = root._tempBtList;
-        }
+        command: ["bluetoothctl", "devices", "Connected"]
 
         stdout: SplitParser {
             onRead: (data) => {
@@ -125,21 +195,7 @@ RowLayout {
 
                 let mac = match[1];
                 let name = match[2];
-                let list = root._tempBtList;
-                let exists = false;
-                for (let i = 0; i < list.length; i++) {
-                    if (list[i].mac === mac) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    list.push({
-                        "name": name,
-                        "mac": mac
-                    });
-                    root._tempBtList = list;
-                }
+                root.addOrUpdateDevice(mac, name);
             }
         }
 
@@ -147,6 +203,12 @@ RowLayout {
 
     Process {
         id: btConnectProc
+
+        onRunningChanged: {
+            if (!running)
+                btScanProc.running = true;
+
+        }
     }
 
     Item {

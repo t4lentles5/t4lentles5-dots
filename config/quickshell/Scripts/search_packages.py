@@ -142,9 +142,86 @@ def search_packages(query: str) -> list[dict]:
         return []
 
 
+def get_updates() -> list[dict]:
+    packages = []
+    try:
+        res = subprocess.run(["checkupdates"], capture_output=True, text=True)
+        if res.returncode in (0, 2) and res.stdout:
+            for line in res.stdout.strip().split("\n"):
+                if not line:
+                    continue
+                parts = line.split()
+                if len(parts) >= 4 and parts[2] == "->":
+                    pkgname = parts[0]
+                    old_ver = parts[1]
+                    new_ver = parts[3]
+                    packages.append(
+                        {
+                            "name": pkgname,
+                            "version": f"{old_ver} -> {new_ver}",
+                            "repo": "pacman",
+                            "source": "pacman",
+                            "description": "",
+                            "installed": True,
+                        }
+                    )
+    except Exception:
+        pass
+
+    try:
+        res = subprocess.run(["yay", "-Qua"], capture_output=True, text=True)
+        if res.returncode in (0, 2) and res.stdout:
+            for line in res.stdout.strip().split("\n"):
+                if not line:
+                    continue
+                parts = line.split()
+                if len(parts) >= 4 and parts[2] == "->":
+                    pkgname = parts[0]
+                    old_ver = parts[1]
+                    new_ver = parts[3]
+                    packages.append(
+                        {
+                            "name": pkgname,
+                            "version": f"{old_ver} -> {new_ver}",
+                            "repo": "aur",
+                            "source": "AUR",
+                            "description": "",
+                            "installed": True,
+                        }
+                    )
+    except Exception:
+        pass
+
+    seen = set()
+    deduped_packages = []
+    for p in packages:
+        if p["name"] not in seen:
+            seen.add(p["name"])
+            deduped_packages.append(p)
+    packages = deduped_packages
+
+    if packages:
+        try:
+            installed = get_installed_packages()
+            desc_map = {p["name"]: p["description"] for p in installed}
+            for p in packages:
+                p["description"] = desc_map.get(
+                    p["name"], f"Update available: {p['version']}"
+                )
+        except Exception:
+            for p in packages:
+                p["description"] = f"Update available: {p['version']}"
+
+    return sorted(packages, key=lambda x: x["name"].lower())
+
+
 if __name__ == "__main__":
     if "--list-installed" in sys.argv:
         print(json.dumps(get_installed_packages()))
+        sys.exit(0)
+
+    if "--list-updates" in sys.argv:
+        print(json.dumps(get_updates()))
         sys.exit(0)
 
     if len(sys.argv) < 2:

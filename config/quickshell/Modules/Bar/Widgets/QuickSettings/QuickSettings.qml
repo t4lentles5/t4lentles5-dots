@@ -68,7 +68,7 @@ TopPopup {
                     }
 
                     ColorPickerControl {
-                        onRequestClose: root.controlCenterOpen = false
+                        onRequestClose: root.isOpen = false
                     }
 
                 }

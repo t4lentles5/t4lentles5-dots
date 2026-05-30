@@ -21,7 +21,7 @@ IconButton {
         volSetProc.command = ["pamixer", "--toggle-mute"];
         volSetProc.running = true;
         muteGetProc.running = true;
-        volNotifyProc.command = ["notify-send", "-a", "System", "-i", Constants.iconPath.replace("file://", "") + (root.muted ? "audio-volume-high.svg" : "audio-volume-muted.svg"), "Volume", root.muted ? "Unmuted" : "Muted", "-t", "1500"];
+        volNotifyProc.command = ["notify-send", "-a", "System", "-i", root.muted ? "audio-volume-high" : "audio-volume-muted", "Volume", root.muted ? "Unmuted" : "Muted", "-t", "1500"];
         volNotifyProc.running = true;
     }
 

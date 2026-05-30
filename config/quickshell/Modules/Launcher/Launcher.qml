@@ -13,13 +13,40 @@ CenterWindow {
     property string searchText: ""
     property var allApps: []
     property var filteredApps: []
+    property string selectedCategory: "All"
+    property var activeCategories: ["All"]
 
     function filterApps(query) {
         query = query.toLowerCase();
         let newFiltered = [];
         for (let i = 0; i < root.allApps.length; i++) {
             let app = root.allApps[i];
-            if (app.name.toLowerCase().includes(query))
+            let matchesCategory = false;
+            if (root.selectedCategory === "All") {
+                matchesCategory = true;
+            } else {
+                let cats = app.categories || [];
+                for (let j = 0; j < cats.length; j++) {
+                    let cat = cats[j];
+                    if (root.selectedCategory === "Games" && cat === "Game") {
+                        matchesCategory = true;
+                        break;
+                    } else if (root.selectedCategory === "Internet" && cat === "Network") {
+                        matchesCategory = true;
+                        break;
+                    } else if (root.selectedCategory === "Multimedia" && (cat === "AudioVideo" || cat === "Audio" || cat === "Video")) {
+                        matchesCategory = true;
+                        break;
+                    } else if (root.selectedCategory === "Utilities" && cat === "Utility") {
+                        matchesCategory = true;
+                        break;
+                    } else if (root.selectedCategory === cat) {
+                        matchesCategory = true;
+                        break;
+                    }
+                }
+            }
+            if (matchesCategory && app.name.toLowerCase().includes(query))
                 newFiltered.push(app);
 
         }
@@ -34,6 +61,27 @@ CenterWindow {
     }
 
     function handleKeyPress(event, fromSearch) {
+        if (event.key === Qt.Key_Tab) {
+            let categories = root.activeCategories;
+            if (categories.length > 1) {
+                let currentIndex = categories.indexOf(root.selectedCategory);
+                let nextIndex = (currentIndex + 1) % categories.length;
+                root.selectedCategory = categories[nextIndex];
+                categoryList.positionViewAtIndex(nextIndex, ListView.Contain);
+            }
+            event.accepted = true;
+            return ;
+        } else if (event.key === Qt.Key_Backtab) {
+            let categories = root.activeCategories;
+            if (categories.length > 1) {
+                let currentIndex = categories.indexOf(root.selectedCategory);
+                let prevIndex = (currentIndex - 1 + categories.length) % categories.length;
+                root.selectedCategory = categories[prevIndex];
+                categoryList.positionViewAtIndex(prevIndex, ListView.Contain);
+            }
+            event.accepted = true;
+            return ;
+        }
         let currentDelegate = appsView.currentItem;
         if (event.key === Qt.Key_Down) {
             if (currentDelegate && currentDelegate.isExpanded && currentDelegate.currentActionIndex < currentDelegate.actionCount - 1) {
@@ -104,10 +152,48 @@ CenterWindow {
         root.isOpen = false;
     }
 
+    onSelectedCategoryChanged: filterApps(searchField.text)
+    onAllAppsChanged: {
+        let cats = ["All"];
+        let predefined = ["Development", "Games", "Graphics", "Internet", "Multimedia", "Office", "Settings", "System", "Utilities"];
+        for (let p = 0; p < predefined.length; p++) {
+            let catName = predefined[p];
+            let hasApp = false;
+            for (let i = 0; i < allApps.length; i++) {
+                let app = allApps[i];
+                let appCats = app.categories || [];
+                for (let j = 0; j < appCats.length; j++) {
+                    let c = appCats[j];
+                    if (catName === "Games" && c === "Game")
+                        hasApp = true;
+                    else if (catName === "Internet" && c === "Network")
+                        hasApp = true;
+                    else if (catName === "Multimedia" && (c === "AudioVideo" || c === "Audio" || c === "Video"))
+                        hasApp = true;
+                    else if (catName === "Utilities" && c === "Utility")
+                        hasApp = true;
+                    else if (catName === c)
+                        hasApp = true;
+                }
+                if (hasApp)
+                    break;
+
+            }
+            if (hasApp)
+                cats.push(catName);
+
+        }
+        root.activeCategories = cats;
+    }
     popupId: "launcher"
-    preferredHeight: 400
-    preferredWidth: 600
+    preferredHeight: 480
+    preferredWidth: 680
     onPopupOpened: {
+        root.selectedCategory = "All";
+        if (categoryList) {
+            categoryList.positionViewAtIndex(0, ListView.Beginning);
+            categoryList.contentX = 0;
+        }
         if (appsView)
             appsView.expandedIndex = -1;
 
@@ -176,6 +262,58 @@ CenterWindow {
                 Keys.onPressed: function(event) {
                     root.handleKeyPress(event, true);
                 }
+            }
+
+        }
+
+    }
+
+    Rectangle {
+        id: categoryBar
+
+        Layout.fillWidth: true
+        Layout.preferredHeight: 32
+        color: "transparent"
+
+        ListView {
+            id: categoryList
+
+            anchors.fill: parent
+            orientation: ListView.Horizontal
+            spacing: Constants.sizeXs
+            clip: true
+            model: root.activeCategories
+
+            delegate: Rectangle {
+                width: catText.implicitWidth + Constants.sizeLg * 2
+                height: 30
+                radius: 15
+                color: (root.selectedCategory === modelData) ? Theme.purple : (hoverHandler.hovered ? Theme.bgSecondary : "transparent")
+                border.color: (root.selectedCategory === modelData) ? "transparent" : Theme.border
+                border.width: 1
+
+                ThemedText {
+                    id: catText
+
+                    anchors.centerIn: parent
+                    text: modelData
+                    color: (root.selectedCategory === modelData) ? Theme.bg : Theme.fg
+                    font.bold: root.selectedCategory === modelData
+                    font.pixelSize: Constants.sizeSm
+                }
+
+                HoverHandler {
+                    id: hoverHandler
+
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: {
+                        root.selectedCategory = modelData;
+                    }
+                }
+
             }
 
         }
@@ -318,15 +456,30 @@ CenterWindow {
                         anchors.rightMargin: Constants.sizeLg
                         spacing: Constants.sizeLg
 
-                        Image {
+                        Item {
                             Layout.preferredWidth: 24
                             Layout.preferredHeight: 24
-                            source: modelData.icon ? "image://icon/" + modelData.icon : ""
-                            fillMode: Image.PreserveAspectFit
+
+                            Image {
+                                id: appIcon
+
+                                anchors.fill: parent
+                                source: {
+                                    if (!modelData.icon)
+                                        return "";
+
+                                    if (modelData.icon.startsWith("/") || modelData.icon.startsWith("file://"))
+                                        return modelData.icon.startsWith("file://") ? modelData.icon : "file://" + modelData.icon;
+
+                                    return Quickshell.iconPath(modelData.icon, true);
+                                }
+                                fillMode: Image.PreserveAspectFit
+                                visible: status === Image.Ready
+                            }
 
                             ThemedText {
                                 anchors.centerIn: parent
-                                visible: parent.status !== Image.Ready || !parent.source
+                                visible: !appIcon.visible
                                 text: ""
                                 color: isCurrent ? Theme.purple : Theme.muted
                                 font.pixelSize: Constants.sizeLg
@@ -592,6 +745,132 @@ CenterWindow {
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
                 active: true
+            }
+
+        }
+
+    }
+
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 18
+        spacing: Constants.sizeXs
+
+        ThemedText {
+            text: {
+                if (root.filteredApps.length > 0)
+                    return root.filteredApps.length + (root.filteredApps.length === 1 ? " application found" : " applications found");
+
+                return "No applications found";
+            }
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
+        }
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        RowLayout {
+            spacing: Constants.sizeSm
+            Layout.alignment: Qt.AlignVCenter
+
+            RowLayout {
+                spacing: 4
+
+                Rectangle {
+                    width: 32
+                    height: 16
+                    radius: 3
+                    color: Theme.bgSecondary
+                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                    border.width: 1
+
+                    ThemedText {
+                        anchors.centerIn: parent
+                        text: "Tab"
+                        font.pixelSize: 9
+                        font.bold: true
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Switch Category"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                }
+
+            }
+
+            ThemedText {
+                text: "•"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+                opacity: 0.5
+            }
+
+            RowLayout {
+                spacing: 4
+
+                Rectangle {
+                    width: 22
+                    height: 16
+                    radius: 3
+                    color: Theme.bgSecondary
+                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                    border.width: 1
+
+                    ThemedText {
+                        anchors.centerIn: parent
+                        text: "↑↓"
+                        font.pixelSize: 10
+                        font.bold: true
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Navigate"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                }
+
+            }
+
+            ThemedText {
+                text: "•"
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+                opacity: 0.5
+            }
+
+            RowLayout {
+                spacing: 4
+
+                Rectangle {
+                    width: 20
+                    height: 16
+                    radius: 3
+                    color: Theme.bgSecondary
+                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                    border.width: 1
+
+                    ThemedText {
+                        anchors.centerIn: parent
+                        text: "󰌑"
+                        font.pixelSize: 10
+                        font.bold: true
+                    }
+
+                }
+
+                ThemedText {
+                    text: "Run"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                }
+
             }
 
         }

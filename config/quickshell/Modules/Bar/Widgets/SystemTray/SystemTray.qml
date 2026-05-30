@@ -32,51 +32,70 @@ TopPopup {
         }
     }
 
-    ColumnLayout {
-        spacing: Constants.sizeXs
+    GridLayout {
+        id: gridLayout
 
-        GridLayout {
-            id: gridLayout
+        visible: trayRepeater.count > 0
+        Layout.alignment: Qt.AlignHCenter
+        columns: Math.max(1, Math.min(trayRepeater.count, 6))
+        columnSpacing: Constants.sizeLg
+        rowSpacing: Constants.sizeLg
 
-            columns: Math.max(1, Math.min(trayRepeater.count, 6))
-            columnSpacing: Constants.sizeLg
-            rowSpacing: Constants.sizeLg
+        Repeater {
+            id: trayRepeater
 
-            Repeater {
-                id: trayRepeater
+            model: SystemTray.items
 
-                model: SystemTray.items
-
-                delegate: TrayItem {
-                    trayItem: modelData
-                    onClicked: (mouse) => {
-                        if (mouse.button === Qt.LeftButton) {
-                            root.isOpen = false;
-                        } else if (mouse.button === Qt.RightButton) {
-                            if (modelData.menu)
-                                root.openMenu(modelData);
-                            else if (modelData.secondaryActivate)
-                                modelData.secondaryActivate();
-                        }
+            delegate: TrayItem {
+                trayItem: modelData
+                onClicked: (mouse) => {
+                    if (mouse.button === Qt.LeftButton) {
+                        root.isOpen = false;
+                    } else if (mouse.button === Qt.RightButton) {
+                        if (modelData.menu)
+                            root.openMenu(modelData);
+                        else if (modelData.secondaryActivate)
+                            modelData.secondaryActivate();
                     }
                 }
-
             }
 
         }
 
-        TrayMenu {
-            id: trayMenu
+    }
 
-            isOpen: false
-            onIsOpenChanged: {
-                if (!isOpen) {
-                    trayMenu.menuHandle = null;
-                    root.currentTrayItem = null;
-                }
-            }
+    RowLayout {
+        visible: trayRepeater.count === 0
+        Layout.alignment: Qt.AlignHCenter
+        Layout.preferredHeight: 32
+        spacing: Constants.sizeSm
+
+        ThemedText {
+            text: "󰜱"
+            font.pixelSize: Constants.sizeMd
+            color: Theme.muted
+            Layout.alignment: Qt.AlignVCenter
         }
 
+        ThemedText {
+            text: "Empty"
+            font.pixelSize: Constants.sizeSm
+            color: Theme.muted
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+    }
+
+    TrayMenu {
+        id: trayMenu
+
+        isOpen: false
+        onIsOpenChanged: {
+            if (!isOpen) {
+                trayMenu.menuHandle = null;
+                root.currentTrayItem = null;
+            }
+        }
     }
 
 }

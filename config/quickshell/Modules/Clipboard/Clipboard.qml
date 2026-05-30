@@ -227,6 +227,8 @@ CenterWindow {
                 Layout.preferredHeight: 40
                 color: Theme.bgSecondary
                 radius: Constants.sizeXl
+                border.color: searchField.activeFocus ? Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.4) : Qt.rgba(Theme.border.r, Theme.border.g, Theme.border.b, 0.2)
+                border.width: 1
 
                 RowLayout {
                     anchors.fill: parent
@@ -266,6 +268,13 @@ CenterWindow {
                                 if (filteredModel.count > idx) {
                                     let item = filteredModel.get(idx);
                                     copyToClipboard(item.itemId);
+                                    event.accepted = true;
+                                }
+                            } else if (event.key === Qt.Key_Delete) {
+                                let idx = clipboardView.currentIndex;
+                                if (idx >= 0 && filteredModel.count > idx) {
+                                    let item = filteredModel.get(idx);
+                                    deleteItem(idx, item.fullLine);
                                     event.accepted = true;
                                 }
                             }
@@ -370,6 +379,12 @@ CenterWindow {
                             root.copyToClipboard(item.itemId);
                             event.accepted = true;
                         }
+                    } else if (event.key === Qt.Key_Delete) {
+                        if (currentIndex >= 0 && filteredModel.count > currentIndex) {
+                            let item = filteredModel.get(currentIndex);
+                            root.deleteItem(currentIndex, item.fullLine);
+                            event.accepted = true;
+                        }
                     }
                 }
 
@@ -444,7 +459,9 @@ CenterWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Constants.sizeXs
-                        color: Theme.bgSecondary
+                        color: Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.08)
+                        border.color: Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.2)
+                        border.width: 1
 
                         Rectangle {
                             anchors.left: parent.left
@@ -500,9 +517,9 @@ CenterWindow {
                             color: isCurrent ? Theme.purple : Theme.fg
                             font.bold: isCurrent
                             font.pixelSize: Constants.sizeMd
-                            wrapMode: Text.NoWrap
+                            wrapMode: isCurrent ? Text.Wrap : Text.NoWrap
                             Layout.fillWidth: true
-                            maximumLineCount: 1
+                            maximumLineCount: isCurrent ? 3 : 1
                             elide: Text.ElideRight
                             scale: isCurrent ? 1.02 : 1
                             transformOrigin: Item.Left
@@ -524,16 +541,31 @@ CenterWindow {
 
                         }
 
-                        Image {
+                        Item {
                             visible: model.isImage !== undefined ? model.isImage : false
-                            source: visible ? "file:///tmp/quickshell-clipboard/" + model.itemId + ".png" : ""
-                            asynchronous: true
                             Layout.preferredHeight: visible ? 80 : 0
                             Layout.preferredWidth: visible ? 160 : 0
                             Layout.alignment: Qt.AlignLeft
-                            fillMode: Image.PreserveAspectFit
                             scale: isCurrent ? 1.02 : 1
                             transformOrigin: Item.Left
+
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: Constants.sizeXs
+                                color: Theme.bgSecondary
+                                border.color: isCurrent ? Theme.purple : Theme.border
+                                border.width: 1
+                                clip: true
+
+                                Image {
+                                    anchors.fill: parent
+                                    anchors.margins: 2
+                                    source: parent.parent.visible ? "file:///tmp/quickshell-clipboard/" + model.itemId + ".png" : ""
+                                    asynchronous: true
+                                    fillMode: Image.PreserveAspectFit
+                                }
+
+                            }
 
                             Behavior on scale {
                                 NumberAnimation {
@@ -555,9 +587,19 @@ CenterWindow {
                             iconColor: Theme.red
                             iconSize: Constants.sizeMd
                             Layout.alignment: Qt.AlignVCenter
+                            opacity: (hoverHandler.hovered || isCurrent) ? 1 : 0
+                            visible: opacity > 0
                             onClicked: {
                                 root.deleteItem(index, model.fullLine);
                             }
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: Constants.animFast
+                                }
+
+                            }
+
                         }
 
                     }
@@ -570,11 +612,145 @@ CenterWindow {
                         onTapped: root.copyToClipboard(model.itemId)
                     }
 
+                    Behavior on height {
+                        NumberAnimation {
+                            duration: Constants.animNormal
+                            easing.type: Easing.OutQuint
+                        }
+
+                    }
+
                 }
 
                 ScrollBar.vertical: ScrollBar {
                     policy: ScrollBar.AsNeeded
                     active: true
+                }
+
+            }
+
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 18
+            spacing: Constants.sizeXs
+
+            ThemedText {
+                text: {
+                    if (filteredModel.count > 0)
+                        return filteredModel.count + (filteredModel.count === 1 ? " item found" : " items found");
+
+                    return "No items found";
+                }
+                font.pixelSize: Constants.sizeSm
+                color: Theme.muted
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+
+            RowLayout {
+                spacing: Constants.sizeSm
+                Layout.alignment: Qt.AlignVCenter
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 20
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "󰌑"
+                            font.pixelSize: 10
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Select"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
+                }
+
+                ThemedText {
+                    text: "•"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                    opacity: 0.5
+                }
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 28
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "Del"
+                            font.pixelSize: 9
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Delete"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
+                }
+
+                ThemedText {
+                    text: "•"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                    opacity: 0.5
+                }
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 22
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "↑↓"
+                            font.pixelSize: 10
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Navigate"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
                 }
 
             }

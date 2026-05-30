@@ -113,8 +113,7 @@ TopPopup {
                             root.isOpen = false;
                             return ;
                         }
-                        let iconPath = Constants.deviceIconPath.toString().replace("file://", "") + "input-keyboard.svg";
-                        proc.command = ["sh", "-c", `hyprctl keyword input:kb_layout ${modelData.code} && notify-send -i ${iconPath} "Keyboard Layout" "Switched to ${modelData.code}"`];
+                        proc.command = ["sh", "-c", `hyprctl keyword input:kb_layout ${modelData.code} && notify-send -i input-keyboard "Keyboard Layout" "Switched to ${modelData.code}"`];
                         proc.running = true;
                         root.isOpen = false;
                     }

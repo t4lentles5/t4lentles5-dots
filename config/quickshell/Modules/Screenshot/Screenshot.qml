@@ -81,25 +81,6 @@ CenterWindow {
         width: parent.width
         spacing: Constants.sizeLg
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
-            spacing: Constants.sizeXs
-
-            ThemedText {
-                text: "󰄄"
-                color: Theme.purple
-                font.pixelSize: Constants.sizeXl
-            }
-
-            ThemedText {
-                text: "Screenshot"
-                font.pixelSize: Constants.sizeXl
-                font.bold: true
-            }
-
-        }
-
         ListView {
             id: shotView
 
@@ -144,7 +125,9 @@ CenterWindow {
                 Rectangle {
                     anchors.fill: parent
                     radius: Constants.sizeXs
-                    color: Theme.bgSecondary
+                    color: Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.08)
+                    border.color: Qt.rgba(Theme.purple.r, Theme.purple.g, Theme.purple.b, 0.2)
+                    border.width: 1
 
                     Rectangle {
                         anchors.left: parent.left
@@ -243,6 +226,86 @@ CenterWindow {
                         shotView.currentIndex = index;
                         root.runShot(model.shotMode);
                     }
+                }
+
+            }
+
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 18
+            spacing: Constants.sizeXs
+
+            Item {
+                Layout.fillWidth: true
+            }
+
+            RowLayout {
+                spacing: Constants.sizeSm
+                Layout.alignment: Qt.AlignVCenter
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 22
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "↑↓"
+                            font.pixelSize: 10
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Navigate"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
+                }
+
+                ThemedText {
+                    text: "•"
+                    font.pixelSize: Constants.sizeSm
+                    color: Theme.muted
+                    opacity: 0.5
+                }
+
+                RowLayout {
+                    spacing: 4
+
+                    Rectangle {
+                        width: 20
+                        height: 16
+                        radius: 3
+                        color: Theme.bgSecondary
+                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
+                        border.width: 1
+
+                        ThemedText {
+                            anchors.centerIn: parent
+                            text: "󰌑"
+                            font.pixelSize: 10
+                            font.bold: true
+                        }
+
+                    }
+
+                    ThemedText {
+                        text: "Capture"
+                        font.pixelSize: Constants.sizeSm
+                        color: Theme.muted
+                    }
+
                 }
 
             }
