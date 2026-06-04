@@ -1,57 +1,25 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.Core
 pragma Singleton
 
 QtObject {
     id: root
 
     property string currentWallpaper: ""
-    property bool syncEnabled: true
+    property string currentWallpaperPath: ""
     property bool useGrowTransition: true
-    property var pendingScheme: null
     property Process wallpaperApplyProc
     property Process wallpaperSaveProc
     property Process wallpaperLoader
-    property Process randomWallpaperProc
 
-    signal schemeNeededByName(string name)
-
-    function applySchemeWithSync(scheme) {
-        if (syncEnabled) {
-            pendingScheme = scheme;
-            let c = Qt.color(scheme.bg);
-            let brightness = c.r * 0.299 + c.g * 0.587 + c.b * 0.114;
-            let folder = (brightness <= 0.5) ? "Dark" : "Light";
-            randomWallpaperProc.running = false;
-            let current = root.currentWallpaper || "";
-            let cmdStr = "f=$(find ~/Pictures/Wallpapers/" + folder + " -maxdepth 1 -type f ! -name '" + current + "' 2>/dev/null | shuf -n 1); ";
-            cmdStr += "if [ -z \"$f\" ]; then f=$(find ~/Pictures/Wallpapers/" + folder + " -maxdepth 1 -type f 2>/dev/null | shuf -n 1); fi; ";
-            cmdStr += "echo \"$f\"";
-            randomWallpaperProc.command = ["bash", "-c", cmdStr];
-            randomWallpaperProc.running = true;
-            return ;
-        }
-        Theme.applyScheme(scheme);
-    }
-
-    function applyWallpaperWithSync(wallpaperName, rawPath, wType) {
+    function applyWallpaperWithSync(wallpaperName, rawPath) {
         currentWallpaper = wallpaperName;
+        currentWallpaperPath = rawPath;
         saveCurrentWallpaper(wallpaperName);
         applyWallpaper(rawPath);
-        if (syncEnabled && wType) {
-            let isTargetDark = (wType === "Dark");
-            for (let i = 0; i < Theme.themes.length; i++) {
-                let th = Theme.themes[i];
-                if (th.dark.name === Theme.currentScheme || th.light.name === Theme.currentScheme) {
-                    let newScheme = isTargetDark ? th.dark : th.light;
-                    if (Theme.currentScheme !== newScheme.name)
-                        Theme.applyScheme(newScheme);
-
-                    break;
-                }
-            }
-        }
+        Theme.generateTheme(rawPath);
     }
 
     function applyWallpaper(rawPath) {
@@ -75,39 +43,6 @@ QtObject {
         wallpaperLoader.running = true;
     }
 
-    randomWallpaperProc: Process {
-        id: randomWallpaperProc
-
-        property string resultPath: ""
-
-        onExited: function(exitCode) {
-            if (exitCode === 0 && resultPath !== "") {
-                let parts = resultPath.split('/');
-                let wallName = parts[parts.length - 1];
-                root.currentWallpaper = wallName;
-                root.saveCurrentWallpaper(wallName);
-                root.applyWallpaper(resultPath);
-            } else {
-                console.log("No wallpaper found or error: " + exitCode);
-            }
-            if (root.pendingScheme) {
-                Theme.applyScheme(root.pendingScheme);
-                root.pendingScheme = null;
-            }
-            resultPath = "";
-        }
-
-        stdout: SplitParser {
-            onRead: function(data) {
-                let name = data.trim();
-                if (name)
-                    randomWallpaperProc.resultPath = name;
-
-            }
-        }
-
-    }
-
     wallpaperApplyProc: Process {
     }
 
@@ -122,9 +57,10 @@ QtObject {
         stdout: SplitParser {
             onRead: function(data) {
                 let name = data.trim();
-                if (name)
+                if (name) {
                     root.currentWallpaper = name;
-
+                    root.currentWallpaperPath = Quickshell.env("HOME") + "/Pictures/Wallpapers/" + name;
+                }
             }
         }
 

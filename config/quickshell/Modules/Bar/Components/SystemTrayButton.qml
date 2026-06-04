@@ -3,4 +3,5 @@ import qs.Core
 
 BarButton {
     text: widget && widget.isOpen ? "" : ""
+    textColor: Theme.orange
 }

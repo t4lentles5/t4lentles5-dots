@@ -20,6 +20,13 @@ CenterWindow {
         root.isOpen = false;
     }
 
+    footerKeyHints: [{
+        "key": "↑↓",
+        "description": "Navigate"
+    }, {
+        "key": "󰌑",
+        "description": "Capture"
+    }]
     popupId: "screenshot"
     preferredHeight: mainCol.implicitHeight + 32
     preferredWidth: 300
@@ -91,7 +98,7 @@ CenterWindow {
             model: shotModel
             clip: true
             highlightFollowsCurrentItem: true
-            highlightMoveDuration: 250
+            highlightMoveDuration: Constants.animNormal
             Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Down) {
                     if (currentIndex + 1 < shotModel.count) {
@@ -226,86 +233,6 @@ CenterWindow {
                         shotView.currentIndex = index;
                         root.runShot(model.shotMode);
                     }
-                }
-
-            }
-
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 18
-            spacing: Constants.sizeXs
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            RowLayout {
-                spacing: Constants.sizeSm
-                Layout.alignment: Qt.AlignVCenter
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 22
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "↑↓"
-                            font.pixelSize: 10
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Navigate"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
-                }
-
-                ThemedText {
-                    text: "•"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                    opacity: 0.5
-                }
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 20
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "󰌑"
-                            font.pixelSize: 10
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Capture"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
                 }
 
             }

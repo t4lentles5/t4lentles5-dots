@@ -1,4 +1,4 @@
-local colors = vim.g.qs_colors
+local raw_colors = vim.g.qs_colors
   or {
     bg = "#030107",
     bgSecondary = "#12121b",
@@ -7,7 +7,7 @@ local colors = vim.g.qs_colors
     cyan = "#72cbff",
     purple = "#a77ef5",
     red = "#e52e4f",
-    yellow = "#f0a32f",
+    yellow = "#ea9a23",
     blue = "#5b70db",
     green = "#86c93f",
   }
@@ -24,6 +24,20 @@ local hl = function(group, opts)
 end
 
 local is_light = vim.o.background == "light"
+
+-- Light mode adjustments for high-contrast syntax visibility
+local colors = {
+  bg = raw_colors.bg,
+  bgSecondary = raw_colors.bgSecondary,
+  fg = raw_colors.fg,
+  muted = raw_colors.muted,
+  cyan = is_light and "#1e8fbc" or raw_colors.cyan,
+  purple = is_light and "#7040e8" or raw_colors.purple,
+  red = is_light and "#c41840" or raw_colors.red,
+  yellow = is_light and "#daa92e" or raw_colors.yellow,
+  blue = is_light and "#3f52c4" or raw_colors.blue,
+  green = is_light and "#4a9a28" or raw_colors.green,
+}
 
 -- Terminal Colors
 vim.g.terminal_color_0 = colors.bg
@@ -49,7 +63,7 @@ hl("NormalFloat", { fg = colors.fg, bg = colors.bgSecondary })
 hl("FloatBorder", { fg = colors.purple, bg = colors.bgSecondary })
 hl("ColorColumn", { bg = colors.bgSecondary })
 hl("CursorLine", { bg = colors.bgSecondary })
-hl("CursorLineNr", { fg = colors.purple, bold = true })
+hl("CursorLineNr", { fg = colors.yellow, bold = true })
 hl("LineNr", { fg = colors.muted })
 hl("VertSplit", { fg = colors.bgSecondary, bg = colors.bgSecondary })
 hl("WinSeparator", { fg = colors.bgSecondary })
@@ -60,7 +74,7 @@ hl("IncSearch", { fg = colors.bg, bg = colors.purple })
 hl("StatusLine", { fg = colors.fg, bg = colors.bgSecondary })
 hl("StatusLineNC", { fg = colors.muted, bg = colors.bgSecondary })
 hl("Visual", { bg = is_light and "#ddd6f3" or "#2a2a37" })
-hl("MatchParen", { fg = colors.cyan, bold = true })
+hl("MatchParen", { fg = colors.yellow, bold = true })
 hl("NonText", { fg = colors.bgSecondary })
 hl("SpecialKey", { fg = colors.muted })
 hl("Folded", { fg = colors.muted, bg = colors.bgSecondary })
@@ -75,18 +89,18 @@ hl("Boolean", { fg = colors.yellow })
 hl("Float", { fg = colors.yellow })
 
 hl("Identifier", { fg = colors.fg })
-hl("Function", { fg = colors.blue })
+hl("Function", { fg = colors.blue, bold = true })
 
 hl("Statement", { fg = colors.purple })
 hl("Conditional", { fg = colors.purple })
 hl("Repeat", { fg = colors.purple })
-hl("Label", { fg = colors.purple })
+hl("Label", { fg = colors.blue })
 hl("Operator", { fg = colors.cyan })
 hl("Keyword", { fg = colors.purple })
 hl("Exception", { fg = colors.red })
 
-hl("PreProc", { fg = colors.red })
-hl("Include", { fg = colors.red })
+hl("PreProc", { fg = colors.cyan })
+hl("Include", { fg = colors.cyan })
 hl("Define", { fg = colors.purple })
 hl("Macro", { fg = colors.purple })
 hl("PreCondit", { fg = colors.red })
@@ -101,41 +115,44 @@ hl("SpecialChar", { fg = colors.yellow })
 hl("Tag", { fg = colors.red })
 hl("Delimiter", { fg = colors.muted })
 hl("SpecialComment", { fg = colors.muted })
-hl("Debug", { fg = colors.red })
+hl("Debug", { fg = colors.yellow })
 
 hl("Underlined", { underline = true })
 hl("Error", { fg = colors.red, bold = true })
 hl("Todo", { fg = colors.yellow, bold = true })
 
--- Treesitter
+-- Treesitter (Core)
 hl("@variable", { fg = colors.fg })
-hl("@variable.builtin", { fg = colors.red })
-hl("@variable.member", { fg = colors.cyan })
-hl("@property", { fg = colors.cyan })
+hl("@variable.builtin", { fg = colors.red, italic = true })
+hl("@variable.member", { fg = colors.green })
+hl("@property", { fg = colors.green })
 hl("@parameter", { fg = colors.yellow })
+hl("@variable.parameter", { fg = colors.yellow })
 
-hl("@function", { fg = colors.blue })
+hl("@function", { fg = colors.blue, bold = true })
 hl("@function.builtin", { fg = colors.blue, bold = true })
-hl("@function.call", { fg = colors.cyan })
-hl("@method", { fg = colors.blue })
-hl("@method.call", { fg = colors.cyan })
-hl("@constructor", { fg = colors.cyan })
+hl("@function.call", { fg = colors.blue })
+hl("@method", { fg = colors.blue, bold = true })
+hl("@method.call", { fg = colors.blue })
+hl("@constructor", { fg = colors.purple })
+hl("@constructor.tsx", { fg = colors.cyan })
 
 hl("@keyword", { fg = colors.purple })
 hl("@keyword.function", { fg = colors.purple })
 hl("@keyword.return", { fg = colors.purple })
 hl("@keyword.conditional", { fg = colors.purple })
 hl("@keyword.repeat", { fg = colors.purple })
-hl("@keyword.import", { fg = colors.red })
-hl("@keyword.export", { fg = colors.red })
-hl("@keyword.coroutine", { fg = colors.red })
+hl("@keyword.import", { fg = colors.cyan })
+hl("@keyword.export", { fg = colors.purple })
+hl("@keyword.coroutine", { fg = colors.purple })
 hl("@keyword.operator", { fg = colors.cyan })
 hl("@keyword.modifier", { fg = colors.purple })
 
 hl("@type", { fg = colors.cyan })
 hl("@type.builtin", { fg = colors.cyan })
 hl("@type.qualifier", { fg = colors.purple })
-hl("@interface", { fg = colors.cyan })
+hl("@interface", { fg = colors.yellow })
+hl("@class", { fg = colors.yellow })
 
 hl("@constant", { fg = colors.yellow })
 hl("@constant.builtin", { fg = colors.yellow })
@@ -145,16 +162,49 @@ hl("@string", { fg = colors.green })
 hl("@comment", { fg = colors.muted, italic = true })
 hl("@attribute", { fg = colors.yellow }) -- Decorators
 
+-- JS/TS/TSX Specific Treesitter
+hl("@object.key", { fg = colors.green })
+hl("@keyword.operator.javascript", { fg = colors.cyan })
+hl("@keyword.operator.typescript", { fg = colors.cyan })
+hl("@tag", { fg = colors.yellow })
+hl("@tag.tsx", { fg = colors.red })
+hl("@tag.javascript", { fg = colors.red })
+hl("@tag.typescript", { fg = colors.red })
+hl("@tag.builtin", { fg = colors.red })
+hl("@tag.attribute", { fg = colors.cyan })
+hl("@tag.delimiter", { fg = colors.muted })
+hl("@punctuation.special", { fg = colors.cyan }) -- template literals ${}
+
+-- Vim-regex syntax groups (fallback for JS/TS)
+hl("javaScriptIdentifier", { fg = colors.purple })
+hl("javaScriptFunction", { fg = colors.purple })
+hl("javaScriptMember", { fg = colors.green })
+hl("javaScriptNull", { fg = colors.yellow })
+hl("javaScriptBoolean", { fg = colors.yellow })
+hl("javaScriptNumber", { fg = colors.yellow })
+
+hl("typescriptImport", { fg = colors.cyan })
+hl("typescriptExport", { fg = colors.purple })
+hl("typescriptCastKeyword", { fg = colors.purple })
+hl("typescriptClassKeyword", { fg = colors.purple })
+hl("typescriptClassName", { fg = colors.yellow })
+hl("typescriptInterfaceKeyword", { fg = colors.purple })
+hl("typescriptInterfaceName", { fg = colors.yellow })
+hl("typescriptAliasKeyword", { fg = colors.purple })
+hl("typescriptAliasName", { fg = colors.cyan })
+hl("typescriptMember", { fg = colors.green })
+hl("typescriptTypeReference", { fg = colors.cyan })
+hl("typescriptTypeParameter", { fg = colors.yellow })
+hl("typescriptPredefinedType", { fg = colors.cyan })
+hl("typescriptVariable", { fg = colors.purple })
+hl("typescriptOperator", { fg = colors.cyan })
+hl("typescriptArrowFunc", { fg = colors.cyan })
+hl("typescriptAssign", { fg = colors.cyan })
+
 -- Punctuation
 hl("@punctuation.delimiter", { fg = colors.muted })
-hl("@punctuation.bracket", { fg = colors.muted })
+hl("@punctuation.bracket", { fg = colors.fg })
 hl("@punctuation.special", { fg = colors.cyan })
-
--- Tags
-hl("@tag", { fg = colors.red })
-hl("@tag.builtin", { fg = colors.red })
-hl("@tag.attribute", { fg = colors.yellow })
-hl("@tag.delimiter", { fg = colors.muted })
 
 -- Diagnostics
 hl("DiagnosticError", { fg = colors.red })
@@ -186,9 +236,9 @@ hl("@lsp.type.decorator", { link = "@attribute" })
 -- Standard UI Enhancements
 hl("TabLine", { bg = colors.bgSecondary, fg = colors.muted })
 hl("TabLineFill", { bg = colors.bgSecondary })
-hl("TabLineSel", { bg = colors.purple, fg = colors.bg })
+hl("TabLineSel", { bg = colors.blue, fg = colors.bg })
 hl("Directory", { fg = colors.blue })
-hl("Title", { fg = colors.purple, bold = true })
+hl("Title", { fg = colors.blue, bold = true })
 hl("ErrorMsg", { fg = colors.red, bg = colors.bg })
 hl("WarningMsg", { fg = colors.yellow })
 hl("ModeMsg", { fg = colors.fg, bold = true })

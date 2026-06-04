@@ -4,6 +4,7 @@ format = """
 
 command_timeout = 5001
 add_newline = true
+palette = "quickshell"
 
 [os]
 format = "[$symbol](bold fg:blue)"
@@ -14,14 +15,14 @@ Windows = " "
 Arch = "󰣇 "
 
 [username]
-style_user = "fg:#ffffff bold bg:purple bold"
-style_root = "#ffffff bold"
+style_user = "fg:bg bold bg:purple bold"
+style_root = "bg bold"
 format = "[](bold fg:purple)[$user]($style)[ ](bold fg:purple)"
 disabled = false
 show_always = true
 
 [directory]
-style = "bg:purple fg:#ffffff"
+style = "bg:purple fg:bg"
 format = '󰜥 [](bold fg:purple)[󰉋 $path]($style)[](bold fg:purple)'
 
 [character]
@@ -33,4 +34,19 @@ style = "bg: cyan"
 symbol = "󰘬"
 truncation_length = 13
 truncation_symbol = ""
-format = "[](bold fg:purple)[$symbol $branch(:$remote_branch)](fg:#ffffff bg:purple)[ ](bold fg:purple)"
+format = "[](bold fg:purple)[$symbol $branch(:$remote_branch)](fg:bg bg:purple)[ ](bold fg:purple)"
+
+# --- Quickshell Palette ---
+[palettes.quickshell]
+bg = "#09080c"
+bgSecondary = "#110f19"
+fg = "#e9e8ec"
+muted = "#534c65"
+cyan = "#b0a1dc"
+purple = "#d0c7ea"
+red = "#917cce"
+pink = "#c9bfe7"
+yellow = "#c0b4e3"
+orange = "#baace0"
+blue = "#8169c8"
+green = "#a18fd5"

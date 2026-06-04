@@ -10,27 +10,52 @@ CenterWindow {
     id: root
 
     property bool showingDark: true
+    property var displayThemes: {
+        let wp = getWallpaperTheme();
+        let list = [wp];
+        for (let i = 0; i < Theme.themes.length; i++) {
+            list.push(Theme.themes[i]);
+        }
+        return list;
+    }
+
+    function getWallpaperTheme() {
+        let colors = Theme.wallpaperColors;
+        if (!colors || !colors.bg)
+            colors = {
+            "name": "Wallpaper Theme",
+            "bg": Theme.bg,
+            "bgSecondary": Theme.bgSecondary,
+            "orange": Theme.orange,
+            "pink": Theme.pink,
+            "fg": Theme.fg,
+            "muted": Theme.muted,
+            "cyan": Theme.cyan,
+            "purple": Theme.purple,
+            "red": Theme.red,
+            "yellow": Theme.yellow,
+            "blue": Theme.blue,
+            "green": Theme.green
+        };
+
+        return {
+            "name": "Wallpaper Theme",
+            "isWallpaper": true,
+            "dark": colors,
+            "light": colors
+        };
+    }
 
     function selectTheme(theme) {
-        let scheme = root.showingDark ? theme.dark : theme.light;
-        let currentlyDark = true;
-        for (let i = 0; i < Theme.themes.length; i++) {
-            if (Theme.themes[i].dark.name === Theme.currentScheme) {
-                currentlyDark = true;
-                break;
-            }
-            if (Theme.themes[i].light.name === Theme.currentScheme) {
-                currentlyDark = false;
-                break;
-            }
-        }
-        let targetDark = root.showingDark;
-        if (currentlyDark !== targetDark)
-            WallpaperManager.applySchemeWithSync(scheme);
-        else
+        if (theme.isWallpaper) {
+            Theme.generateFromWallpaper = true;
+            let wpColors = Theme.wallpaperColors || getWallpaperTheme().dark;
+            Theme.applyScheme(wpColors);
+        } else {
+            let scheme = root.showingDark ? theme.dark : theme.light;
+            Theme.generateFromWallpaper = false;
             Theme.applyScheme(scheme);
-        notifyProc.command = ["notify-send", "Color Scheme", "Applied: " + scheme.name, "-i", "color-management", "-a", "Quickshell"];
-        notifyProc.startDetached();
+        }
         root.isOpen = false;
     }
 
@@ -48,14 +73,33 @@ CenterWindow {
     }
 
     function findCurrentIndex() {
+        if (Theme.generateFromWallpaper || Theme.currentScheme === "Wallpaper Theme")
+            return 0;
+
         for (let i = 0; i < Theme.themes.length; i++) {
             if (Theme.themes[i].dark.name === Theme.currentScheme || Theme.themes[i].light.name === Theme.currentScheme)
-                return i;
+                return i + 1;
 
         }
         return 0;
     }
 
+    footerLeftText: {
+        if (root.displayThemes.length > 0)
+            return root.displayThemes.length + (root.displayThemes.length === 1 ? " theme available" : " themes available");
+
+        return "No themes available";
+    }
+    footerKeyHints: [{
+        "key": "↑↓",
+        "description": "Navigate"
+    }, {
+        "key": "󰌑",
+        "description": "Apply"
+    }, {
+        "key": "󰌒",
+        "description": "Switch Mode"
+    }]
     popupId: "colorscheme"
     preferredHeight: 580
     preferredWidth: 600
@@ -63,12 +107,8 @@ CenterWindow {
         focusTimer.start();
         let idx = findCurrentIndex();
         schemeList.currentIndex = idx;
-        if (idx >= 0 && idx < Theme.themes.length) {
-            if (Theme.themes[idx].light.name === Theme.currentScheme)
-                root.showingDark = false;
-            else
-                root.showingDark = true;
-        }
+        let brightness = Theme.bg.r * 0.299 + Theme.bg.g * 0.587 + Theme.bg.b * 0.114;
+        root.showingDark = (brightness <= 0.5);
     }
 
     Timer {
@@ -77,18 +117,6 @@ CenterWindow {
         interval: 50
         repeat: false
         onTriggered: schemeList.forceActiveFocus()
-    }
-
-    Process {
-        id: notifyProc
-    }
-
-    Connections {
-        function onSchemeNeededByName(name) {
-            root.findAndApplySchemeByName(name);
-        }
-
-        target: WallpaperManager
     }
 
     RowLayout {
@@ -106,6 +134,17 @@ CenterWindow {
             font.letterSpacing: 2
             color: Theme.purple
             Layout.fillWidth: true
+        }
+
+        IconButton {
+            icon: "󰒓"
+            iconColor: Theme.muted
+            hoverColor: Theme.purple
+            bgColor: "transparent"
+            onClicked: {
+                root.isOpen = false;
+                AppState.openPopup("settings");
+            }
         }
 
         Rectangle {
@@ -217,15 +256,15 @@ CenterWindow {
 
             anchors.fill: parent
             clip: true
-            model: Theme.themes
+            model: root.displayThemes
             spacing: 6
             currentIndex: 0
             highlightFollowsCurrentItem: true
-            highlightMoveDuration: 250
+            highlightMoveDuration: Constants.animNormal
             Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    if (currentIndex >= 0 && currentIndex < Theme.themes.length)
-                        root.selectTheme(Theme.themes[currentIndex]);
+                    if (currentIndex >= 0 && currentIndex < root.displayThemes.length)
+                        root.selectTheme(root.displayThemes[currentIndex]);
 
                     event.accepted = true;
                 } else if (event.key === Qt.Key_Tab) {
@@ -254,8 +293,8 @@ CenterWindow {
                 id: delegateRoot
 
                 property var theme: modelData
-                property bool isDarkActive: Theme.currentScheme === theme.dark.name
-                property bool isLightActive: Theme.currentScheme === theme.light.name
+                property bool isDarkActive: Theme.generateFromWallpaper ? (theme.isWallpaper === true && (Theme.bg.r * 0.299 + Theme.bg.g * 0.587 + Theme.bg.b * 0.114 <= 0.5)) : (theme.isWallpaper !== true && Theme.currentScheme === theme.dark.name)
+                property bool isLightActive: Theme.generateFromWallpaper ? (theme.isWallpaper === true && (Theme.bg.r * 0.299 + Theme.bg.g * 0.587 + Theme.bg.b * 0.114 > 0.5)) : (theme.isWallpaper !== true && Theme.currentScheme === theme.light.name)
                 property bool isActive: isDarkActive || isLightActive
 
                 width: schemeList.width
@@ -328,7 +367,7 @@ CenterWindow {
                                     spacing: 4
 
                                     Repeater {
-                                        model: [delegateRoot.theme.dark.cyan, delegateRoot.theme.dark.purple, delegateRoot.theme.dark.red, delegateRoot.theme.dark.yellow, delegateRoot.theme.dark.blue, delegateRoot.theme.dark.green]
+                                        model: [delegateRoot.theme.dark.cyan, delegateRoot.theme.dark.purple, delegateRoot.theme.dark.red, delegateRoot.theme.dark.yellow, delegateRoot.theme.dark.blue, delegateRoot.theme.dark.green, delegateRoot.theme.dark.pink, delegateRoot.theme.dark.orange]
 
                                         Rectangle {
                                             width: 12
@@ -376,7 +415,7 @@ CenterWindow {
                                     spacing: 4
 
                                     Repeater {
-                                        model: [delegateRoot.theme.light.cyan, delegateRoot.theme.light.purple, delegateRoot.theme.light.red, delegateRoot.theme.light.yellow, delegateRoot.theme.light.blue, delegateRoot.theme.light.green]
+                                        model: [delegateRoot.theme.light.cyan, delegateRoot.theme.light.purple, delegateRoot.theme.light.red, delegateRoot.theme.light.yellow, delegateRoot.theme.light.blue, delegateRoot.theme.light.green, delegateRoot.theme.light.pink, delegateRoot.theme.light.orange]
 
                                         Rectangle {
                                             width: 12
@@ -458,132 +497,6 @@ CenterWindow {
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
                 active: true
-            }
-
-        }
-
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 18
-        spacing: Constants.sizeXs
-
-        ThemedText {
-            text: {
-                if (Theme.themes.length > 0)
-                    return Theme.themes.length + (Theme.themes.length === 1 ? " theme available" : " themes available");
-
-                return "";
-            }
-            font.pixelSize: Constants.sizeSm
-            color: Theme.muted
-        }
-
-        Item {
-            Layout.fillWidth: true
-        }
-
-        RowLayout {
-            spacing: Constants.sizeSm
-            Layout.alignment: Qt.AlignVCenter
-
-            RowLayout {
-                spacing: 4
-
-                Rectangle {
-                    width: 32
-                    height: 16
-                    radius: 3
-                    color: Theme.bgSecondary
-                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                    border.width: 1
-
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "Tab"
-                        font.pixelSize: 9
-                        font.bold: true
-                    }
-
-                }
-
-                ThemedText {
-                    text: "Switch Mode"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                }
-
-            }
-
-            ThemedText {
-                text: "•"
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-                opacity: 0.5
-            }
-
-            RowLayout {
-                spacing: 4
-
-                Rectangle {
-                    width: 22
-                    height: 16
-                    radius: 3
-                    color: Theme.bgSecondary
-                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                    border.width: 1
-
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "↑↓"
-                        font.pixelSize: 10
-                        font.bold: true
-                    }
-
-                }
-
-                ThemedText {
-                    text: "Navigate"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                }
-
-            }
-
-            ThemedText {
-                text: "•"
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-                opacity: 0.5
-            }
-
-            RowLayout {
-                spacing: 4
-
-                Rectangle {
-                    width: 20
-                    height: 16
-                    radius: 3
-                    color: Theme.bgSecondary
-                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                    border.width: 1
-
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "󰌑"
-                        font.pixelSize: 10
-                        font.bold: true
-                    }
-
-                }
-
-                ThemedText {
-                    text: "Apply"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                }
-
             }
 
         }
