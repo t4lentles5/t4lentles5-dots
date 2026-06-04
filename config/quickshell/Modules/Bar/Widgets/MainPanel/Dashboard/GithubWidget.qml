@@ -44,7 +44,6 @@ Card {
                         }
                     }
                 } catch (e) {
-                    console.log("Error parsing GitHub profile data:", e);
                 }
             }
         }
@@ -101,7 +100,6 @@ Card {
                         root.topLanguage = mostLang;
                     }
                 } catch (e) {
-                    console.log("Error parsing GitHub repos data:", e);
                 }
             }
         }
@@ -125,7 +123,6 @@ Card {
                         root.totalCommits = search.total_count;
 
                 } catch (e) {
-                    console.log("Error parsing GitHub commits data:", e);
                 }
             }
         }
@@ -158,106 +155,32 @@ Card {
                 Layout.preferredWidth: 1
                 spacing: 6
 
-                RowLayout {
-                    spacing: Constants.sizeXs
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.yellow
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: "Stars:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: String(root.totalStars)
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                GithubWidgetStat {
+                    icon: ""
+                    iconColor: Theme.yellow
+                    category: "Stars:"
+                    value: root.totalStars
                 }
 
-                RowLayout {
-                    spacing: Constants.sizeXs
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.cyan
-                        font.pixelSize: Constants.sizeSm
-                    }
-
-                    ThemedText {
-                        text: "Forks:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: String(root.totalForks)
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                GithubWidgetStat {
+                    icon: ""
+                    iconColor: Theme.cyan
+                    category: "Forks:"
+                    value: root.totalForks
                 }
 
-                RowLayout {
-                    spacing: Constants.sizeXs
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.purple
-                        font.pixelSize: Constants.sizeSm
-                    }
-
-                    ThemedText {
-                        text: "Followers:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: String(root.followers)
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                GithubWidgetStat {
+                    icon: ""
+                    iconColor: Theme.purple
+                    category: "Followers:"
+                    value: root.followers
                 }
 
-                RowLayout {
-                    spacing: Constants.sizeXs
-                    Layout.fillWidth: true
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.blue
-                        font.pixelSize: Constants.sizeSm
-                    }
-
-                    ThemedText {
-                        text: "Lang:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: root.topLanguage
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                    }
-
+                GithubWidgetStat {
+                    icon: ""
+                    iconColor: Theme.blue
+                    category: "Lang:"
+                    value: root.topLanguage
                 }
 
             }
@@ -274,106 +197,34 @@ Card {
                 Layout.preferredWidth: 1
                 spacing: 6
 
-                RowLayout {
-                    spacing: Constants.sizeXs
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.purple
-                        font.pixelSize: Constants.sizeSm
-                    }
-
-                    ThemedText {
-                        text: root.hasToken ? "Public:" : "Repos:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: String(root.publicRepos)
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                GithubWidgetStat {
+                    icon: ""
+                    iconColor: Theme.pink
+                    category: root.hasToken ? "Public:" : "Repos:"
+                    value: root.publicRepos
                 }
 
-                RowLayout {
-                    spacing: Constants.sizeXs
+                GithubWidgetStat {
                     visible: root.hasToken
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.red
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: "Private:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: String(root.privateRepos)
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                    icon: ""
+                    iconColor: Theme.red
+                    category: "Private:"
+                    value: root.privateRepos
                 }
 
-                RowLayout {
-                    spacing: Constants.sizeXs
+                GithubWidgetStat {
                     visible: root.hasToken
-
-                    ThemedText {
-                        text: ""
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm
-                    }
-
-                    ThemedText {
-                        text: "Commits:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: String(root.totalCommits)
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                    icon: ""
+                    iconColor: Theme.orange
+                    category: "Commits:"
+                    value: root.totalCommits
                 }
 
-                RowLayout {
-                    spacing: Constants.sizeXs
-
-                    ThemedText {
-                        text: "󰸗"
-                        color: Theme.green
-                        font.pixelSize: Constants.sizeSm
-                    }
-
-                    ThemedText {
-                        text: "Joined:"
-                        color: Theme.muted
-                        font.pixelSize: Constants.sizeSm - 1
-                    }
-
-                    ThemedText {
-                        text: root.joinedDate
-                        color: Theme.fg
-                        font.pixelSize: Constants.sizeSm - 1
-                        font.weight: Font.Medium
-                        Layout.fillWidth: true
-                    }
-
+                GithubWidgetStat {
+                    icon: "󰸗"
+                    iconColor: Theme.green
+                    category: "Joined:"
+                    value: root.joinedDate
                 }
 
             }
@@ -387,31 +238,11 @@ Card {
             opacity: 0.5
         }
 
-        RowLayout {
-            spacing: Constants.sizeXs
-            Layout.fillWidth: true
-
-            ThemedText {
-                text: "󰓎"
-                color: Theme.yellow
-                font.pixelSize: Constants.sizeSm
-            }
-
-            ThemedText {
-                text: "Top:"
-                color: Theme.muted
-                font.pixelSize: Constants.sizeSm - 1
-            }
-
-            ThemedText {
-                text: root.topRepoName.replace(/^.*\//, "") + " (" + root.topRepoStars + " ⭐)"
-                color: Theme.fg
-                font.pixelSize: Constants.sizeSm - 1
-                font.weight: Font.Bold
-                elide: Text.ElideRight
-                Layout.fillWidth: true
-            }
-
+        GithubWidgetStat {
+            icon: "󰓎"
+            iconColor: Theme.yellow
+            category: "Top:"
+            value: root.topRepoName.replace(/^.*\//, "") + " (" + root.topRepoStars + " ⭐)"
         }
 
     }
@@ -468,6 +299,36 @@ Card {
                 fetchTotalCommits.running = true;
 
         }
+    }
+
+    component GithubWidgetStat: RowLayout {
+        property string icon
+        property color iconColor: Theme.fg
+        property string category
+        property string value
+
+        spacing: Constants.sizeXs
+
+        ThemedText {
+            text: icon
+            color: iconColor
+            font.pixelSize: Constants.sizeSm - 1
+        }
+
+        ThemedText {
+            text: category
+            color: Theme.muted
+            font.pixelSize: Constants.sizeSm - 1
+        }
+
+        ThemedText {
+            text: String(value)
+            color: Theme.fg
+            font.pixelSize: Constants.sizeSm - 1
+            font.weight: Font.Medium
+            Layout.fillWidth: true
+        }
+
     }
 
 }

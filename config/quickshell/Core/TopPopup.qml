@@ -14,7 +14,7 @@ PopupWindow {
     property int contentPadding: Constants.sizeLg
     default property alias content: innerLayout.data
     property int preferredHeight
-    property int animationDuration: 300
+    property int animationDuration: Constants.animNormal
     property color backgroundColor: Theme.bg
     property bool animateHeight: false
     property bool _windowVisible: false

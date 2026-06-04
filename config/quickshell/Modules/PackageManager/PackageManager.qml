@@ -229,6 +229,28 @@ CenterWindow {
         }
     }
 
+    footerLeftText: {
+        if (root.isSearching)
+            return "Searching...";
+
+        if (resultsModel.count > 0)
+            return resultsModel.count + (resultsModel.count === 1 ? " package found" : " packages found");
+
+        return "";
+    }
+    footerKeyHints: [{
+        "key": "↑↓",
+        "description": "Navigate"
+    }, {
+        "key": "󰌑",
+        "description": "Execute"
+    }, {
+        "key": "󰌒",
+        "description": "Select"
+    }, {
+        "key": "Ctrl + 󰌒",
+        "description": "Switch Mode"
+    }]
     popupId: "packagemanager"
     preferredHeight: 520
     preferredWidth: 650
@@ -441,7 +463,7 @@ CenterWindow {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 250
+                            duration: Constants.animNormal
                             easing.type: Easing.OutQuint
                         }
 
@@ -484,7 +506,7 @@ CenterWindow {
 
             Behavior on border.color {
                 ColorAnimation {
-                    duration: 250
+                    duration: Constants.animNormal
                     easing.type: Easing.OutQuint
                 }
 
@@ -606,7 +628,7 @@ CenterWindow {
                 spacing: Constants.sizeXs
                 currentIndex: -1
                 highlightResizeDuration: 0
-                highlightMoveDuration: 250
+                highlightMoveDuration: Constants.animNormal
                 highlightFollowsCurrentItem: true
                 visible: resultsModel.count > 0 && !root.isSearching
                 Keys.onPressed: function(event) {
@@ -638,7 +660,7 @@ CenterWindow {
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 250
+                                    duration: Constants.animNormal
                                     easing.type: Easing.OutQuint
                                 }
 
@@ -648,14 +670,14 @@ CenterWindow {
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: 250
+                                duration: Constants.animNormal
                             }
 
                         }
 
                         Behavior on border.color {
                             ColorAnimation {
-                                duration: 250
+                                duration: Constants.animNormal
                             }
 
                         }
@@ -829,7 +851,7 @@ CenterWindow {
 
                                     Behavior on color {
                                         ColorAnimation {
-                                            duration: 250
+                                            duration: Constants.animNormal
                                             easing.type: Easing.OutQuint
                                         }
 
@@ -860,7 +882,7 @@ CenterWindow {
 
                                 Behavior on color {
                                     ColorAnimation {
-                                        duration: 250
+                                        duration: Constants.animNormal
                                         easing.type: Easing.OutQuint
                                     }
 
@@ -956,135 +978,6 @@ CenterWindow {
 
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 18
-            spacing: Constants.sizeXs
-
-            ThemedText {
-                text: {
-                    if (root.isSearching)
-                        return "Searching...";
-
-                    if (resultsModel.count > 0)
-                        return resultsModel.count + (resultsModel.count === 1 ? " package found" : " packages found");
-
-                    return "";
-                }
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            RowLayout {
-                spacing: Constants.sizeSm
-                Layout.alignment: Qt.AlignVCenter
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 32
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "Tab"
-                            font.pixelSize: 9
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Select"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
-                }
-
-                ThemedText {
-                    text: "•"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                    opacity: 0.5
-                }
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 54
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "Ctrl+Tab"
-                            font.pixelSize: 9
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Switch Mode"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
-                }
-
-                ThemedText {
-                    text: "•"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                    opacity: 0.5
-                }
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 20
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "󰌑"
-                            font.pixelSize: 10
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Execute"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
-                }
-
-            }
-
-        }
-
     }
 
     component TabButton: Item {
@@ -1111,7 +1004,7 @@ CenterWindow {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 150
+                        duration: Constants.animFast
                     }
 
                 }
@@ -1127,7 +1020,7 @@ CenterWindow {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 150
+                        duration: Constants.animFast
                     }
 
                 }
@@ -1146,7 +1039,7 @@ CenterWindow {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 180
+                    duration: Constants.animFast
                     easing.type: Easing.OutCubic
                 }
 

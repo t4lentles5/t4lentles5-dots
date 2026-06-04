@@ -61,7 +61,7 @@ Card {
                 ThemedText {
                     text: "󰢮 "
                     font.pixelSize: Constants.sizeMd
-                    color: Theme.purple
+                    color: Theme.orange
                     font.bold: true
                 }
 
@@ -95,7 +95,7 @@ Card {
                     width: parent.width * (root.gpuUsage / 100)
                     height: parent.height
                     radius: parent.radius
-                    color: Theme.purple
+                    color: Theme.orange
 
                     Behavior on width {
                         NumberAnimation {
@@ -126,7 +126,7 @@ Card {
                 text: root.gpuUsage + "%"
                 font.pixelSize: 24
                 font.bold: true
-                color: Theme.purple
+                color: Theme.orange
                 Layout.alignment: Qt.AlignRight
             }
 

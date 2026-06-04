@@ -135,7 +135,7 @@ BarButton {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 300
+                    duration: Constants.animNormal
                     easing.type: Easing.OutQuint
                 }
 
@@ -186,7 +186,7 @@ BarButton {
                 target: textContainer
                 property: "opacity"
                 to: 0
-                duration: 150
+                duration: Constants.animUltraFast
                 easing.type: Easing.OutCubic
             }
 
@@ -194,7 +194,7 @@ BarButton {
                 target: textContainer
                 property: "anchors.verticalCenterOffset"
                 to: 8
-                duration: 150
+                duration: Constants.animUltraFast
                 easing.type: Easing.OutCubic
             }
 
@@ -202,7 +202,7 @@ BarButton {
                 target: iconScale
                 properties: "xScale,yScale"
                 to: 0.7
-                duration: 150
+                duration: Constants.animUltraFast
                 easing.type: Easing.OutCubic
             }
 
@@ -211,7 +211,7 @@ BarButton {
                 property: "angle"
                 from: 0
                 to: 180
-                duration: 150
+                duration: Constants.animUltraFast
                 easing.type: Easing.OutCubic
             }
 
@@ -235,7 +235,7 @@ BarButton {
                 target: textContainer
                 property: "opacity"
                 to: 1
-                duration: 250
+                duration: Constants.animFast
                 easing.type: Easing.OutBack
             }
 
@@ -243,7 +243,7 @@ BarButton {
                 target: textContainer
                 property: "anchors.verticalCenterOffset"
                 to: 0
-                duration: 250
+                duration: Constants.animFast
                 easing.type: Easing.OutBack
             }
 
@@ -251,7 +251,7 @@ BarButton {
                 target: iconScale
                 properties: "xScale,yScale"
                 to: 1
-                duration: 250
+                duration: Constants.animFast
                 easing.type: Easing.OutBack
             }
 
@@ -260,7 +260,7 @@ BarButton {
                 property: "angle"
                 from: 180
                 to: 360
-                duration: 250
+                duration: Constants.animFast
                 easing.type: Easing.OutBack
             }
 

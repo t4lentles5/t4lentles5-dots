@@ -13,11 +13,13 @@ PanelWindow {
     property bool isOpen: false
     default property alias content: innerLayout.data
     property int animationDuration: 450
-    property int fadeDuration: 280
+    property int fadeDuration: Constants.animNormal
     property color backgroundColor: Theme.bg
     property int preferredWidth: 600
     property int preferredHeight: 500
     property bool _windowVisible: false
+    property string footerLeftText: ""
+    property var footerKeyHints: []
 
     signal popupOpened()
     signal popupClosed()
@@ -126,11 +128,24 @@ PanelWindow {
             }
 
             ColumnLayout {
-                id: innerLayout
-
                 anchors.fill: parent
                 anchors.margins: Constants.sizeLg
                 spacing: Constants.sizeLg
+
+                ColumnLayout {
+                    id: innerLayout
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    spacing: Constants.sizeLg
+                }
+
+                WidgetFooter {
+                    Layout.fillWidth: true
+                    leftText: root.footerLeftText
+                    keyHints: root.footerKeyHints
+                }
+
             }
 
             Behavior on y {

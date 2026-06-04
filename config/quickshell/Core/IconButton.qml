@@ -13,6 +13,7 @@ Rectangle {
     property bool isActive: false
     property bool useText: true
     property alias hovered: hoverHandler.hovered
+    property bool useBorder: true
 
     signal clicked()
 
@@ -30,6 +31,8 @@ Rectangle {
     radius: iconSize
     implicitWidth: iconSize * 2
     implicitHeight: iconSize * 2
+    border.color: useBorder ? (isActive ? activeColor : (hoverHandler.hovered ? Qt.rgba(activeColor.r, activeColor.g, activeColor.b, 0.4) : Qt.rgba(iconColor.r, iconColor.g, iconColor.b, 0.1))) : Qt.rgba(0, 0, 0, 0)
+    border.width: 1
 
     ThemedText {
         anchors.centerIn: parent
@@ -74,6 +77,13 @@ Rectangle {
         id: tapHandler
 
         onTapped: root.clicked()
+    }
+
+    Behavior on border.color {
+        ColorAnimation {
+            duration: Constants.animFast
+        }
+
     }
 
     Behavior on color {

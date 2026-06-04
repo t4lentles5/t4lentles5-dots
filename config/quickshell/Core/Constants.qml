@@ -10,7 +10,9 @@ QtObject {
     property int sizeMd: 14
     property int sizeLg: 16
     property int sizeXl: 20
+    property int animUltraFast: 100
     property int animFast: 150
     property int animNormal: 250
     property int animSlow: 350
+    property int animUltraSlow: 400
 }

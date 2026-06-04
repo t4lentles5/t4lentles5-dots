@@ -7,6 +7,7 @@ Card {
     id: root
 
     property int memUsage: 0
+    property real animatedMemUsage: memUsage
     property string memSizeText: "0.0 / 0.0 GiB"
 
     Process {
@@ -82,12 +83,12 @@ Card {
                     ctx.lineWidth = 5;
                     ctx.arc(cx, cy, r, 0, 2 * Math.PI);
                     ctx.stroke();
-                    if (root.memUsage > 0) {
+                    if (root.animatedMemUsage > 0) {
                         ctx.beginPath();
                         ctx.strokeStyle = Theme.purple;
                         ctx.lineWidth = 5;
                         ctx.lineCap = "round";
-                        var angle = (root.memUsage / 100) * 2 * Math.PI - 0.5 * Math.PI;
+                        var angle = (root.animatedMemUsage / 100) * 2 * Math.PI - 0.5 * Math.PI;
                         ctx.arc(cx, cy, r, -0.5 * Math.PI, angle);
                         ctx.stroke();
                     }
@@ -96,7 +97,7 @@ Card {
                 onHeightChanged: requestPaint()
 
                 Connections {
-                    function onMemUsageChanged() {
+                    function onAnimatedMemUsageChanged() {
                         memCanvas.requestPaint();
                     }
 
@@ -107,7 +108,7 @@ Card {
 
             ThemedText {
                 anchors.centerIn: parent
-                text: root.memUsage + "%"
+                text: Math.round(root.animatedMemUsage) + "%"
                 font.pixelSize: 20
                 font.bold: true
                 color: Theme.purple
@@ -120,6 +121,14 @@ Card {
             font.pixelSize: Constants.sizeSm - 2
             color: Theme.muted
             Layout.alignment: Qt.AlignHCenter
+        }
+
+    }
+
+    Behavior on animatedMemUsage {
+        NumberAnimation {
+            duration: 600
+            easing.type: Easing.OutCubic
         }
 
     }

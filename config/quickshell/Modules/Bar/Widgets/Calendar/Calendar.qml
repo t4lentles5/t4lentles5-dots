@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
 import qs.Core
 
 TopPopup {
@@ -70,6 +72,12 @@ TopPopup {
 
     preferredHeight: implicitHeight
     animateHeight: true
+
+    Process {
+        id: gnomeCalendarProc
+
+        command: ["gnome-calendar"]
+    }
 
     SequentialAnimation {
         id: monthTransitionAnim
@@ -175,111 +183,97 @@ TopPopup {
 
     }
 
-    ColumnLayout {
-        id: mainCol
+    Rectangle {
+        id: mainCard
 
-        Layout.fillWidth: true
-        spacing: Constants.sizeLg
+        implicitWidth: gridContainer.implicitWidth + (Constants.sizeMd * 2)
+        implicitHeight: mainCol.implicitHeight + (Constants.sizeMd * 2)
+        color: Theme.bgSecondary
+        radius: Constants.sizeMd
+        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
+        border.width: 1
 
-        Rectangle {
-            Layout.preferredWidth: headerContent.implicitWidth + (Constants.sizeLg * 2)
-            Layout.preferredHeight: headerContent.implicitHeight + (Constants.sizeLg * 2)
-            color: Theme.bgSecondary
-            radius: Constants.sizeXs
-            Layout.fillWidth: true
+        ColumnLayout {
+            id: mainCol
 
-            ColumnLayout {
-                id: headerContent
+            anchors.fill: parent
+            anchors.margins: Constants.sizeMd
+            spacing: Constants.sizeMd
 
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Constants.sizeMd
 
-                RowLayout {
-                    id: headerLayout
+                Item {
+                    id: monthLabelContainer
 
                     Layout.fillWidth: true
-                    Layout.leftMargin: Constants.sizeLg
-                    Layout.rightMargin: Constants.sizeLg
+                    Layout.preferredHeight: monthText.implicitHeight
 
-                    Item {
-                        id: monthLabelContainer
+                    ThemedText {
+                        id: monthText
 
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: monthCol.implicitHeight
-
-                        ColumnLayout {
-                            id: monthCol
-
-                            ThemedText {
-                                text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM")
-                                color: Theme.purple
-                                font.pixelSize: Constants.sizeSm
-                                font.bold: true
-                                font.capitalization: Font.Capitalize
-                            }
-
-                            ThemedText {
-                                text: root.currentYear
-                                color: Theme.muted
-                                font.pixelSize: Constants.sizeSm
-                                font.bold: true
-                            }
-
-                        }
-
-                        transform: Translate {
-                            id: monthTranslate
-
-                            x: 0
-                        }
-
+                        text: new Date(root.currentYear, root.currentMonth, 1).toLocaleDateString(Qt.locale(), "MMMM yyyy")
+                        color: Theme.purple
+                        font.pixelSize: Constants.sizeSm + 1
+                        font.bold: true
+                        font.capitalization: Font.Capitalize
                     }
 
-                    Item {
-                        Layout.fillWidth: true
+                    transform: Translate {
+                        id: monthTranslate
+
+                        x: 0
                     }
 
-                    RowLayout {
-                        spacing: 4
+                }
 
-                        IconButton {
-                            icon: "󰁍"
-                            onClicked: root.prevMonth()
+                RowLayout {
+                    spacing: 4
+
+                    IconButton {
+                        icon: "󰁍"
+                        iconSize: Constants.sizeSm
+                        onClicked: root.prevMonth()
+                    }
+
+                    IconButton {
+                        icon: "󱨰"
+                        iconSize: Constants.sizeSm
+                        iconColor: Theme.purple
+                        onClicked: root.jumpToToday()
+                    }
+
+                    IconButton {
+                        icon: "󰁔"
+                        iconSize: Constants.sizeSm
+                        onClicked: root.nextMonth()
+                    }
+
+                    IconButton {
+                        icon: "󰸗"
+                        iconSize: Constants.sizeSm
+                        iconColor: Theme.cyan
+                        onClicked: {
+                            gnomeCalendarProc.running = false;
+                            gnomeCalendarProc.running = true;
+                            root.isOpen = false;
                         }
-
-                        IconButton {
-                            icon: "󰃭"
-                            iconColor: Theme.purple
-                            onClicked: root.jumpToToday()
-                        }
-
-                        IconButton {
-                            icon: "󰁔"
-                            onClicked: root.nextMonth()
-                        }
-
                     }
 
                 }
 
             }
 
-        }
-
-        Rectangle {
-            id: calendarBg
-
-            Layout.preferredWidth: gridContainer.implicitWidth + Constants.sizeLg * 2
-            Layout.preferredHeight: gridContainer.implicitHeight + Constants.sizeLg * 2
-            color: Theme.bgSecondary
-            radius: Constants.sizeXs
+            Rectangle {
+                Layout.fillWidth: true
+                height: 1
+                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
+            }
 
             ColumnLayout {
                 id: gridContainer
 
-                anchors.fill: parent
-                anchors.margins: Constants.sizeLg
                 spacing: Constants.sizeXs
 
                 RowLayout {
@@ -292,8 +286,8 @@ TopPopup {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                             text: modelData
-                            color: index === 0 || index === 6 ? Theme.red : Theme.cyan
-                            font.pixelSize: Constants.sizeSm
+                            color: index === 0 || index === 6 ? Theme.red : Theme.muted
+                            font.pixelSize: Constants.sizeSm - 1
                             font.bold: true
                         }
 
@@ -304,7 +298,6 @@ TopPopup {
                 GridLayout {
                     id: daysGrid
 
-                    Layout.preferredWidth: implicitWidth
                     columns: 7
                     rowSpacing: Constants.sizeXs
                     columnSpacing: Constants.sizeXs
@@ -338,7 +331,14 @@ TopPopup {
                             Layout.preferredWidth: Constants.sizeSm * 2
                             Layout.preferredHeight: Constants.sizeSm * 2
                             radius: Constants.sizeSm
-                            color: isToday ? Theme.purple : (isCurrentMonth && dayHover.containsMouse ? Theme.bgSecondary : "transparent")
+                            color: isToday ? Theme.purple : "transparent"
+
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: Constants.sizeSm
+                                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
+                                visible: !isToday && isCurrentMonth && dayHover.containsMouse
+                            }
 
                             ThemedText {
                                 anchors.centerIn: parent
@@ -368,39 +368,6 @@ TopPopup {
                     x: 0
                 }
 
-            }
-
-            Behavior on Layout.preferredHeight {
-                NumberAnimation {
-                    duration: Constants.animFast
-                    easing.type: Easing.OutQuint
-                }
-
-            }
-
-        }
-
-        RowLayout {
-            ThemedText {
-                text: Qt.formatDateTime(new Date(), "dddd, d MMMM")
-                color: Theme.cyan
-                font.pixelSize: Constants.sizeSm
-                font.bold: true
-                font.capitalization: Font.Capitalize
-                Layout.fillWidth: true
-            }
-
-            Rectangle {
-                width: 6
-                height: 6
-                radius: 3
-                color: Theme.green
-            }
-
-            ThemedText {
-                text: "Today"
-                color: Theme.muted
-                font.pixelSize: Constants.sizeSm
             }
 
         }

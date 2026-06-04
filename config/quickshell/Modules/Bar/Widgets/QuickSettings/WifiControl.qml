@@ -155,6 +155,7 @@ RowLayout {
                 hoverColor: "transparent"
                 bgColor: "transparent"
                 onClicked: root.toggle()
+                useBorder: false
             }
 
             Rectangle {
@@ -178,6 +179,7 @@ RowLayout {
                         root.expanded = !root.expanded;
 
                 }
+                useBorder: false
             }
 
             layer.effect: Component {

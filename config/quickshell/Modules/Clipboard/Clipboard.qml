@@ -105,6 +105,17 @@ CenterWindow {
         clearProc.running = true;
     }
 
+    footerLeftText: filteredModel.count + (filteredModel.count === 1 ? " item" : " items") + " found"
+    footerKeyHints: [{
+        "key": "↑↓",
+        "description": "Navigate"
+    }, {
+        "key": "󰌑",
+        "description": "Select"
+    }, {
+        "key": "DEL",
+        "description": "Delete"
+    }]
     popupId: "clipboard"
     preferredHeight: 480
     preferredWidth: 600
@@ -254,15 +265,11 @@ CenterWindow {
                         onTextChanged: root.filterClipboard(text)
                         Keys.onPressed: function(event) {
                             if (event.key === Qt.Key_Down) {
-                                if (clipboardView.count > 0) {
-                                    clipboardView.currentIndex = Math.min(clipboardView.currentIndex + 1, clipboardView.count - 1);
-                                    event.accepted = true;
-                                }
+                                clipboardView.currentIndex = Math.min(clipboardView.currentIndex + 1, filteredModel.count - 1);
+                                event.accepted = true;
                             } else if (event.key === Qt.Key_Up) {
-                                if (clipboardView.count > 0) {
-                                    clipboardView.currentIndex = Math.max(clipboardView.currentIndex - 1, 0);
-                                    event.accepted = true;
-                                }
+                                clipboardView.currentIndex = Math.max(clipboardView.currentIndex - 1, 0);
+                                event.accepted = true;
                             } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                                 let idx = clipboardView.currentIndex >= 0 ? clipboardView.currentIndex : 0;
                                 if (filteredModel.count > idx) {
@@ -364,25 +371,27 @@ CenterWindow {
                 spacing: Constants.sizeXs
                 currentIndex: -1
                 highlightResizeDuration: 0
-                highlightMoveDuration: 250
+                highlightMoveDuration: Constants.animNormal
                 highlightFollowsCurrentItem: true
                 Keys.onPressed: function(event) {
-                    if (event.key === Qt.Key_Up) {
-                        if (currentIndex <= 0) {
-                            searchField.forceActiveFocus();
-                            currentIndex = -1;
-                            event.accepted = true;
-                        }
+                    if (event.key === Qt.Key_Down) {
+                        clipboardView.currentIndex = Math.min(clipboardView.currentIndex + 1, filteredModel.count - 1);
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_Up) {
+                        clipboardView.currentIndex = Math.max(clipboardView.currentIndex - 1, 0);
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                        if (currentIndex >= 0) {
-                            let item = filteredModel.get(currentIndex);
+                        let idx = clipboardView.currentIndex;
+                        if (idx >= 0) {
+                            let item = filteredModel.get(idx);
                             root.copyToClipboard(item.itemId);
                             event.accepted = true;
                         }
                     } else if (event.key === Qt.Key_Delete) {
-                        if (currentIndex >= 0 && filteredModel.count > currentIndex) {
-                            let item = filteredModel.get(currentIndex);
-                            root.deleteItem(currentIndex, item.fullLine);
+                        let idx = clipboardView.currentIndex;
+                        if (idx >= 0 && filteredModel.count > idx) {
+                            let item = filteredModel.get(idx);
+                            root.deleteItem(idx, item.fullLine);
                             event.accepted = true;
                         }
                     }
@@ -583,7 +592,7 @@ CenterWindow {
                         }
 
                         IconButton {
-                            icon: ""
+                            icon: "󰅖"
                             iconColor: Theme.red
                             iconSize: Constants.sizeMd
                             Layout.alignment: Qt.AlignVCenter
@@ -625,132 +634,6 @@ CenterWindow {
                 ScrollBar.vertical: ScrollBar {
                     policy: ScrollBar.AsNeeded
                     active: true
-                }
-
-            }
-
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 18
-            spacing: Constants.sizeXs
-
-            ThemedText {
-                text: {
-                    if (filteredModel.count > 0)
-                        return filteredModel.count + (filteredModel.count === 1 ? " item found" : " items found");
-
-                    return "No items found";
-                }
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            RowLayout {
-                spacing: Constants.sizeSm
-                Layout.alignment: Qt.AlignVCenter
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 20
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "󰌑"
-                            font.pixelSize: 10
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Select"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
-                }
-
-                ThemedText {
-                    text: "•"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                    opacity: 0.5
-                }
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 28
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "Del"
-                            font.pixelSize: 9
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Delete"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
-                }
-
-                ThemedText {
-                    text: "•"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                    opacity: 0.5
-                }
-
-                RowLayout {
-                    spacing: 4
-
-                    Rectangle {
-                        width: 22
-                        height: 16
-                        radius: 3
-                        color: Theme.bgSecondary
-                        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                        border.width: 1
-
-                        ThemedText {
-                            anchors.centerIn: parent
-                            text: "↑↓"
-                            font.pixelSize: 10
-                            font.bold: true
-                        }
-
-                    }
-
-                    ThemedText {
-                        text: "Navigate"
-                        font.pixelSize: Constants.sizeSm
-                        color: Theme.muted
-                    }
-
                 }
 
             }

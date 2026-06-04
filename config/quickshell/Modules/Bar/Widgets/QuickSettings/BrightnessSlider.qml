@@ -114,7 +114,7 @@ RowLayout {
 
             Behavior on x {
                 NumberAnimation {
-                    duration: 100
+                    duration: Constants.animUltraFast
                 }
 
             }

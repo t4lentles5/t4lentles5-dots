@@ -11,19 +11,13 @@ CenterWindow {
     id: root
 
     property string searchText: ""
-    property int currentTab: 0
 
     function filterWallpapers(query) {
         filteredModel.clear();
         query = query.toLowerCase();
         for (let i = 0; i < wallModel.count; i++) {
             let wall = wallModel.get(i);
-            let matchesTab = false;
-            if (currentTab === 0 && wall.type === "Dark")
-                matchesTab = true;
-            else if (currentTab === 1 && wall.type === "Light")
-                matchesTab = true;
-            if (matchesTab && wall.name.toLowerCase().includes(query))
+            if (wall.name.toLowerCase().includes(query))
                 filteredModel.append(wall);
 
         }
@@ -41,22 +35,33 @@ CenterWindow {
             wallView.currentIndex = -1;
     }
 
-    function setWallpaper(targetPath, wType) {
+    function setWallpaper(targetPath) {
         if (!targetPath)
             return ;
 
         let parts = targetPath.split('/');
         let wallName = parts[parts.length - 1];
-        WallpaperManager.applyWallpaperWithSync(wallName, targetPath, wType);
+        WallpaperManager.applyWallpaperWithSync(wallName, targetPath);
         root.isOpen = false;
     }
 
+    footerLeftText: {
+        if (filteredModel.count > 0)
+            return filteredModel.count + (filteredModel.count === 1 ? " wallpaper found" : " wallpapers found");
+
+        return "No wallpapers found";
+    }
+    footerKeyHints: [{
+        "key": "↑↓←→",
+        "description": "Navigate"
+    }, {
+        "key": "󰌑",
+        "description": "Apply"
+    }]
     popupId: "wallpaper"
     preferredHeight: 550
     preferredWidth: 800
     onPopupOpened: {
-        let brightness = Theme.bg.r * 0.299 + Theme.bg.g * 0.587 + Theme.bg.b * 0.114;
-        currentTab = (brightness <= 0.5) ? 0 : 1;
         focusTimer.start();
         searchField.text = "";
         loadWallpapersProc.lines = [];
@@ -84,7 +89,7 @@ CenterWindow {
 
         property var lines: []
 
-        command: ["bash", "-c", "find ~/Pictures/Wallpapers -type f 2>/dev/null | grep -iE '\\.(jpg|jpeg|png|webp|gif)$'"]
+        command: ["bash", "-c", "find ~/Pictures/Wallpapers -maxdepth 2 -type f 2>/dev/null | grep -iE '\\.(jpg|jpeg|png|webp|gif)$'"]
         onExited: function(exitCode) {
             wallModel.clear();
             let sortedLines = lines.sort(function(a, b) {
@@ -105,15 +110,10 @@ CenterWindow {
                     if (rawPath !== "") {
                         let parts = rawPath.split('/');
                         let fileName = parts[parts.length - 1];
-                        let wType = "Dark";
-                        if (rawPath.includes("/Light/"))
-                            wType = "Light";
-
                         loadWallpapersProc.lines.push({
                             "filePath": "file://" + rawPath,
                             "rawPath": rawPath,
-                            "name": fileName,
-                            "type": wType
+                            "name": fileName
                         });
                     }
                 }
@@ -143,7 +143,7 @@ CenterWindow {
                 id: searchField
 
                 Layout.fillWidth: true
-                placeholderText: currentTab === 0 ? "Search Dark wallpapers..." : "Search Light wallpapers..."
+                placeholderText: "Search wallpapers..."
                 placeholderTextColor: Theme.muted
                 color: Theme.fg
                 font.pixelSize: Constants.sizeMd
@@ -151,11 +151,7 @@ CenterWindow {
                 background: null
                 onTextChanged: root.filterWallpapers(text)
                 Keys.onPressed: function(event) {
-                    if (event.key === Qt.Key_Tab) {
-                        currentTab = currentTab === 0 ? 1 : 0;
-                        filterWallpapers(searchField.text);
-                        event.accepted = true;
-                    } else if (event.key === Qt.Key_Right) {
+                    if (event.key === Qt.Key_Right) {
                         if (wallView.count > 0) {
                             wallView.currentIndex = Math.min(wallView.currentIndex + 1, wallView.count - 1);
                             event.accepted = true;
@@ -181,7 +177,7 @@ CenterWindow {
                         let idx = wallView.currentIndex >= 0 ? wallView.currentIndex : 0;
                         if (filteredModel.count > idx) {
                             let wall = filteredModel.get(idx);
-                            setWallpaper(wall.rawPath, wall.type);
+                            setWallpaper(wall.rawPath);
                             event.accepted = true;
                         }
                     }
@@ -246,7 +242,7 @@ CenterWindow {
             cellHeight: Math.floor(cellWidth * 0.65)
             currentIndex: -1
             highlightFollowsCurrentItem: true
-            highlightMoveDuration: 250
+            highlightMoveDuration: Constants.animNormal
             visible: filteredModel.count > 0
 
             add: Transition {
@@ -381,7 +377,7 @@ CenterWindow {
                 TapHandler {
                     onTapped: {
                         wallView.currentIndex = index;
-                        setWallpaper(model.rawPath, model.type);
+                        setWallpaper(model.rawPath);
                     }
                 }
 
@@ -392,34 +388,6 @@ CenterWindow {
                 active: true
             }
 
-        }
-
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 18
-        spacing: Constants.sizeXs
-
-        ThemedText {
-            text: {
-                if (filteredModel.count > 0)
-                    return filteredModel.count + (filteredModel.count === 1 ? " wallpaper found" : " wallpapers found");
-
-                return "";
-            }
-            font.pixelSize: Constants.sizeSm
-            color: Theme.muted
-        }
-
-        Item {
-            Layout.fillWidth: true
-        }
-
-        ThemedText {
-            text: "󰌒  Switch Mode  •  ↑↓←→  Navigate  •  󰌑  Apply"
-            font.pixelSize: Constants.sizeSm
-            color: Theme.muted
         }
 
     }

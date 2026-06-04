@@ -18,7 +18,7 @@ BarButton {
     }
 
     text: "  " + container.layoutName
-    textColor: Theme.fg
+    textColor: Theme.pink
 
     Connections {
         function onRawEvent(event) {

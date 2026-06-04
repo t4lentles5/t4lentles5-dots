@@ -8,6 +8,7 @@ Card {
 
     property string diskName: "Storage - /"
     property int diskUsage: 0
+    property real animatedDiskUsage: diskUsage
     property string diskSizeText: "0.0 / 0.0 GiB"
 
     Process {
@@ -86,12 +87,12 @@ Card {
                     ctx.lineWidth = 5;
                     ctx.arc(cx, cy, r, 0, 2 * Math.PI);
                     ctx.stroke();
-                    if (root.diskUsage > 0) {
+                    if (root.animatedDiskUsage > 0) {
                         ctx.beginPath();
                         ctx.strokeStyle = Theme.yellow;
                         ctx.lineWidth = 5;
                         ctx.lineCap = "round";
-                        var angle = (root.diskUsage / 100) * 2 * Math.PI - 0.5 * Math.PI;
+                        var angle = (root.animatedDiskUsage / 100) * 2 * Math.PI - 0.5 * Math.PI;
                         ctx.arc(cx, cy, r, -0.5 * Math.PI, angle);
                         ctx.stroke();
                     }
@@ -100,7 +101,7 @@ Card {
                 onHeightChanged: requestPaint()
 
                 Connections {
-                    function onDiskUsageChanged() {
+                    function onAnimatedDiskUsageChanged() {
                         diskCanvas.requestPaint();
                     }
 
@@ -111,7 +112,7 @@ Card {
 
             ThemedText {
                 anchors.centerIn: parent
-                text: root.diskUsage + "%"
+                text: Math.round(root.animatedDiskUsage) + "%"
                 font.pixelSize: 20
                 font.bold: true
                 color: Theme.yellow
@@ -124,6 +125,14 @@ Card {
             font.pixelSize: Constants.sizeSm - 2
             color: Theme.muted
             Layout.alignment: Qt.AlignHCenter
+        }
+
+    }
+
+    Behavior on animatedDiskUsage {
+        NumberAnimation {
+            duration: 600
+            easing.type: Easing.OutCubic
         }
 
     }

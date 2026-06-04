@@ -307,12 +307,22 @@ PanelWindow {
                             sourceSize: Qt.size(48, 48)
                             visible: false
                             fillMode: Image.PreserveAspectCrop
+                            onStatusChanged: {
+                                if (status === Image.Error)
+                                    source = "";
+
+                            }
+                            onImplicitWidthChanged: {
+                                if (status === Image.Ready && implicitWidth === 0)
+                                    source = "";
+
+                            }
                         }
 
                         OpacityMask {
                             anchors.fill: parent
                             source: notifImage
-                            visible: notifImage.status === Image.Ready && notifImage.source.toString() !== ""
+                            visible: notifImage.status === Image.Ready && notifImage.implicitWidth > 0 && notifImage.source.toString() !== ""
 
                             maskSource: Rectangle {
                                 width: notifImage.width
@@ -324,7 +334,7 @@ PanelWindow {
 
                         ThemedText {
                             anchors.centerIn: parent
-                            visible: notifImage.status !== Image.Ready || notifImage.source.toString() === ""
+                            visible: notifImage.status !== Image.Ready || notifImage.implicitWidth === 0 || notifImage.source.toString() === ""
                             text: {
                                 let img = model.image ? model.image.toString() : "";
                                 let ico = model.icon ? model.icon.toString() : "";

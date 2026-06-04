@@ -152,6 +152,25 @@ CenterWindow {
         root.isOpen = false;
     }
 
+    footerLeftText: {
+        if (root.filteredApps.length > 0)
+            return root.filteredApps.length + (root.filteredApps.length === 1 ? " application found" : " applications found");
+
+        return "No applications found";
+    }
+    footerKeyHints: [{
+        "key": "↑↓",
+        "description": "Navigate"
+    }, {
+        "key": "󰌑",
+        "description": "Run"
+    }, {
+        "key": "󰌒",
+        "description": "Next Category"
+    }, {
+        "key": "󰌥",
+        "description": "Prev Category"
+    }]
     onSelectedCategoryChanged: filterApps(searchField.text)
     onAllAppsChanged: {
         let cats = ["All"];
@@ -355,7 +374,7 @@ CenterWindow {
             spacing: Constants.sizeXs
             currentIndex: -1
             highlightResizeDuration: 0
-            highlightMoveDuration: 250
+            highlightMoveDuration: Constants.animNormal
             highlightFollowsCurrentItem: true
             visible: root.filteredApps.length > 0
             Keys.onPressed: function(event) {
@@ -745,132 +764,6 @@ CenterWindow {
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
                 active: true
-            }
-
-        }
-
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 18
-        spacing: Constants.sizeXs
-
-        ThemedText {
-            text: {
-                if (root.filteredApps.length > 0)
-                    return root.filteredApps.length + (root.filteredApps.length === 1 ? " application found" : " applications found");
-
-                return "No applications found";
-            }
-            font.pixelSize: Constants.sizeSm
-            color: Theme.muted
-        }
-
-        Item {
-            Layout.fillWidth: true
-        }
-
-        RowLayout {
-            spacing: Constants.sizeSm
-            Layout.alignment: Qt.AlignVCenter
-
-            RowLayout {
-                spacing: 4
-
-                Rectangle {
-                    width: 32
-                    height: 16
-                    radius: 3
-                    color: Theme.bgSecondary
-                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                    border.width: 1
-
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "Tab"
-                        font.pixelSize: 9
-                        font.bold: true
-                    }
-
-                }
-
-                ThemedText {
-                    text: "Switch Category"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                }
-
-            }
-
-            ThemedText {
-                text: "•"
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-                opacity: 0.5
-            }
-
-            RowLayout {
-                spacing: 4
-
-                Rectangle {
-                    width: 22
-                    height: 16
-                    radius: 3
-                    color: Theme.bgSecondary
-                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                    border.width: 1
-
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "↑↓"
-                        font.pixelSize: 10
-                        font.bold: true
-                    }
-
-                }
-
-                ThemedText {
-                    text: "Navigate"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                }
-
-            }
-
-            ThemedText {
-                text: "•"
-                font.pixelSize: Constants.sizeSm
-                color: Theme.muted
-                opacity: 0.5
-            }
-
-            RowLayout {
-                spacing: 4
-
-                Rectangle {
-                    width: 20
-                    height: 16
-                    radius: 3
-                    color: Theme.bgSecondary
-                    border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
-                    border.width: 1
-
-                    ThemedText {
-                        anchors.centerIn: parent
-                        text: "󰌑"
-                        font.pixelSize: 10
-                        font.bold: true
-                    }
-
-                }
-
-                ThemedText {
-                    text: "Run"
-                    font.pixelSize: Constants.sizeSm
-                    color: Theme.muted
-                }
-
             }
 
         }

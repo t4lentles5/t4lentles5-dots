@@ -18,10 +18,10 @@ Card {
         AppState.openPopup("packagemanager");
     }
 
-    clickable: root.hasUpdates
-    highlighted: root.hasUpdates
-    scaleOnPress: root.hasUpdates
-    cursorShape: root.hasUpdates ? Qt.PointingHandCursor : Qt.ArrowCursor
+    clickable: root.hasUpdates && !root.isUpdating
+    highlighted: root.hasUpdates && !root.isUpdating
+    scaleOnPress: root.hasUpdates && !root.isUpdating
+    cursorShape: root.hasUpdates && !root.isUpdating ? Qt.PointingHandCursor : Qt.ArrowCursor
     onClicked: {
         root.runUpdate();
     }
@@ -38,7 +38,6 @@ Card {
 
         stdout: SplitParser {
             onRead: (data) => {
-                console.log("UpdatesCard: pacmanProc output:", data.trim());
                 root.pacmanUpdates = data.trim();
             }
         }
@@ -52,7 +51,6 @@ Card {
 
         stdout: SplitParser {
             onRead: (data) => {
-                console.log("UpdatesCard: aurProc output:", data.trim());
                 root.aurUpdates = data.trim();
             }
         }
@@ -64,7 +62,6 @@ Card {
 
         command: ["sh", "-c", "kitty --class kitty-floating --hold -e yay -Syu --noconfirm"]
         onExited: {
-            console.log("UpdatesCard: updateExec exited");
             pacmanProc.running = false;
             pacmanProc.running = true;
             aurProc.running = false;
@@ -100,7 +97,6 @@ Card {
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            console.log("UpdatesCard: hourly update trigger");
             pacmanProc.running = false;
             pacmanProc.running = true;
             aurProc.running = false;
@@ -109,21 +105,8 @@ Card {
     }
 
     Connections {
-        function onActivePopupChanged() {
-            console.log("UpdatesCard: onActivePopupChanged:", AppState.activePopup);
-            if (AppState.activePopup === "" && !AppState.isSystemUpdating) {
-                console.log("UpdatesCard: activePopup closed, triggering check");
-                pacmanProc.running = false;
-                pacmanProc.running = true;
-                aurProc.running = false;
-                aurProc.running = true;
-            }
-        }
-
         function onIsSystemUpdatingChanged() {
-            console.log("UpdatesCard: onIsSystemUpdatingChanged:", AppState.isSystemUpdating);
             if (!AppState.isSystemUpdating) {
-                console.log("UpdatesCard: isSystemUpdating finished, starting delay timer");
                 root.pacmanUpdates = "...";
                 root.aurUpdates = "...";
                 checkDelayTimer.start();
@@ -139,7 +122,6 @@ Card {
         interval: 800
         repeat: false
         onTriggered: {
-            console.log("UpdatesCard: checkDelayTimer triggered, starting checks");
             pacmanProc.running = false;
             pacmanProc.running = true;
             aurProc.running = false;

@@ -77,7 +77,7 @@ TopPopup {
 
                     Behavior on x {
                         NumberAnimation {
-                            duration: 250
+                            duration: Constants.animNormal
                             easing.type: Easing.OutCubic
                         }
 
@@ -87,7 +87,7 @@ TopPopup {
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: 250
+                        duration: Constants.animNormal
                         easing.type: Easing.OutCubic
                     }
 
@@ -107,7 +107,7 @@ TopPopup {
 
                     Behavior on x {
                         NumberAnimation {
-                            duration: 250
+                            duration: Constants.animNormal
                             easing.type: Easing.OutCubic
                         }
 
@@ -117,7 +117,7 @@ TopPopup {
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: 250
+                        duration: Constants.animNormal
                         easing.type: Easing.OutCubic
                     }
 
@@ -153,7 +153,7 @@ TopPopup {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 150
+                        duration: Constants.animFast
                     }
 
                 }
@@ -169,7 +169,7 @@ TopPopup {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 150
+                        duration: Constants.animFast
                     }
 
                 }
@@ -188,7 +188,7 @@ TopPopup {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 180
+                    duration: Constants.animFast
                     easing.type: Easing.OutCubic
                 }
 

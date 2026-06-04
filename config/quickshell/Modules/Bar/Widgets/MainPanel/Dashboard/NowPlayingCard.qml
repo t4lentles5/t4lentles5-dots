@@ -128,7 +128,7 @@ Card {
                 anchors.centerIn: parent
                 width: 110
                 height: 110
-                radius: width / 2
+                radius: Constants.sizeSm
                 color: Theme.bg
                 border.width: 1
                 border.color: Theme.border
@@ -147,7 +147,7 @@ Card {
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: 400
+                        duration: Constants.animUltraSlow
                         easing.type: Easing.OutCubic
                     }
 
@@ -159,7 +159,7 @@ Card {
                 id: artMask
 
                 anchors.fill: artContainer
-                radius: width / 2
+                radius: Constants.sizeSm
                 color: "white"
                 visible: false
             }

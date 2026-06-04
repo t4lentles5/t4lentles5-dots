@@ -83,7 +83,7 @@ Card {
         anchors.left: parent.left
         anchors.right: parent.right
         height: parent.height * (root.batteryPercentage / 100)
-        color: root.batteryStatus === "Charging" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : (root.batteryPercentage < 20 ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15) : Qt.rgba(Theme.blueArch.r, Theme.blueArch.g, Theme.blueArch.b, 0.15))
+        color: root.batteryStatus === "Charging" ? Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.15) : (root.batteryPercentage < 20 ? Qt.rgba(Theme.red.r, Theme.red.g, Theme.red.b, 0.15) : Qt.rgba(Theme.blue.r, Theme.blue.g, Theme.blue.b, 0.15))
 
         Behavior on height {
             NumberAnimation {
@@ -103,7 +103,7 @@ Card {
         ThemedText {
             text: root.batteryStatus === "Charging" ? "󰂄" : "󰁹"
             font.pixelSize: 28
-            color: root.batteryStatus === "Charging" ? Theme.green : (root.batteryPercentage < 20 ? Theme.red : Theme.blueArch)
+            color: root.batteryStatus === "Charging" ? Theme.green : (root.batteryPercentage < 20 ? Theme.red : Theme.blue)
             Layout.alignment: Qt.AlignHCenter
         }
 
@@ -122,7 +122,7 @@ Card {
             text: root.batteryPercentage + "%"
             font.pixelSize: 22
             font.bold: true
-            color: root.batteryStatus === "Charging" ? Theme.green : (root.batteryPercentage < 20 ? Theme.red : Theme.blueArch)
+            color: root.batteryStatus === "Charging" ? Theme.green : (root.batteryPercentage < 20 ? Theme.red : Theme.blue)
             Layout.alignment: Qt.AlignHCenter
         }
 

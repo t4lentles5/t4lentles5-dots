@@ -35,14 +35,14 @@ Rectangle {
 
     Behavior on border.color {
         ColorAnimation {
-            duration: 150
+            duration: Constants.animFast
         }
 
     }
 
     Behavior on scale {
         NumberAnimation {
-            duration: 100
+            duration: Constants.animFast
         }
 
     }
